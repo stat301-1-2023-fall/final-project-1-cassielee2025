@@ -1,0 +1,47 @@
+---
+title: "Progress Memo 1"
+subtitle: |
+  | Final Project 
+  | Data Science 1 with R (STAT 301-1)
+author: "Cassie Lee"
+date: today
+
+format:
+  html:
+    toc: true
+    embed-resources: true
+    
+execute:
+  echo: false
+  warning: false
+
+from: markdown+emoji 
+---
+
+::: {.callout-tip icon=false}
+
+## Github Repo Link
+
+[Cassie's Github Repo Link](https://github.com/stat301-1-2023-fall/final-project-1-cassielee2025.git)
+
+:::
+
+## Data source
+
+Blah blah blah^[where blah blah came from, an example of footnote]
+
+## Why this data
+
+Blah blah blah^[another footnote]
+
+## Data quality & complexity check
+
+Blah blah blah
+
+## Potential data issues
+
+Blah blah blah
+
+## Misc
+
+Blah Blah
