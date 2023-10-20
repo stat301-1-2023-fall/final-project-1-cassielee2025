@@ -28,7 +28,11 @@ from: markdown+emoji
 
 ## Data source
 
-Blah blah blah^[where blah blah came from, an example of footnote]
+This data is from the CDC National Environmental Public Health Tracking Network interactive data explorer.^[Link to the interactive data explorer can be found [here](http://www.cdc.gov/ephtracking).] 
+
+To access the various indicators of air quality, health, and demographics, I had to query and download each each indicator separately. Thus, in my raw data folder, there are 21 different folders representing each query and download. Folders were renamed with a shorthand representing the indicator that is contained in that folder. Each folder has a .csv data file, a .htm footnotes file, and a .pdf general information file. 
+
+I will need to join all of the datasets together. Most data files have indicators broken down by each county throughout the nation, however, there are a few indicators that represent data for the entire state. The files that have `county` identifiers also all have a `state` identifier, so data corresponding to states as a whole can be joined using `state`
 
 ## Why this data
 
