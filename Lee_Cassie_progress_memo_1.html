@@ -3042,18 +3042,22 @@ Github Repo Link
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><a href="https://github.com/stat301-1-2023-fall/final-project-1-cassielee2025.git">Cassie’s Github Repo Link</a></p>
+<p><a href="https://github.com/stat301-1-2023-fall/final-project-1-cassielee2025.git">Cassie’s Final Project Github Repo Link</a></p>
 </div>
 </div>
 <section id="data-source" class="level2">
 <h2 class="anchored" data-anchor-id="data-source">Data source</h2>
 <p>This data is from the CDC National Environmental Public Health Tracking Network interactive data explorer.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <p>To access the various indicators of air quality, health, and demographics, I had to query and download each each indicator separately. Thus, in my raw data folder, there are 21 different folders representing each query and download. Folders were renamed with a shorthand representing the indicator that is contained in that folder. Each folder has a .csv data file, a .htm footnotes file, and a .pdf general information file.</p>
-<p>I will need to join all of the datasets together. Most data files have indicators broken down by each county throughout the nation, however, there are a few indicators that represent data for the entire state. The files that have <code>county</code> identifiers also all have a <code>state</code> identifier, so data corresponding to states as a whole can be joined using <code>state</code></p>
+<p>I will need to join all of the datasets together. Most data files have indicators broken down by each county throughout the nation, however, there are a few indicators that represent data for the entire state. The files that have <code>county</code> identifiers also all have a <code>state</code> identifier, so data corresponding to states as a whole can be joined using <code>state</code>.</p>
 </section>
 <section id="why-this-data" class="level2">
 <h2 class="anchored" data-anchor-id="why-this-data">Why this data</h2>
-<p>Blah blah blah<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>I chose this data because I am interested in environmental public health and would like to learn more about air quality and health outcomes. I am currently more familiar with water quality and health outcomes, but I would like to expand my knowledge of environmental exposures through this project.</p>
+<p>I originally wanted to look at air quality sensor data throughout Chicago through a project called Array of Things,<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> but realized that it was time series data. Instead, I shifted my focus from individual sensor data as the unit of measurement to counties across the nation as my unit of measurement.</p>
+<p>After looking around several government websites, I realized that a lot of the data that I was interested in regarding various health measurements such as biomarkers and anthropometrics were unavailable to the public. This dataset contains the most relevant information about environmental quality and health outcomes that I was able to access.</p>
+<p>I believe this data will be sufficiently challenging to work with, as I will have to join 21 different files, there are both numeric and factor variables.</p>
+<p>Some interesting questions that I would consider are: 1. How are various air quality indicators related to each other? 2. What are the most important indicators for determining the prevalence of asthma, cancer, and chronic obstructive pulmonary disease? 3. How do demographics like age, gender, race, and ethnicity affect the relationships between air quality and health outcomes?</p>
 </section>
 <section id="data-quality-complexity-check" class="level2">
 <h2 class="anchored" data-anchor-id="data-quality-complexity-check">Data quality &amp; complexity check</h2>
@@ -3073,7 +3077,7 @@ Github Repo Link
 
 <ol>
 <li id="fn1"><p>Link to the interactive data explorer can be found <a href="http://www.cdc.gov/ephtracking">here</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>another footnote<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Link to the Array of Things website can be found <a href="https://arrayofthings.github.io/index.html">here</a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main>
 <!-- /main column -->

@@ -22,7 +22,7 @@ from: markdown+emoji
 
 ## Github Repo Link
 
-[Cassie's Github Repo Link](https://github.com/stat301-1-2023-fall/final-project-1-cassielee2025.git)
+[Cassie's Final Project Github Repo Link](https://github.com/stat301-1-2023-fall/final-project-1-cassielee2025.git)
 
 :::
 
@@ -32,11 +32,22 @@ This data is from the CDC National Environmental Public Health Tracking Network 
 
 To access the various indicators of air quality, health, and demographics, I had to query and download each each indicator separately. Thus, in my raw data folder, there are 21 different folders representing each query and download. Folders were renamed with a shorthand representing the indicator that is contained in that folder. Each folder has a .csv data file, a .htm footnotes file, and a .pdf general information file. 
 
-I will need to join all of the datasets together. Most data files have indicators broken down by each county throughout the nation, however, there are a few indicators that represent data for the entire state. The files that have `county` identifiers also all have a `state` identifier, so data corresponding to states as a whole can be joined using `state`
+I will need to join all of the datasets together. Most data files have indicators broken down by each county throughout the nation, however, there are a few indicators that represent data for the entire state. The files that have `county` identifiers also all have a `state` identifier, so data corresponding to states as a whole can be joined using `state`.
 
 ## Why this data
 
-Blah blah blah^[another footnote]
+I chose this data because I am interested in environmental public health and would like to learn more about air quality and health outcomes. I am currently more familiar with water quality and health outcomes, but I would like to expand my knowledge of environmental exposures through this project. 
+
+I originally wanted to look at air quality sensor data throughout Chicago through a project called Array of Things,^[Link to the Array of Things website can be found [here](https://arrayofthings.github.io/index.html).] but realized that it was time series data. Instead, I shifted my focus from individual sensor data as the unit of measurement to counties across the nation as my unit of measurement. 
+
+After looking around several government websites, I realized that a lot of the data that I was interested in regarding various health measurements such as biomarkers and anthropometrics were unavailable to the public. This dataset contains the most relevant information about environmental quality and health outcomes that I was able to access.
+
+I believe this data will be sufficiently challenging to work with, as I will have to join 21 different files, there are both numeric and factor variables. 
+
+Some interesting questions that I would consider are:
+1. How are various air quality indicators related to each other?
+2. What are the most important indicators for determining the prevalence of asthma, cancer, and chronic obstructive pulmonary disease?
+3. How do demographics like age, gender, race, and ethnicity affect the relationships between air quality and health outcomes?
 
 ## Data quality & complexity check
 
