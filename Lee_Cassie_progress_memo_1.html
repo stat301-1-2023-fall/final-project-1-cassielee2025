@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Cassie Lee">
-<meta name="dcterms.date" content="2023-10-21">
+<meta name="dcterms.date" content="2023-10-22">
 
 <title>Progress Memo 1</title>
 <style>
@@ -3022,7 +3022,7 @@ Data Science 1 with R (STAT 301-1)</p><p></p>
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 21, 2023</p>
+      <p class="date">October 22, 2023</p>
     </div>
   </div>
   
@@ -3048,7 +3048,7 @@ Github Repo Link
 <section id="data-source" class="level2">
 <h2 class="anchored" data-anchor-id="data-source">Data source</h2>
 <p>This data is from the CDC National Environmental Public Health Tracking Network interactive data explorer.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<p>To access the various indicators of air quality, health, and demographics, I had to query and download each each indicator separately. Thus, in my raw data folder, there are 21 different folders representing each query and download. Folders were renamed with a shorthand representing the indicator that is contained in that folder. Each folder has a .csv data file, a .htm footnotes file, and a .pdf general information file.</p>
+<p>To access the various indicators of air quality, health, and demographics, I had to query and download each each indicator separately. Thus, in my raw data folder, there are 18 different folders representing each query and download. Folders were renamed with a shorthand representing the indicator that is contained in that folder. Each folder has a .csv data file, a .htm footnotes file, and a .pdf general information file.</p>
 <p>I will need to join all of the datasets together. Most data files have indicators broken down by each county throughout the nation, however, there are a few indicators that represent data for the entire state. The files that have <code>county</code> identifiers also all have a <code>state</code> identifier, so data corresponding to states as a whole can be joined using <code>state</code>.</p>
 </section>
 <section id="why-this-data" class="level2">
@@ -3066,11 +3066,15 @@ Github Repo Link
 </section>
 <section id="data-quality-complexity-check" class="level2">
 <h2 class="anchored" data-anchor-id="data-quality-complexity-check">Data quality &amp; complexity check</h2>
-<p>I am able to read in each data file. In total, I have 135 variable across all the datasets, but each dataset contains several identifiers such as <code>state_fips</code>, <code>state</code>, <code>county_fips</code>, <code>county</code>, and <code>year</code>. There are also several variables throughout the datasets such as <code>data_comment</code>, <code>x8</code>, <code>x11</code>, or 95% confidence intervals are completely missing or are not relevant to use.</p>
+<p>I am able to read in all 18 data files. In total, I have a total of 135 variables across all the datasets, but each dataset contains several repeated identifiers such as <code>state_fips</code>, <code>state</code>, <code>county_fips</code>, <code>county</code>, and <code>year</code>.</p>
+<p>Within <code>age_demographics</code>, there are 5 categorical, 2 numerical, and 1 logical variables. In <code>asthma_adult_crude</code>, there are 5 categorical, 4 numerical, and 2 logical variables. In <code>asthma_child_crude</code>, there are 2 categorical, 2 numerical, and 2 logical variables. In <code>asthma_ed_adjusted</code>, there are 5 categorical, 2 numerical, and 1 logical variables. In <code>asthma_ed_crude</code>, there are 5 categorical, 2 numerical, and 1 logical variables. In <code>cancer_adjusted</code>, there are 2 categorical, 2 numerical, and 2 logical variables. In <code>copd_adjusted</code>, there are 5 categorical, 4 numerical, and 2 logical variables. In <code>copd_crude</code>, there are 5 categorical, 4 numerical, and 2 logical variables. In <code>days_over_o3_standard</code>, there are 4 categorical, 2 numerical, and 2 logical variables. In <code>days_over_pm_standard</code>, there are 4 categorical, 2 numerical, and 2 logical variables. In <code>gender_demographics</code>, there are 5 categorical, 2 numerical, and 1 logical variables. In <code>highway_living</code>, there are 4 categorical, 2 numerical, and 2 logical variables. In <code>highway_schools</code>, there are 4 categorical, 2 numerical, and 2 logical variables. In <code>parks_access</code>, there are 6 categorical, 2 numerical, and 1 logical variables. In <code>pollutants</code>, there are 5 categorical, 2 numerical,a nd 1 logical variables. In <code>race_ethnicity</code>, there are 5 categorical, 2 numerical,a nd 1 logical variables. In <code>socioeconomic_vulnerability</code>, there are 4 categorical, 2 numerical, and 2 logical variables. In <code>work_transportation</code>, there are 5 categorical, 3 numerical, and 1 logical variables.</p>
+<p>There are also several variables throughout the datasets such as <code>data_comment</code>, <code>x8</code>, and <code>x11</code> that are completely missing. These variables are classified as logical variables in <code>skimr</code>. <code>asthma_ed_crude</code> <code>asthma_ed_adjusted</code>, and <code>asthma_ed_crude</code> have “Suppressed” values that are missing. Additionally, some of the indicators I selected were only available at the state level, so every county in each state will have the same measure for those indicators.</p>
 </section>
 <section id="potential-data-issues" class="level2">
 <h2 class="anchored" data-anchor-id="potential-data-issues">Potential data issues</h2>
-<p>Blah blah blah</p>
+<p>For the final project, I intend for each county in the US to be an observation. However, the demographic data I downloaded considers each specific demographic in each county as an observation. For example, in <code>age_demographics</code>, each <code>county</code> plus <code>age_group</code> is an observation with a measured value. For each demographic variable will likely have to create some kind of proxy variable that indicates the dominant demographic group within that variable for each county. I may also be able to examine the distribution of each demographic variable and create a cutoff for a relatively “high” or “low” proportion of the population with in each demographic group.</p>
+<p>Additionally, in <code>race_ethnicity</code>, the US census definitions of race and ethnicity are combined under one variable, so there is a single category for each race plus ethnicity. I will need to use string transformations to separate the two.</p>
+<p>Finally, several indicators are only reported by state, so every county in each state will have the same value for the given indicator. This greatly limits the variability in the data, and may affect bi and multivariate analysis.</p>
 </section>
 <section id="misc" class="level2">
 <h2 class="anchored" data-anchor-id="misc">Misc</h2>

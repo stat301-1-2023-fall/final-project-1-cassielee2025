@@ -30,7 +30,7 @@ This data is from the CDC National Environmental Public Health Tracking Network 
 
 [^1]: Link to the interactive data explorer can be found [here](http://www.cdc.gov/ephtracking).
 
-To access the various indicators of air quality, health, and demographics, I had to query and download each each indicator separately. Thus, in my raw data folder, there are 21 different folders representing each query and download. Folders were renamed with a shorthand representing the indicator that is contained in that folder. Each folder has a .csv data file, a .htm footnotes file, and a .pdf general information file.
+To access the various indicators of air quality, health, and demographics, I had to query and download each each indicator separately. Thus, in my raw data folder, there are 18 different folders representing each query and download. Folders were renamed with a shorthand representing the indicator that is contained in that folder. Each folder has a .csv data file, a .htm footnotes file, and a .pdf general information file.
 
 I will need to join all of the datasets together. Most data files have indicators broken down by each county throughout the nation, however, there are a few indicators that represent data for the entire state. The files that have `county` identifiers also all have a `state` identifier, so data corresponding to states as a whole can be joined using `state`.
 
@@ -56,13 +56,19 @@ Some interesting questions that I would consider are:
 
 ## Data quality & complexity check
 
-I am able to read in each data file. In total, I have 135 variable across all the datasets, but each dataset contains several identifiers such as `state_fips`, `state`, `county_fips`, `county`, and `year`. There are also several variables throughout the datasets such as  `data_comment`, `x8`, `x11`, or 95% confidence intervals are completely missing or are not relevant to use. 
+I am able to read in all 18 data files. In total, I have a total of 135 variables across all the datasets, but each dataset contains several repeated identifiers such as `state_fips`, `state`, `county_fips`, `county`, and `year`. 
 
+Within `age_demographics`, there are 5 categorical, 2 numerical, and 1 logical variables. In `asthma_adult_crude`, there are 5 categorical, 4 numerical, and 2 logical variables. In `asthma_child_crude`, there are 2 categorical, 2 numerical, and 2 logical variables. In `asthma_ed_adjusted`, there are 5 categorical, 2 numerical, and 1 logical variables. In `asthma_ed_crude`, there are 5 categorical, 2 numerical, and 1 logical variables. In `cancer_adjusted`, there are 2 categorical, 2 numerical, and 2 logical variables. In `copd_adjusted`, there are 5 categorical, 4 numerical, and 2 logical variables. In `copd_crude`, there are 5 categorical, 4 numerical, and 2 logical variables. In `days_over_o3_standard`, there are 4 categorical, 2 numerical, and 2 logical variables. In `days_over_pm_standard`, there are 4 categorical, 2 numerical, and 2 logical variables. In `gender_demographics`, there are 5 categorical, 2 numerical, and 1 logical variables. In `highway_living`, there are 4 categorical, 2 numerical, and 2 logical variables. In `highway_schools`, there are 4 categorical, 2 numerical, and 2 logical variables. In `parks_access`, there are 6 categorical, 2 numerical, and 1 logical variables. In `pollutants`, there are 5 categorical, 2 numerical,a nd 1 logical variables. In `race_ethnicity`, there are 5 categorical, 2 numerical,a nd 1 logical variables. In `socioeconomic_vulnerability`, there are 4 categorical, 2 numerical, and 2 logical variables. In `work_transportation`, there are 5 categorical, 3 numerical, and 1 logical variables. 
 
+There are also several variables throughout the datasets such as  `data_comment`, `x8`, and `x11` that are completely missing. These variables are classified as logical variables in `skimr`. `asthma_ed_crude` `asthma_ed_adjusted`, and `asthma_ed_crude` have "Suppressed" values that are missing. Additionally, some of the indicators I selected were only available at the state level, so every county in each state will have the same measure for those indicators.
 
 ## Potential data issues
 
-Blah blah blah
+For the final project, I intend for each county in the US to be an observation. However, the demographic data I downloaded considers each specific demographic in each county as an observation. For example, in `age_demographics`, each `county` plus `age_group` is an observation with a measured value. For each demographic variable will likely have to create some kind of proxy variable that indicates the dominant demographic group within that variable for each county. I may also be able to examine the distribution of each demographic variable and create a cutoff for a relatively "high" or "low" proportion of the population with in each demographic group.
+
+Additionally, in `race_ethnicity`, the US census definitions of race and ethnicity are combined under one variable, so there is a single category for each race plus ethnicity. I will need to use string transformations to separate the two. 
+
+Finally, several indicators are only reported by state, so every county in each state will have the same value for the given indicator. This greatly limits the variability in the data, and may affect bi and multivariate analysis.  
 
 ## Misc
 
