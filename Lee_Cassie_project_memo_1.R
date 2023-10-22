@@ -51,7 +51,7 @@ highway_living <- read_csv("data/raw/highway-living/data_151056.csv") %>%
 highway_schools <- read_csv("data/raw/highway-schools/data_151116.csv") %>% 
   clean_names()
 
-parks_access <- read_csv("data/raw/parks-access/data_161554.csv") %>% 
+parks_access <- read_csv("data/raw/parks-access/data_143718.csv") %>% 
   clean_names()
 
 pollutants <- read_csv("data/raw/selected-pollutant-concentration/data_134821.csv") %>% 

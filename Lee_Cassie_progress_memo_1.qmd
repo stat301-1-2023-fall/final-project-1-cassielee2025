@@ -12,8 +12,10 @@ format:
     embed-resources: true
     
 execute:
-  echo: false
+  echo: true
   warning: false
+
+code-fold: true
 
 from: markdown+emoji 
 ---
@@ -23,6 +25,15 @@ from: markdown+emoji
 
 [Cassie's Final Project Github Repo Link](https://github.com/stat301-1-2023-fall/final-project-1-cassielee2025.git)
 :::
+
+```{r}
+#| label: load-libraries
+
+library(tidyverse)
+library(janitor)
+library(naniar)
+library(skimr)
+```
 
 ## Data source
 
@@ -38,11 +49,11 @@ I will need to join all of the datasets together. Most data files have indicator
 
 I chose this data because I am interested in environmental public health and would like to learn more about air quality and health outcomes. I am currently more familiar with water quality and health outcomes, but I would like to expand my knowledge of environmental exposures through this project.
 
-I originally wanted to look at air quality sensor data throughout Chicago through a project called Array of Things,[^2] but realized that it was time series data. Instead, I shifted my focus from individual sensor data as the unit of measurement to counties across the nation as my unit of measurement.
+I originally wanted to look at air quality sensor data throughout Chicago through a project called Array of Things,[^2] but realized that it was time series data. Instead, I shifted my focus from individual sensor data as the unit of measurement to counties across the nation as my unit of observatoin
 
 [^2]: Link to the Array of Things website can be found [here](https://arrayofthings.github.io/index.html).
 
-After looking around several government websites, I realized that a lot of the data that I was interested in regarding various health measurements such as biomarkers and anthropometrics were unavailable to the public. This dataset contains the most relevant information about environmental quality and health outcomes that I was able to access. I selected data from 2018 for most of the indicators, since that was the most complete and most recent data available. There are some indicators that are from 2020. 
+After looking around several government websites, I realized that a lot of the data that I was interested in regarding various health measurements such as biomarkers and anthropometrics were unavailable to the public. This dataset contains the most relevant information about environmental quality and health outcomes that I was able to access. I selected data from 2018 for most of the indicators, since that was the most complete and most recent data available. There are some indicators that are from 2020.
 
 I believe this data will be sufficiently challenging to work with, as I will have to join 21 different files, there are both numeric and factor variables.
 
@@ -56,20 +67,236 @@ Some interesting questions that I would consider are:
 
 ## Data quality & complexity check
 
-I am able to read in all 18 data files. In total, I have a total of 135 variables across all the datasets, but each dataset contains several repeated identifiers such as `state_fips`, `state`, `county_fips`, `county`, and `year`. 
+```{r}
+#| label: read-in-data
 
-Within `age_demographics`, there are 5 categorical, 2 numerical, and 1 logical variables. In `asthma_adult_crude`, there are 5 categorical, 4 numerical, and 2 logical variables. In `asthma_child_crude`, there are 2 categorical, 2 numerical, and 2 logical variables. In `asthma_ed_adjusted`, there are 5 categorical, 2 numerical, and 1 logical variables. In `asthma_ed_crude`, there are 5 categorical, 2 numerical, and 1 logical variables. In `cancer_adjusted`, there are 2 categorical, 2 numerical, and 2 logical variables. In `copd_adjusted`, there are 5 categorical, 4 numerical, and 2 logical variables. In `copd_crude`, there are 5 categorical, 4 numerical, and 2 logical variables. In `days_over_o3_standard`, there are 4 categorical, 2 numerical, and 2 logical variables. In `days_over_pm_standard`, there are 4 categorical, 2 numerical, and 2 logical variables. In `gender_demographics`, there are 5 categorical, 2 numerical, and 1 logical variables. In `highway_living`, there are 4 categorical, 2 numerical, and 2 logical variables. In `highway_schools`, there are 4 categorical, 2 numerical, and 2 logical variables. In `parks_access`, there are 6 categorical, 2 numerical, and 1 logical variables. In `pollutants`, there are 5 categorical, 2 numerical,a nd 1 logical variables. In `race_ethnicity`, there are 5 categorical, 2 numerical,a nd 1 logical variables. In `socioeconomic_vulnerability`, there are 4 categorical, 2 numerical, and 2 logical variables. In `work_transportation`, there are 5 categorical, 3 numerical, and 1 logical variables. 
+# load in the data
+asthma_adult_crude <- read_csv("data/raw/adult-asthma-prevalence-crude/data_135355.csv") %>% 
+  clean_names()
 
-There are also several variables throughout the datasets such as  `data_comment`, `x8`, and `x11` that are completely missing. These variables are classified as logical variables in `skimr`. `asthma_ed_crude` `asthma_ed_adjusted`, and `asthma_ed_crude` have "Suppressed" values that are missing. Additionally, some of the indicators I selected were only available at the state level, so every county in each state will have the same measure for those indicators.
+asthma_child_crude <- read_csv("data/raw/child-asthma/data_134936.csv") %>% 
+  clean_names()
+
+asthma_ed_adjusted <- read_csv("data/raw/asthma-emergency-department-age-adjusted/data_135130.csv") %>% 
+  clean_names()
+
+asthma_ed_crude <- read_csv("data/raw/asthma-emergency-department-crude/data_135101.csv") %>% 
+  clean_names()
+
+cancer_adjusted <- read_csv("data/raw/cancer-age-adjusted/data_134453.csv") %>% 
+  clean_names()
+
+copd_adjusted <- read_csv("data/raw/copd-age-adjusted/data_135253.csv") %>% 
+  clean_names()
+
+copd_crude <- read_csv("data/raw/copd-crude/data_135330.csv") %>% 
+  clean_names()
+
+days_over_o3_standard <- read_csv("data/raw/days-over-O3-standard/data_135022.csv") %>% 
+  clean_names()
+
+days_over_pm_standard <- read_csv("data/raw/days-over-pm-standard/data_134954.csv") %>% 
+  clean_names()
+
+age_demographics <- read_csv("data/raw/demographics-age/data_160814.csv") %>% 
+  clean_names()
+
+gender_demographics <- read_csv("data/raw/demographics-gender/data_160859.csv") %>% 
+  clean_names()
+
+race_ethnicity <- read_csv("data/raw/demographics-race-ethnicity/data_161208.csv") %>% 
+  clean_names()
+
+highway_living <- read_csv("data/raw/highway-living/data_151056.csv") %>% 
+  clean_names()
+
+highway_schools <- read_csv("data/raw/highway-schools/data_151116.csv") %>% 
+  clean_names()
+
+parks_access <- read_csv("data/raw/parks-access/data_143718.csv") %>% 
+  clean_names()
+
+pollutants <- read_csv("data/raw/selected-pollutant-concentration/data_134821.csv") %>% 
+  clean_names()
+
+socioeconomic_vulnerability <- read_csv("data/raw/socioeconomic-vulnerability-index/data_161326.csv") %>% 
+  clean_names()
+
+work_transportation <- read_csv("data/raw/work-transportation/data_151035.csv") %>% 
+  clean_names()
+```
+
+I am able to read in all 18 data files. In total, I have 150 variables across all the datasets, but each dataset contains several repeated identifiers such as `state_fips`, `state`, `county_fips`, `county`, and `year`.
+
+```{r}
+#| label: variable-types
+#| results: hide
+
+## age ----
+age_demographics %>% 
+  skim_without_charts()
+
+## asthma adult crude ----
+asthma_adult_crude %>% 
+  skim_without_charts()
+
+## asthma child crude ----
+asthma_child_crude %>% 
+  skim_without_charts() # value is character vector here
+
+# modify value variable in asthma_child_crude
+asthma_child_crude %>% 
+  arrange(desc(value)) # Suppressed values are changing the value to character
+
+asthma_child_crude <- asthma_child_crude %>% 
+  mutate(value = na_if(value, "Suppressed"),
+         value = as.numeric(value)) 
+
+asthma_child_crude %>% 
+  skim_without_charts()
+
+## asthma ed adjusted ----
+asthma_ed_adjusted %>% 
+  skim_without_charts() # value is character vector here
+
+# modify value variable in asthma_ed_adjusted
+asthma_ed_adjusted %>% 
+  arrange(desc(value)) # Suppressed values are changing the value to character
+
+asthma_ed_adjusted <- asthma_ed_adjusted %>% 
+  mutate(value = na_if(value, "Suppressed"),
+         value = as.numeric(value)) 
+
+asthma_ed_adjusted %>% 
+  skim_without_charts()
+
+## asthma ed crude ----
+asthma_ed_crude %>% 
+  skim_without_charts() # value is character vector
+
+# modify value variable in asthma_ed_crude
+asthma_ed_crude %>% 
+  arrange(desc(value)) # Suppressed values are changing the value to character
+
+asthma_ed_crude <- asthma_ed_crude %>% 
+  mutate(value = na_if(value, "Suppressed"),
+         value = as.numeric(value)) 
+
+asthma_ed_crude %>% 
+  skim_without_charts()
+
+## cancer adjusted ----
+cancer_adjusted %>% 
+  skim_without_charts()
+
+## copd adjusted ----
+copd_adjusted %>% 
+  skim_without_charts()
+
+## copd crude ----
+copd_crude %>% 
+  skim_without_charts()
+
+## days over o3 standard ----
+days_over_o3_standard %>% 
+  skim_without_charts()
+
+## days over pm standard ----
+days_over_pm_standard %>% 
+  skim_without_charts()
+
+## gender demographics ----
+gender_demographics %>% 
+  skim_without_charts()
+
+## highway living ----
+highway_living %>% 
+  skim_without_charts()
+
+## highway schools ----
+highway_schools %>% 
+  skim_without_charts()
+
+## parks access ----
+parks_access %>% 
+  skim_without_charts()
+
+## pollutants  ----
+pollutants %>% 
+  skim_without_charts()
+
+## race ethnicity ----
+race_ethnicity %>% 
+  skim_without_charts()
+
+## socioeconomic vulnerability ----
+socioeconomic_vulnerability %>% 
+  skim_without_charts()
+
+## work transportation ----
+work_transportation %>% 
+  skim_without_charts()
+
+```
+
+Each data file has the following variables:
+
+1.  `age_demographics`: 5 categorical, 2 numerical, and 1 logical
+
+2.  `asthma_adult_crude`: 5 categorical, 4 numerical, and 2 logical
+
+3.  `asthma_child_crude`: 2 categorical, 2 numerical, and 2 logical
+
+4.  `asthma_ed_adjusted`: 5 categorical, 2 numerical, and 1 logical
+
+5.  `asthma_ed_crude`: 5 categorical, 2 numerical, and 1 logical
+
+6.  `cancer_adjusted`: 2 categorical, 2 numerical, and 2 logical
+
+7.  `copd_adjusted`: 5 categorical, 4 numerical, and 2 logical
+
+8.  `copd_crude`: 5 categorical, 4 numerical, and 2 logical
+
+9.  `days_over_o3_standard`: 4 categorical, 2 numerical, and 2 logical
+
+10. `days_over_pm_standard`: 4 categorical, 2 numerical, and 2 logical
+
+11. `gender_demographics`: 5 categorical, 2 numerical, and 1 logical
+
+12. `highway_living`: 4 categorical, 2 numerical, and 2 logical
+
+13. `highway_schools`: 4 categorical, 2 numerical, and 2 logical
+
+14. `parks_access`: 5 categorical, 2 numerical, and 1 logical
+
+15. `pollutants`: 5 categorical, 2 numerical, and 1 logical
+
+16. `race_ethnicity`: 5 categorical, 2 numerical, and 1 logical
+
+17. `socioeconomic_vulnerability`: 4 categorical, 2 numerical, and 2 logical
+
+18. `work_transportation`: 5 categorical, 3 numerical, and 1 logical
+
+There are also several variables throughout the datasets such as `data_comment`, `x8`, and `x11` that are completely missing. These variables are classified as logical variables in `skimr`. `asthma_ed_crude` `asthma_ed_adjusted`, and `asthma_ed_crude` have "Suppressed" values that are missing. Additionally, some of the indicators I selected were only available at the state level, so every county in each state will have the same measure for those indicators.
 
 ## Potential data issues
 
 For the final project, I intend for each county in the US to be an observation. However, the demographic data I downloaded considers each specific demographic in each county as an observation. For example, in `age_demographics`, each `county` plus `age_group` is an observation with a measured value. For each demographic variable will likely have to create some kind of proxy variable that indicates the dominant demographic group within that variable for each county. I may also be able to examine the distribution of each demographic variable and create a cutoff for a relatively "high" or "low" proportion of the population with in each demographic group.
 
-Additionally, in `race_ethnicity`, the US census definitions of race and ethnicity are combined under one variable, so there is a single category for each race plus ethnicity. I will need to use string transformations to separate the two. 
+Additionally, in `race_ethnicity`, the US census definitions of race and ethnicity are combined under one variable, so there is a single category for each race plus ethnicity. I will need to use string transformations to separate the two.
 
-Finally, several indicators are only reported by state, so every county in each state will have the same value for the given indicator. This greatly limits the variability in the data, and may affect bi and multivariate analysis.  
+Finally, several indicators are only reported by state, so every county in each state will have the same value for the given indicator. This greatly limits the variability in the data, and may affect bi and multivariate analysis.
 
-## Misc
+## Miscellaneous 
 
-Blah Blah
+**Proposed timeline:**
+
+11/4/23: univariate analysis and determining how I will create and use proxy variables for demographics
+
+11/11/23: merge datasets and half of bivariate analysis
+
+11/18/23: second half of bivariate analysis and half of multivariate analysis with various demographics as the third variable
+
+11/25/23: second half of multivariate analysis and writing
+
+11/29/23: writing and turn in

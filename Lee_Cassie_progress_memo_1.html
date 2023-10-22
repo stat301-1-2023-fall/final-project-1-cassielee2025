@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
 width: 0.8em;
 margin: 0 0.8em 0.2em -1em;  vertical-align: middle;
 }
+
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+}
+pre.numberSource { margin-left: 3em; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -2995,7 +3029,7 @@ vertical-align: -.125em;
   <li><a href="#why-this-data" id="toc-why-this-data" class="nav-link" data-scroll-target="#why-this-data">Why this data</a></li>
   <li><a href="#data-quality-complexity-check" id="toc-data-quality-complexity-check" class="nav-link" data-scroll-target="#data-quality-complexity-check">Data quality &amp; complexity check</a></li>
   <li><a href="#potential-data-issues" id="toc-potential-data-issues" class="nav-link" data-scroll-target="#potential-data-issues">Potential data issues</a></li>
-  <li><a href="#misc" id="toc-misc" class="nav-link" data-scroll-target="#misc">Misc</a></li>
+  <li><a href="#miscellaneous" id="toc-miscellaneous" class="nav-link" data-scroll-target="#miscellaneous">Miscellaneous</a></li>
   </ul>
 </nav>
 </div>
@@ -3045,6 +3079,15 @@ Github Repo Link
 <p><a href="https://github.com/stat301-1-2023-fall/final-project-1-cassielee2025.git">Cassie’s Final Project Github Repo Link</a></p>
 </div>
 </div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(naniar)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 <section id="data-source" class="level2">
 <h2 class="anchored" data-anchor-id="data-source">Data source</h2>
 <p>This data is from the CDC National Environmental Public Health Tracking Network interactive data explorer.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
@@ -3054,7 +3097,7 @@ Github Repo Link
 <section id="why-this-data" class="level2">
 <h2 class="anchored" data-anchor-id="why-this-data">Why this data</h2>
 <p>I chose this data because I am interested in environmental public health and would like to learn more about air quality and health outcomes. I am currently more familiar with water quality and health outcomes, but I would like to expand my knowledge of environmental exposures through this project.</p>
-<p>I originally wanted to look at air quality sensor data throughout Chicago through a project called Array of Things,<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> but realized that it was time series data. Instead, I shifted my focus from individual sensor data as the unit of measurement to counties across the nation as my unit of measurement.</p>
+<p>I originally wanted to look at air quality sensor data throughout Chicago through a project called Array of Things,<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> but realized that it was time series data. Instead, I shifted my focus from individual sensor data as the unit of measurement to counties across the nation as my unit of observatoin</p>
 <p>After looking around several government websites, I realized that a lot of the data that I was interested in regarding various health measurements such as biomarkers and anthropometrics were unavailable to the public. This dataset contains the most relevant information about environmental quality and health outcomes that I was able to access. I selected data from 2018 for most of the indicators, since that was the most complete and most recent data available. There are some indicators that are from 2020.</p>
 <p>I believe this data will be sufficiently challenging to work with, as I will have to join 21 different files, there are both numeric and factor variables.</p>
 <p>Some interesting questions that I would consider are:</p>
@@ -3066,8 +3109,196 @@ Github Repo Link
 </section>
 <section id="data-quality-complexity-check" class="level2">
 <h2 class="anchored" data-anchor-id="data-quality-complexity-check">Data quality &amp; complexity check</h2>
-<p>I am able to read in all 18 data files. In total, I have a total of 135 variables across all the datasets, but each dataset contains several repeated identifiers such as <code>state_fips</code>, <code>state</code>, <code>county_fips</code>, <code>county</code>, and <code>year</code>.</p>
-<p>Within <code>age_demographics</code>, there are 5 categorical, 2 numerical, and 1 logical variables. In <code>asthma_adult_crude</code>, there are 5 categorical, 4 numerical, and 2 logical variables. In <code>asthma_child_crude</code>, there are 2 categorical, 2 numerical, and 2 logical variables. In <code>asthma_ed_adjusted</code>, there are 5 categorical, 2 numerical, and 1 logical variables. In <code>asthma_ed_crude</code>, there are 5 categorical, 2 numerical, and 1 logical variables. In <code>cancer_adjusted</code>, there are 2 categorical, 2 numerical, and 2 logical variables. In <code>copd_adjusted</code>, there are 5 categorical, 4 numerical, and 2 logical variables. In <code>copd_crude</code>, there are 5 categorical, 4 numerical, and 2 logical variables. In <code>days_over_o3_standard</code>, there are 4 categorical, 2 numerical, and 2 logical variables. In <code>days_over_pm_standard</code>, there are 4 categorical, 2 numerical, and 2 logical variables. In <code>gender_demographics</code>, there are 5 categorical, 2 numerical, and 1 logical variables. In <code>highway_living</code>, there are 4 categorical, 2 numerical, and 2 logical variables. In <code>highway_schools</code>, there are 4 categorical, 2 numerical, and 2 logical variables. In <code>parks_access</code>, there are 6 categorical, 2 numerical, and 1 logical variables. In <code>pollutants</code>, there are 5 categorical, 2 numerical,a nd 1 logical variables. In <code>race_ethnicity</code>, there are 5 categorical, 2 numerical,a nd 1 logical variables. In <code>socioeconomic_vulnerability</code>, there are 4 categorical, 2 numerical, and 2 logical variables. In <code>work_transportation</code>, there are 5 categorical, 3 numerical, and 1 logical variables.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load in the data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>asthma_adult_crude <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/adult-asthma-prevalence-crude/data_135355.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>asthma_child_crude <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/child-asthma/data_134936.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>asthma_ed_adjusted <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/asthma-emergency-department-age-adjusted/data_135130.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>asthma_ed_crude <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/asthma-emergency-department-crude/data_135101.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>cancer_adjusted <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/cancer-age-adjusted/data_134453.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>copd_adjusted <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/copd-age-adjusted/data_135253.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>copd_crude <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/copd-crude/data_135330.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>days_over_o3_standard <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/days-over-O3-standard/data_135022.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>days_over_pm_standard <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/days-over-pm-standard/data_134954.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>age_demographics <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/demographics-age/data_160814.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>gender_demographics <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/demographics-gender/data_160859.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>race_ethnicity <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/demographics-race-ethnicity/data_161208.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>highway_living <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/highway-living/data_151056.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>highway_schools <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/highway-schools/data_151116.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>parks_access <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/parks-access/data_143718.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>pollutants <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/selected-pollutant-concentration/data_134821.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>socioeconomic_vulnerability <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/socioeconomic-vulnerability-index/data_161326.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>work_transportation <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw/work-transportation/data_151035.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>I am able to read in all 18 data files. In total, I have 150 variables across all the datasets, but each dataset contains several repeated identifiers such as <code>state_fips</code>, <code>state</code>, <code>county_fips</code>, <code>county</code>, and <code>year</code>.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## age ----</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>age_demographics <span class="sc">%&gt;%</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="do">## asthma adult crude ----</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>asthma_adult_crude <span class="sc">%&gt;%</span> </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="do">## asthma child crude ----</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>asthma_child_crude <span class="sc">%&gt;%</span> </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>() <span class="co"># value is character vector here</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># modify value variable in asthma_child_crude</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>asthma_child_crude <span class="sc">%&gt;%</span> </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(value)) <span class="co"># Suppressed values are changing the value to character</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>asthma_child_crude <span class="ot">&lt;-</span> asthma_child_crude <span class="sc">%&gt;%</span> </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">value =</span> <span class="fu">na_if</span>(value, <span class="st">&quot;Suppressed&quot;</span>),</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">value =</span> <span class="fu">as.numeric</span>(value)) </span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>asthma_child_crude <span class="sc">%&gt;%</span> </span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="do">## asthma ed adjusted ----</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>asthma_ed_adjusted <span class="sc">%&gt;%</span> </span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>() <span class="co"># value is character vector here</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co"># modify value variable in asthma_ed_adjusted</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>asthma_ed_adjusted <span class="sc">%&gt;%</span> </span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(value)) <span class="co"># Suppressed values are changing the value to character</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>asthma_ed_adjusted <span class="ot">&lt;-</span> asthma_ed_adjusted <span class="sc">%&gt;%</span> </span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">value =</span> <span class="fu">na_if</span>(value, <span class="st">&quot;Suppressed&quot;</span>),</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>         <span class="at">value =</span> <span class="fu">as.numeric</span>(value)) </span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>asthma_ed_adjusted <span class="sc">%&gt;%</span> </span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="do">## asthma ed crude ----</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>asthma_ed_crude <span class="sc">%&gt;%</span> </span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>() <span class="co"># value is character vector</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="co"># modify value variable in asthma_ed_crude</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>asthma_ed_crude <span class="sc">%&gt;%</span> </span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(value)) <span class="co"># Suppressed values are changing the value to character</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>asthma_ed_crude <span class="ot">&lt;-</span> asthma_ed_crude <span class="sc">%&gt;%</span> </span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">value =</span> <span class="fu">na_if</span>(value, <span class="st">&quot;Suppressed&quot;</span>),</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>         <span class="at">value =</span> <span class="fu">as.numeric</span>(value)) </span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>asthma_ed_crude <span class="sc">%&gt;%</span> </span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="do">## cancer adjusted ----</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>cancer_adjusted <span class="sc">%&gt;%</span> </span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="do">## copd adjusted ----</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>copd_adjusted <span class="sc">%&gt;%</span> </span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="do">## copd crude ----</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>copd_crude <span class="sc">%&gt;%</span> </span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="do">## days over o3 standard ----</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>days_over_o3_standard <span class="sc">%&gt;%</span> </span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="do">## days over pm standard ----</span></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>days_over_pm_standard <span class="sc">%&gt;%</span> </span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="do">## gender demographics ----</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>gender_demographics <span class="sc">%&gt;%</span> </span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="do">## highway living ----</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>highway_living <span class="sc">%&gt;%</span> </span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="do">## highway schools ----</span></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>highway_schools <span class="sc">%&gt;%</span> </span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="do">## parks access ----</span></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>parks_access <span class="sc">%&gt;%</span> </span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="do">## pollutants  ----</span></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>pollutants <span class="sc">%&gt;%</span> </span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="do">## race ethnicity ----</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>race_ethnicity <span class="sc">%&gt;%</span> </span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a><span class="do">## socioeconomic vulnerability ----</span></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>socioeconomic_vulnerability <span class="sc">%&gt;%</span> </span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="do">## work transportation ----</span></span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a>work_transportation <span class="sc">%&gt;%</span> </span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim_without_charts</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Each data file has the following variables:</p>
+<ol type="1">
+<li><p><code>age_demographics</code>: 5 categorical, 2 numerical, and 1 logical</p></li>
+<li><p><code>asthma_adult_crude</code>: 5 categorical, 4 numerical, and 2 logical</p></li>
+<li><p><code>asthma_child_crude</code>: 2 categorical, 2 numerical, and 2 logical</p></li>
+<li><p><code>asthma_ed_adjusted</code>: 5 categorical, 2 numerical, and 1 logical</p></li>
+<li><p><code>asthma_ed_crude</code>: 5 categorical, 2 numerical, and 1 logical</p></li>
+<li><p><code>cancer_adjusted</code>: 2 categorical, 2 numerical, and 2 logical</p></li>
+<li><p><code>copd_adjusted</code>: 5 categorical, 4 numerical, and 2 logical</p></li>
+<li><p><code>copd_crude</code>: 5 categorical, 4 numerical, and 2 logical</p></li>
+<li><p><code>days_over_o3_standard</code>: 4 categorical, 2 numerical, and 2 logical</p></li>
+<li><p><code>days_over_pm_standard</code>: 4 categorical, 2 numerical, and 2 logical</p></li>
+<li><p><code>gender_demographics</code>: 5 categorical, 2 numerical, and 1 logical</p></li>
+<li><p><code>highway_living</code>: 4 categorical, 2 numerical, and 2 logical</p></li>
+<li><p><code>highway_schools</code>: 4 categorical, 2 numerical, and 2 logical</p></li>
+<li><p><code>parks_access</code>: 5 categorical, 2 numerical, and 1 logical</p></li>
+<li><p><code>pollutants</code>: 5 categorical, 2 numerical, and 1 logical</p></li>
+<li><p><code>race_ethnicity</code>: 5 categorical, 2 numerical, and 1 logical</p></li>
+<li><p><code>socioeconomic_vulnerability</code>: 4 categorical, 2 numerical, and 2 logical</p></li>
+<li><p><code>work_transportation</code>: 5 categorical, 3 numerical, and 1 logical</p></li>
+</ol>
 <p>There are also several variables throughout the datasets such as <code>data_comment</code>, <code>x8</code>, and <code>x11</code> that are completely missing. These variables are classified as logical variables in <code>skimr</code>. <code>asthma_ed_crude</code> <code>asthma_ed_adjusted</code>, and <code>asthma_ed_crude</code> have “Suppressed” values that are missing. Additionally, some of the indicators I selected were only available at the state level, so every county in each state will have the same measure for those indicators.</p>
 </section>
 <section id="potential-data-issues" class="level2">
@@ -3076,9 +3307,14 @@ Github Repo Link
 <p>Additionally, in <code>race_ethnicity</code>, the US census definitions of race and ethnicity are combined under one variable, so there is a single category for each race plus ethnicity. I will need to use string transformations to separate the two.</p>
 <p>Finally, several indicators are only reported by state, so every county in each state will have the same value for the given indicator. This greatly limits the variability in the data, and may affect bi and multivariate analysis.</p>
 </section>
-<section id="misc" class="level2">
-<h2 class="anchored" data-anchor-id="misc">Misc</h2>
-<p>Blah Blah</p>
+<section id="miscellaneous" class="level2">
+<h2 class="anchored" data-anchor-id="miscellaneous">Miscellaneous</h2>
+<p><strong>Proposed timeline:</strong></p>
+<p>11/4/23: univariate analysis and determining how I will create and use proxy variables for demographics</p>
+<p>11/11/23: merge datasets and half of bivariate analysis</p>
+<p>11/18/23: second half of bivariate analysis and half of multivariate analysis with various demographics as the third variable</p>
+<p>11/25/23: second half of multivariate analysis and writing</p>
+<p>11/29/23: writing and turn in</p>
 </section>
 
 
