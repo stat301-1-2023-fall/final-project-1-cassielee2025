@@ -42,7 +42,7 @@ I originally wanted to look at air quality sensor data throughout Chicago throug
 
 [^2]: Link to the Array of Things website can be found [here](https://arrayofthings.github.io/index.html).
 
-After looking around several government websites, I realized that a lot of the data that I was interested in regarding various health measurements such as biomarkers and anthropometrics were unavailable to the public. This dataset contains the most relevant information about environmental quality and health outcomes that I was able to access.
+After looking around several government websites, I realized that a lot of the data that I was interested in regarding various health measurements such as biomarkers and anthropometrics were unavailable to the public. This dataset contains the most relevant information about environmental quality and health outcomes that I was able to access. I selected data from 2018 for most of the indicators, since that was the most complete and most recent data available. There are some indicators that are from 2020. 
 
 I believe this data will be sufficiently challenging to work with, as I will have to join 21 different files, there are both numeric and factor variables.
 
@@ -56,7 +56,9 @@ Some interesting questions that I would consider are:
 
 ## Data quality & complexity check
 
-Blah blah blah
+I am able to read in each data file. In total, I have 135 variable across all the datasets, but each dataset contains several identifiers such as `state_fips`, `state`, `county_fips`, `county`, and `year`. There are also several variables throughout the datasets such as  `data_comment`, `x8`, `x11`, or 95% confidence intervals are completely missing or are not relevant to use. 
+
+
 
 ## Potential data issues
 
