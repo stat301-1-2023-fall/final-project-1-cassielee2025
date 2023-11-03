@@ -11,13 +11,19 @@ asthma_adult_crude <- read_csv("data/raw/adult-asthma-prevalence-crude/data_1353
   clean_names()
 
 asthma_child_crude <- read_csv("data/raw/child-asthma/data_134936.csv") %>% 
-  clean_names()
+  clean_names() %>% 
+  mutate(value = na_if(value, "Data Not Collected"),
+         value = as.numeric(value))
 
 asthma_ed_adjusted <- read_csv("data/raw/asthma-emergency-department-age-adjusted/data_135130.csv") %>% 
-  clean_names()
+  clean_names() %>% 
+  mutate(value = na_if(value, "Suppressed"),
+         value = as.numeric(value)) 
 
 asthma_ed_crude <- read_csv("data/raw/asthma-emergency-department-crude/data_135101.csv") %>% 
-  clean_names()
+  clean_names() %>% 
+  mutate(value = na_if(value, "Suppressed"),
+         value = as.numeric(value)) 
 
 cancer_adjusted <- read_csv("data/raw/cancer-age-adjusted/data_134453.csv") %>% 
   clean_names()
@@ -63,7 +69,7 @@ work_transportation <- read_csv("data/raw/work-transportation/data_151035.csv") 
 
 # Histograms ---------------------------------------------------------------
 
-# asthma_adult_crude ----
+## asthma_adult_crude ----
 asthma_adult_crude %>% 
   ggplot(aes(value)) +
   geom_histogram(binwidth = 0.5, boundary = 0)
@@ -75,4 +81,7 @@ asthma_adult_crude %>%
   coord_cartesian(ylim = c(0, 5))
 # there are a couple counties with >14% of adults with asthma
 
-
+## asthma_child_crude ----
+asthma_child_crude %>% 
+  ggplot(aes()) +
+  geom_histogram(binwidth = 0.5, boundary = 0)

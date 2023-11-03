@@ -84,7 +84,7 @@ asthma_child_crude %>%
   arrange(desc(value)) # Suppressed values are changing the value to character
 
 asthma_child_crude <- asthma_child_crude %>% 
-  mutate(value = na_if(value, "Suppressed"),
+  mutate(value = na_if(value, "Data Not Collected"),
          value = as.numeric(value)) 
 
 asthma_child_crude %>% 
