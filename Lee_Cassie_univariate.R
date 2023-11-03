@@ -6,7 +6,7 @@ library(janitor)
 library(naniar)
 library(skimr)
 
-# load data
+# load data ----------------------------------------------------------------
 asthma_adult_crude <- read_csv("data/raw/adult-asthma-prevalence-crude/data_135355.csv") %>% 
   clean_names()
 
@@ -60,3 +60,19 @@ socioeconomic_vulnerability <- read_csv("data/raw/socioeconomic-vulnerability-in
 
 work_transportation <- read_csv("data/raw/work-transportation/data_151035.csv") %>% 
   clean_names()
+
+# Histograms ---------------------------------------------------------------
+
+# asthma_adult_crude ----
+asthma_adult_crude %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 0.5, boundary = 0)
+# distribution is crude percentage of adults with asthma
+# pretty normally distributed
+asthma_adult_crude %>% 
+  ggplot(aes(value)) +
+  geom_histogram(boundary = 0) +
+  coord_cartesian(ylim = c(0, 5))
+# there are a couple counties with >14% of adults with asthma
+
+
