@@ -70,10 +70,10 @@ work_transportation <- read_csv("data/raw/work-transportation/data_151035.csv") 
 # Histograms ---------------------------------------------------------------
 
 ## asthma_adult_crude ----
+# crude percentage of adults with asthma
 asthma_adult_crude %>% 
   ggplot(aes(value)) +
   geom_histogram(binwidth = 0.5, boundary = 0)
-# distribution is crude percentage of adults with asthma
 # pretty normally distributed
 asthma_adult_crude %>% 
   ggplot(aes(value)) +
@@ -82,6 +82,116 @@ asthma_adult_crude %>%
 # there are a couple counties with >14% of adults with asthma
 
 ## asthma_child_crude ----
+# crude percentage of children with asthma
 asthma_child_crude %>% 
-  ggplot(aes()) +
-  geom_histogram(binwidth = 0.5, boundary = 0)
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 1, boundary = 0)
+# lots of missing data, only a few states have this data reported
+# peak is much higher (~12%) than adults
+
+## asthma_ed_adjusted ----
+# age-adjusted rate of emergency department visits for asthma 
+# per 10,000 population
+asthma_ed_adjusted %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 10, boundary = 0)
+# right skewed
+# might want to convert this to a percent later
+asthma_ed_adjusted %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 10, boundary = 0) +
+  coord_cartesian(ylim = c(0, 5))
+# a couple of counties with >200 ed visits per 10K
+# are they the same counties as the ones with high adult asthma prevalence?
+
+## asthma_ed_crude ----
+# crude rate of emergency department visits for asthma 
+# per 10,000 population
+asthma_ed_crude %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 10, boundary = 0)
+# right skewed
+# might want to convert this to a percent later
+asthma_ed_crude %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 10, boundary = 0) +
+  coord_cartesian(ylim = c(0, 5))
+# a couple of counties with >150 ed visits per 10K
+# are they the same counties as the ones with high adult asthma prevalence?
+
+## cancer_adjusted ----
+# age adjusted rate of lung and bronchus cancer per 100,000 population
+cancer_adjusted %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 8, boundary = 0)
+# huh doesn't look like there are outliers
+
+## copd_adjusted ----
+# age adjusted percent of copd in adults 
+copd_adjusted %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 1, boundary = 0)
+# units from https://www.cdc.gov/copd/data-and-statistics/county-estimates.html
+# kind of skewed right
+
+## copd_crude ----
+# crude percent of copd in adults 
+copd_crude %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 1, boundary = 0)
+# units from https://www.cdc.gov/copd/data-and-statistics/county-estimates.html
+# also kind of skewed right
+
+## days_over_o3_standard ----
+# number of days each year in which the maximum 8-hour ozone concentration 
+# within each county exceeded the 8-hr NAAQS of 0.070 ppm
+days_over_o3_standard %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 10, boundary = 0)
+# super right skewed
+days_over_o3_standard %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 10, boundary = 0) +
+  coord_cartesian(ylim = c(0, 5))
+# couple counties with pretty high days over ozone standard
+# once again wonder if that has to do with asthma....
+# look into this:
+# https://www.epa.gov/ground-level-ozone-pollution/health-effects-ozone-pollution
+
+## days_over_pm_standard ----
+# number of days each year in which the maximum PM2.5 concentration within 
+# each county exceeded the 24-hr PM2.5 NAAQS of 35 mg/m3
+days_over_pm_standard %>% 
+  ggplot(aes(value)) +
+  geom_histogram(boundary = 0)
+# skewed right
+days_over_pm_standard %>% 
+  ggplot(aes(value)) +
+  geom_histogram(boundary = 0) +
+  coord_cartesian(ylim = c(0, 5))
+# there are a lot fewer days with high PM2.5 than ozone
+# wonder if the high values have to do with asthma...
+
+# age_demographics ----
+# percentage of demographic in each age group
+age_demographics %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 1, boundary = 0) +
+  facet_wrap(~age_group)
+# as a frequency polygon
+age_demographics %>% 
+  ggplot(aes(value, color = age_group)) +
+  geom_freqpoly(binwidth = 1, boundary = 0) +
+  theme(legend.position = "top")
+# could highlight age groups most vulnerable to air pollution
+# and then identify counties that are over a certain percent of population 
+# in that age group
+# children <18 years and older adults over 65
+
+# need to combine 0 to 4 and 5 to 19 age ranges
+age_demographics %>% 
+  filter()
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 1, boundary = 0)
+
+
