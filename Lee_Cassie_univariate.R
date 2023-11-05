@@ -172,7 +172,7 @@ days_over_pm_standard %>%
 # there are a lot fewer days with high PM2.5 than ozone
 # wonder if the high values have to do with asthma...
 
-# age_demographics ----
+## age_demographics ----
 # percentage of demographic in each age group
 age_demographics %>% 
   ggplot(aes(value)) +
