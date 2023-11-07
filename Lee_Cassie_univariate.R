@@ -7,6 +7,9 @@ library(naniar)
 library(skimr)
 
 # load data ----------------------------------------------------------------
+age_demographics <- read_csv("data/raw/demographics-age/data_160814.csv") %>% 
+  clean_names()
+
 asthma_adult_crude <- read_csv("data/raw/adult-asthma-prevalence-crude/data_135355.csv") %>% 
   clean_names()
 
@@ -38,9 +41,6 @@ days_over_o3_standard <- read_csv("data/raw/days-over-O3-standard/data_135022.cs
   clean_names()
 
 days_over_pm_standard <- read_csv("data/raw/days-over-pm-standard/data_134954.csv") %>% 
-  clean_names()
-
-age_demographics <- read_csv("data/raw/demographics-age/data_160814.csv") %>% 
   clean_names()
 
 gender_demographics <- read_csv("data/raw/demographics-gender/data_160859.csv") %>% 
@@ -190,8 +190,20 @@ age_demographics %>%
 
 # need to combine 0 to 4 and 5 to 19 age ranges
 age_demographics %>% 
-  filter()
+  mutate(
+    # collapse the age groups
+    age_group = factor(age_group),
+    age_group = fct_collapse(
+      age_group,
+      "0 TO 19" = c("0 TO 4", "5 TO 19")
+    )
+    ) %>% 
+  # edit the value variable
+  summarise(
+    value = sum(value),
+    .by = c(state, county, age_group)
+  ) %>% 
   ggplot(aes(value)) +
-  geom_histogram(binwidth = 1, boundary = 0)
-
+  geom_histogram(binwidth = 1, boundary = 0) +
+  facet_wrap(~age_group)
 
