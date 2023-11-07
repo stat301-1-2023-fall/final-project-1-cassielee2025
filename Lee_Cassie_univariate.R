@@ -69,6 +69,69 @@ work_transportation <- read_csv("data/raw/work-transportation/data_151035.csv") 
 
 # Histograms ---------------------------------------------------------------
 
+## age_demographics ----
+# percentage of demographic in each age group
+age_demographics %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 1, boundary = 0) +
+  facet_wrap(~age_group)
+# as a frequency polygon
+age_demographics %>% 
+  ggplot(aes(value, color = age_group)) +
+  geom_freqpoly(binwidth = 1, boundary = 0) +
+  theme(legend.position = "top")
+# could highlight age groups most vulnerable to air pollution
+# and then identify counties that are over a certain percent of population 
+# in that age group
+# children <18 years and older adults over 65
+
+# need to combine 0 to 4 and 5 to 19 age ranges
+age_demographics2 <- age_demographics %>% 
+  mutate(
+    # collapse the age groups
+    age_group = factor(age_group),
+    age_group = fct_collapse(
+      age_group,
+      "0 TO 19" = c("0 TO 4", "5 TO 19")
+    )
+  ) %>% 
+  # edit the value variable
+  summarise(
+    value = sum(value),
+    .by = c(state, county, county_fips, age_group)
+  ) %>% 
+  filter(age_group %in% c("0 TO 19", "65 AND OLDER")) 
+
+# plot it
+age_demographics2 %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 1, boundary = 0) +
+  facet_wrap(~age_group)
+
+# the certain percentage of population could be one sd above the mean
+# since the distributions are pretty normal
+age_demographics2 %>% 
+  mutate(
+    # create a variable that is true if the percent is over one standard
+    # deviation above the mean, false if it is not
+    vulnerable = value >= mean(value) + sd(value),
+    .by = age_group,
+    .keep = "all"
+  ) %>% 
+  # graph it to see if it works
+  ggplot(aes(value, fill = vulnerable)) +
+  geom_histogram(binwidth = 1, boundary = 0) +
+  facet_wrap(~age_group) # yay
+
+age_vulnerability <- age_demographics2 %>% 
+  mutate(
+    # create a variable that is true if the percent is over one standard
+    # deviation above the mean, false if it is not
+    vulnerable = value >= mean(value) + sd(value),
+    .by = age_group,
+    .keep = "all"
+  ) 
+
 ## asthma_adult_crude ----
 # crude percentage of adults with asthma
 asthma_adult_crude %>% 
@@ -172,38 +235,57 @@ days_over_pm_standard %>%
 # there are a lot fewer days with high PM2.5 than ozone
 # wonder if the high values have to do with asthma...
 
-## age_demographics ----
-# percentage of demographic in each age group
-age_demographics %>% 
+## gender_demographics ----
+gender_demographics %>% 
   ggplot(aes(value)) +
   geom_histogram(binwidth = 1, boundary = 0) +
-  facet_wrap(~age_group)
-# as a frequency polygon
-age_demographics %>% 
-  ggplot(aes(value, color = age_group)) +
-  geom_freqpoly(binwidth = 1, boundary = 0) +
-  theme(legend.position = "top")
-# could highlight age groups most vulnerable to air pollution
-# and then identify counties that are over a certain percent of population 
-# in that age group
-# children <18 years and older adults over 65
+  facet_wrap(~gender) # very tight distribution
+# there are counties with very few women and mostly men
 
-# need to combine 0 to 4 and 5 to 19 age ranges
-age_demographics %>% 
+# identify counties that have very low percent of women 
+# or higher percent of women
+gender_demographics %>% 
+  # filter out men bc we only care about women
+  filter(gender == "Female") %>% 
   mutate(
-    # collapse the age groups
-    age_group = factor(age_group),
-    age_group = fct_collapse(
-      age_group,
-      "0 TO 19" = c("0 TO 4", "5 TO 19")
-    )
-    ) %>% 
-  # edit the value variable
-  summarise(
-    value = sum(value),
-    .by = c(state, county, age_group)
+    vulnerable = if_else(
+      value <= mean(value) - sd(value),
+      # if low percentage of women,
+      "low",
+      # if not low percentage of women
+      if_else(
+        value >= mean(value) + sd(value),
+        # if high percentage of women
+        "high",
+        # if not low or high
+        NA
+      )
+    ),
+    .keep = "all"
   ) %>% 
-  ggplot(aes(value)) +
-  geom_histogram(binwidth = 1, boundary = 0) +
-  facet_wrap(~age_group)
+  # graph it to see if it works
+  ggplot(aes(value, fill = vulnerable)) +
+  geom_histogram(binwidth = 2, boundary = 0)
 
+gender_vulnerability <- gender_demographics %>% 
+  # filter out men bc we only care about women
+  filter(gender == "Female") %>% 
+  mutate(
+    vulnerable = if_else(
+      value <= mean(value) - sd(value),
+      # if low percentage of women,
+      "low",
+      # if not low percentage of women
+      if_else(
+        value >= mean(value) + sd(value),
+        # if high percentage of women
+        "high",
+        # if not low or high
+        NA
+      )
+    ),
+    .keep = "all"
+  )
+
+## highway_living ----
+highway_living
