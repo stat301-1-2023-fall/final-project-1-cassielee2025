@@ -7,6 +7,7 @@ library(naniar)
 library(skimr)
 
 # load data ----------------------------------------------------------------
+
 age_demographics <- read_csv("data/raw/demographics-age/data_160814.csv") %>% 
   clean_names()
 
@@ -46,7 +47,7 @@ days_over_pm_standard <- read_csv("data/raw/days-over-pm-standard/data_134954.cs
 gender_demographics <- read_csv("data/raw/demographics-gender/data_160859.csv") %>% 
   clean_names()
 
-race_ethnicity <- read_csv("data/raw/demographics-race-ethnicity/data_161208.csv") %>% 
+race_and_ethnicity <- read_csv("data/raw/demographics-race-ethnicity/data_161208.csv") %>% 
   clean_names()
 
 highway_living <- read_csv("data/raw/highway-living/data_151056.csv") %>% 
@@ -64,7 +65,19 @@ pollutants <- read_csv("data/raw/selected-pollutant-concentration/data_134821.cs
 socioeconomic_vulnerability <- read_csv("data/raw/socioeconomic-vulnerability-index/data_161326.csv") %>% 
   clean_names()
 
-work_transportation <- read_csv("data/raw/work-transportation/data_151035.csv") %>% 
+transportation_active <- read_csv("data/raw/transportation_active/data_155606.csv") %>% 
+  clean_names()
+
+transportation_none <- read_csv("data/raw/transportation_none/data_160159.csv") %>% 
+  clean_names()
+
+transportation_private <- read_csv("data/raw/transportation_private/data_160024.csv") %>% 
+  clean_names()
+
+transportation_public <- read_csv("data/raw/transportation_public/data_160116.csv") %>% 
+  clean_names()
+
+transportation_none <- read_csv("data/raw/transportation_none/") %>% 
   clean_names()
 
 # Histograms ---------------------------------------------------------------
@@ -319,3 +332,73 @@ pollutants %>%
 # pivot this data wider when joining to analyze with other data
 
 ## race_ethnicity ----
+
+# wait everything is including hispanic, so they didn't actual separate 
+# by ethnicity
+race <- race_and_ethnicity %>% 
+  separate_wider_regex(
+    race_ethnicity,
+    patterns = c(
+      race = ".*",
+      " including Hispanic"
+    ),
+    too_few = "align_start"
+  )
+
+race %>% 
+  ggplot(aes(value, color = race)) +
+  geom_freqpoly()
+
+## socioeconomic_vulnerability ----
+# 0 is least vulnerable
+# 1 is most vulnerable
+socioeconomic_vulnerability %>% 
+  ggplot(aes(value)) +
+  geom_histogram() 
+# wow a uniform distribution???
+# oh it's bc counties are ranked against each other
+# https://www.atsdr.cdc.gov/placeandhealth/svi/documentation/SVI_documentation_2018.html
+
+# classify top 0.25 as highest vulnerability
+socioeconomic_vulnerability %>% 
+  arrange(value) %>% 
+  mutate(
+    vulnerable = if_else(
+      value >= 0.75, 
+      "high vulnerability", 
+      "low vulnerability"
+    )
+  ) %>% 
+  ggplot(aes(value, fill = vulnerable)) +
+  geom_histogram(boundary = 0)
+
+## transportation_active ----
+# 2017-2021
+# the value is a percent (they're very low, as expected)
+transportation_active %>% 
+  ggplot(aes(value)) +
+  geom_histogram() +
+  facet_wrap(~transportation_type, scales = "free")
+
+## transportation_none ----
+# 2017-2021
+# the value is a percent (they're very low, as expected)
+transportation_none %>% 
+  ggplot(aes(value)) +
+  geom_histogram()
+
+## transportation_private ----
+# 2017-2021
+transportation_private %>% 
+  ggplot(aes(value)) +
+  geom_histogram() +
+  facet_wrap(~occupancy, scales = "free")
+# hey a lot of people carpool
+
+## transportation_public ----
+# 2017-2021
+transportation_public %>% 
+  ggplot(aes(value)) +
+  geom_histogram()
+
+
