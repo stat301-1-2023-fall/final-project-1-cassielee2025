@@ -288,4 +288,34 @@ gender_vulnerability <- gender_demographics %>%
   )
 
 ## highway_living ----
-highway_living
+# percent of people living within 150 m of a Highway
+highway_living %>% 
+  ggplot(aes(value)) + 
+  geom_histogram(boundary = 0) # interesting distribution, just skew right
+
+## highway_schools ----
+# percent of public schools within 150 m of a Highway
+highway_schools %>% 
+  ggplot(aes(value)) + 
+  geom_histogram(binwidth = 5, boundary = 0) # woah that's weird
+# this is probably something really interesting to look at
+# especially for those counties where 100% of the schools are near a highway
+
+## parks_access ----
+# percent of people living within 1/2 mile of a park
+parks_access %>% 
+  filter(distance_to_parks == "Distance to Parks: 1/2 Mile") %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 10, boundary = 0) # skew right
+# many counties do not great access to parks
+
+## pollutants ----
+# annual average air concentration estimates (modelled)
+pollutants %>% 
+  ggplot(aes(value)) +
+  geom_histogram(boundary = 0) +
+  facet_wrap(~pollutant, scales = "free")
+# not really sure what the standards are (are there even standards?)
+# pivot this data wider when joining to analyze with other data
+
+## race_ethnicity ----
