@@ -77,9 +77,6 @@ transportation_private <- read_csv("data/raw/transportation_private/data_160024.
 transportation_public <- read_csv("data/raw/transportation_public/data_160116.csv") %>% 
   clean_names()
 
-transportation_none <- read_csv("data/raw/transportation_none/") %>% 
-  clean_names()
-
 # Histograms ---------------------------------------------------------------
 
 ## age_demographics ----
@@ -343,11 +340,25 @@ race <- race_and_ethnicity %>%
       " including Hispanic"
     ),
     too_few = "align_start"
-  )
+  ) %>% 
+  filter(race != "Hispanic All Races")
 
 race %>% 
   ggplot(aes(value, color = race)) +
   geom_freqpoly()
+
+race <- race %>% 
+  # filter out al non white category
+  filter(race != "All Non-White Races") %>% 
+  # group by county
+  group_by(county_fips) %>% 
+  # slice highest value to id main race in county
+  slice(which.max(value)) %>% 
+  arrange(race)
+
+race %>% 
+  ggplot(aes(race)) +
+  geom_bar()
 
 ## socioeconomic_vulnerability ----
 # 0 is least vulnerable
