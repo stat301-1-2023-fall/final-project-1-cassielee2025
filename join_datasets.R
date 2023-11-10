@@ -127,3 +127,5 @@ transportation_private <- read_csv("data/raw/transportation_private/data_160024.
 
 transportation_public <- read_csv("data/raw/transportation_public/data_160116.csv") %>% 
   clean_names()
+
+# modify variable name in each dataset ----
