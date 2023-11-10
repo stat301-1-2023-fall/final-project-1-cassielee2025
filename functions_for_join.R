@@ -8,8 +8,12 @@ rename_value <- function(df, variable) {
   # change value to new name
   df %>%
     rename(!!name := {{variable}}) 
-
 }
 
 # why does this not work in tidy?
+# this works
 rename_value(age_demographics, value)
+
+# this doesn't work
+age_demographics %>% 
+  rename_value(value)
