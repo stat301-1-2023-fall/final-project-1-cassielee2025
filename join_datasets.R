@@ -3,8 +3,6 @@
 # load libraries
 library(tidyverse)
 library(janitor)
-library(naniar)
-library(skimr)
 
 # load data and modify based on univariate analysis ----------------------
 

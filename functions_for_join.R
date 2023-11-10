@@ -7,7 +7,7 @@ rename_value <- function(df, variable) {
   
   # change value to new name
   df %>%
-    rename(!!name := {{variable2}}) 
+    rename(!!name := {{variable}}) 
 
 }
 
