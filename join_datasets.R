@@ -61,7 +61,6 @@ days_over_pm_standard <- read_csv("data/raw/days-over-pm-standard/data_134954.cs
 
 gender_demographics <- read_csv("data/raw/demographics-gender/data_160859.csv") %>% 
   clean_names() %>% 
-  gender_demographics %>% 
   filter(gender == "Female") %>% 
   mutate(
     vulnerable = if_else(
@@ -98,7 +97,8 @@ highway_schools <- read_csv("data/raw/highway-schools/data_151116.csv") %>%
   clean_names()
 
 parks_access <- read_csv("data/raw/parks-access/data_143718.csv") %>% 
-  clean_names()
+  clean_names() %>% 
+  filter(distance_to_parks == "Distance to Parks: 1/2 Mile")
 
 pollutants <- read_csv("data/raw/selected-pollutant-concentration/data_134821.csv") %>% 
   clean_names()
@@ -137,6 +137,7 @@ copd_adjusted <- rename_val_vul(copd_adjusted, value)
 copd_crude <- rename_val_vul(copd_crude, value)
 days_over_o3_standard <- rename_val_vul(days_over_o3_standard, value)
 days_over_pm_standard <- rename_val_vul(days_over_pm_standard, value)
+gender_demographics <- rename_val_vul(gender_demographics, value, vulnerable)
 highway_living <- rename_val_vul(highway_living, value)
 highway_schools <- rename_val_vul(highway_schools, value)
 parks_access <- rename_val_vul(parks_access, value)
@@ -150,42 +151,61 @@ transportation_public <- rename_val_vul(transportation_public, value)
 
 # select variables in each dataset -----------------------------------------
 asthma_adult_crude <- asthma_adult_crude %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
+asthma_child_crude <- asthma_child_crude %>% 
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 asthma_ed_adjusted <- asthma_ed_adjusted %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 asthma_ed_crude <- asthma_ed_crude %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 cancer_adjusted <- cancer_adjusted %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 copd_adjusted <- copd_adjusted %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 copd_crude <- copd_crude %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 days_over_o3_standard <- days_over_o3_standard %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 days_over_pm_standard <- days_over_pm_standard %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
+gender_demographics <- gender_demographics %>% 
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 highway_living <- highway_living %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 highway_schools <- highway_schools %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 parks_access <- parks_access %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 pollutants <- pollutants %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 race_and_ethnicity <- race_and_ethnicity %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 socioeconomic_vulnerability <- socioeconomic_vulnerability %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 transportation_active <- transportation_active %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 transportation_none <- transportation_none %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 transportation_private <- transportation_private %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 transportation_public <- transportation_public %>% 
-  select(-contains(c("comment", "confidence", "x", "year")))
+  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 
 # join datasets -----------------------------------------
-
+age_demographics %>% 
+  full_join(asthma_adult_crude) %>% 
+  full_join(asthma_child_crude) %>% 
+  full_join(asthma_ed_adjusted) %>% 
+  full_join(asthma_ed_crude) %>% 
+  full_join(cancer_adjusted) %>% 
+  full_join(copd_adjusted) %>% 
+  full_join(copd_crude) %>% 
+  full_join(days_over_o3_standard) %>% 
+  full_join(days_over_pm_standard) %>% 
+  full_join(gender_demographics) %>% 
+  full_join(highway_living) %>% 
+  full_join(highway_schools) %>% 
+  full_join(parks_access) %>% 
+  view()
 
