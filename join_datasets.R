@@ -1,4 +1,4 @@
-# Join dataset ------------------------------------------------------
+# join dataset ------------------------------------------------------
 
 # load libraries
 library(tidyverse)
@@ -126,7 +126,7 @@ transportation_private <- read_csv("data/raw/transportation_private/data_160024.
 transportation_public <- read_csv("data/raw/transportation_public/data_160116.csv") %>% 
   clean_names()
 
-# modify variable name in each dataset ----
+# modify variable name in each dataset -------------------------------------
 age_demographics <- rename_val_vul(age_demographics, value, vulnerable)
 asthma_adult_crude <- rename_val_vul(asthma_adult_crude, value)
 asthma_child_crude <- rename_val_vul(asthma_child_crude, value)
@@ -147,3 +147,45 @@ transportation_active <- rename_val_vul(transportation_active, value)
 transportation_none <- rename_val_vul(transportation_none, value)
 transportation_private <- rename_val_vul(transportation_private, value)
 transportation_public <- rename_val_vul(transportation_public, value)
+
+# select variables in each dataset -----------------------------------------
+asthma_adult_crude <- asthma_adult_crude %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+asthma_ed_adjusted <- asthma_ed_adjusted %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+asthma_ed_crude <- asthma_ed_crude %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+cancer_adjusted <- cancer_adjusted %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+copd_adjusted <- copd_adjusted %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+copd_crude <- copd_crude %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+days_over_o3_standard <- days_over_o3_standard %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+days_over_pm_standard <- days_over_pm_standard %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+highway_living <- highway_living %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+highway_schools <- highway_schools %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+parks_access <- parks_access %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+pollutants <- pollutants %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+race_and_ethnicity <- race_and_ethnicity %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+socioeconomic_vulnerability <- socioeconomic_vulnerability %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+transportation_active <- transportation_active %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+transportation_none <- transportation_none %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+transportation_private <- transportation_private %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+transportation_public <- transportation_public %>% 
+  select(-contains(c("comment", "confidence", "x", "year")))
+
+# join datasets -----------------------------------------
+
+
