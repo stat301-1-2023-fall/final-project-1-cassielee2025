@@ -193,7 +193,7 @@ transportation_public <- transportation_public %>%
   select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 
 # join datasets -----------------------------------------
-age_demographics %>% 
+full_data <- age_demographics %>% 
   full_join(asthma_adult_crude) %>% 
   full_join(asthma_child_crude) %>% 
   full_join(asthma_ed_adjusted) %>% 
@@ -207,5 +207,13 @@ age_demographics %>%
   full_join(highway_living) %>% 
   full_join(highway_schools) %>% 
   full_join(parks_access) %>% 
-  view()
+  full_join(pollutants, relationship = "many-to-many") %>% 
+  full_join(race_and_ethnicity) %>% 
+  full_join(socioeconomic_vulnerability) %>% 
+  full_join(transportation_active, relationship = "many-to-many") %>% 
+  full_join(transportation_none) %>% 
+  full_join(transportation_private, relationship = "many-to-many") %>% 
+  full_join(transportation_public)
 
+# save data as .rda
+save(full_data, file = "data/full_air_quality_data.rda")
