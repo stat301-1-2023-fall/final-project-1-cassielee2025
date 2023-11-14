@@ -1,7 +1,7 @@
 library(tidyverse)
 
 # rename "value" and "vulnerable" with name of dataframe
-rename_val_vul <- function(df, variable1, variable2 = NULL) {
+rename_val_vul <- function(df, variable1 = NULL, variable2 = NULL) {
   # copy name of dataset
   name <- deparse(substitute(df))
   

@@ -1,10 +1,16 @@
-# join dataset ------------------------------------------------------
+# join dataset ----
 
 # load libraries
 library(tidyverse)
 library(janitor)
 
-# load data and modify based on univariate analysis ----------------------
+# read in counties ----
+counties <- read_csv("data/raw/counties/uscounties.csv") %>% 
+  clean_names() %>% 
+  select(c(county, state_name)) %>% 
+  rename(state = state_name)
+
+# load data and modify based on univariate analysis -----
 
 age_demographics <- read_csv("data/raw/demographics-age/data_160814.csv") %>% 
   clean_names() %>% 
@@ -20,9 +26,16 @@ age_demographics <- read_csv("data/raw/demographics-age/data_160814.csv") %>%
     .by = c(state, county, county_fips, age_group)
   ) %>% 
   filter(age_group %in% c("0 TO 19", "65 AND OLDER")) %>% 
+  # tidy data
+  pivot_wider(
+    names_from = age_group,
+    values_from = value
+  ) %>%
+  clean_names() %>% 
+  # identify vulnerability in either young or old population
   mutate(
-    vulnerable = value >= mean(value) + sd(value),
-    .by = age_group,
+    vulnerable = x0_to_19 >= mean(x0_to_19) + sd(x0_to_19) | 
+      x65_and_older >= mean(x65_and_older) + sd(x65_and_older),
     .keep = "all"
   )
 
@@ -101,7 +114,12 @@ parks_access <- read_csv("data/raw/parks-access/data_143718.csv") %>%
   filter(distance_to_parks == "Distance to Parks: 1/2 Mile")
 
 pollutants <- read_csv("data/raw/selected-pollutant-concentration/data_134821.csv") %>% 
-  clean_names()
+  clean_names() %>% 
+  # tidy data
+  pivot_wider(
+    names_from = pollutant,
+    values_from = value
+  )
 
 socioeconomic_vulnerability <- read_csv("data/raw/socioeconomic-vulnerability-index/data_161326.csv") %>% 
   clean_names() %>% 
@@ -115,19 +133,29 @@ socioeconomic_vulnerability <- read_csv("data/raw/socioeconomic-vulnerability-in
   )
 
 transportation_active <- read_csv("data/raw/transportation_active/data_155606.csv") %>% 
-  clean_names()
+  clean_names() %>% 
+  # tidy data
+  pivot_wider(
+    names_from = transportation_type,
+    values_from = value
+  )
 
 transportation_none <- read_csv("data/raw/transportation_none/data_160159.csv") %>% 
   clean_names()
 
 transportation_private <- read_csv("data/raw/transportation_private/data_160024.csv") %>% 
-  clean_names()
+  clean_names() %>% 
+  # tidy data
+  pivot_wider(
+    names_from = occupancy,
+    values_from = value
+  )
 
 transportation_public <- read_csv("data/raw/transportation_public/data_160116.csv") %>% 
   clean_names()
 
-# modify variable name in each dataset -------------------------------------
-age_demographics <- rename_val_vul(age_demographics, value, vulnerable)
+# modify variable name in each dataset ----
+age_demographics <- rename_val_vul(age_demographics, variable2 = vulnerable)
 asthma_adult_crude <- rename_val_vul(asthma_adult_crude, value)
 asthma_child_crude <- rename_val_vul(asthma_child_crude, value)
 asthma_ed_adjusted <- rename_val_vul(asthma_ed_adjusted, value)
@@ -141,21 +169,17 @@ gender_demographics <- rename_val_vul(gender_demographics, value, vulnerable)
 highway_living <- rename_val_vul(highway_living, value)
 highway_schools <- rename_val_vul(highway_schools, value)
 parks_access <- rename_val_vul(parks_access, value)
-pollutants <- rename_val_vul(pollutants, value)
 race_and_ethnicity <- rename_val_vul(race_and_ethnicity, value)
 socioeconomic_vulnerability <- rename_val_vul(socioeconomic_vulnerability, value, vulnerable)
-transportation_active <- rename_val_vul(transportation_active, value)
 transportation_none <- rename_val_vul(transportation_none, value)
-transportation_private <- rename_val_vul(transportation_private, value)
 transportation_public <- rename_val_vul(transportation_public, value)
 
-# select variables in each dataset -----------------------------------------
+# select variables in each dataset ----
 asthma_adult_crude <- asthma_adult_crude %>% 
   select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 asthma_child_crude <- asthma_child_crude %>% 
   select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 asthma_ed_adjusted <- asthma_ed_adjusted %>% 
-  select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
   select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 asthma_ed_crude <- asthma_ed_crude %>% 
   select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
@@ -192,28 +216,29 @@ transportation_private <- transportation_private %>%
 transportation_public <- transportation_public %>% 
   select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 
-# join datasets -----------------------------------------
-full_data <- age_demographics %>% 
-  full_join(asthma_adult_crude) %>% 
-  full_join(asthma_child_crude) %>% 
-  full_join(asthma_ed_adjusted) %>% 
-  full_join(asthma_ed_crude) %>% 
-  full_join(cancer_adjusted) %>% 
-  full_join(copd_adjusted) %>% 
-  full_join(copd_crude) %>% 
-  full_join(days_over_o3_standard) %>% 
-  full_join(days_over_pm_standard) %>% 
-  full_join(gender_demographics) %>% 
-  full_join(highway_living) %>% 
-  full_join(highway_schools) %>% 
-  full_join(parks_access) %>% 
-  full_join(pollutants, relationship = "many-to-many") %>% 
-  full_join(race_and_ethnicity) %>% 
-  full_join(socioeconomic_vulnerability) %>% 
-  full_join(transportation_active, relationship = "many-to-many") %>% 
-  full_join(transportation_none) %>% 
-  full_join(transportation_private, relationship = "many-to-many") %>% 
-  full_join(transportation_public)
+# join datasets ----
+full_data <- counties %>% 
+  left_join(age_demographics) %>% 
+  left_join(asthma_adult_crude) %>%   
+  left_join(asthma_child_crude) %>%   
+  left_join(asthma_ed_adjusted) %>%   
+  left_join(asthma_ed_crude) %>%   
+  left_join(cancer_adjusted) %>%   
+  left_join(copd_adjusted) %>%   
+  left_join(copd_crude) %>%   
+  left_join(days_over_o3_standard) %>%   
+  left_join(days_over_pm_standard) %>%   
+  left_join(gender_demographics) %>%   
+  left_join(highway_living) %>%   
+  left_join(highway_schools) %>% 
+  left_join(parks_access) %>% 
+  left_join(pollutants) %>% 
+  left_join(race_and_ethnicity) %>% 
+  left_join(socioeconomic_vulnerability) %>% 
+  left_join(transportation_active) %>% 
+  left_join(transportation_none) %>% 
+  left_join(transportation_private) %>% 
+  left_join(transportation_public)
 
 # save data as .rda
 save(full_data, file = "data/full_air_quality_data.rda")

@@ -7,6 +7,8 @@ Centers for Disease Control and Prevention. National Environmental Public Health
 
 `transportation_active`, `transportation_none`, `transportation_private`, `transportation_public` were accessed on 11/01/2023.
 
+County level datasets were obtained from https://simplemaps.com/data/us-counties.
+
 # Structure
 
 ## Raw data
