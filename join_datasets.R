@@ -3,12 +3,31 @@
 # load libraries
 library(tidyverse)
 library(janitor)
+library(tigris)
+library(sf)
 
 # read in counties ----
-counties <- read_csv("data/raw/counties/uscounties.csv") %>% 
+
+states <- states(year = 2018, progress_bar = FALSE) %>% 
   clean_names() %>% 
-  select(c(county, state_name)) %>% 
-  rename(state = state_name)
+  rename(
+    state_fips = statefp,
+    state = name
+  ) %>% 
+  select(c(state, state_fips)) %>% 
+  st_drop_geometry()
+
+counties <- counties(year = 2018, progress_bar = FALSE) %>% 
+  clean_names() %>% 
+  # make a county_fips that matches the downloaded datasets
+  mutate(county_fips = paste0(statefp, countyfp)) %>% 
+  rename(
+    state_fips = statefp,
+    county = name
+  ) %>% 
+  # select only needed variables
+  select(c(county, state_fips, county_fips)) %>% 
+  left_join(states)
 
 # load data and modify based on univariate analysis -----
 
@@ -100,8 +119,22 @@ race_and_ethnicity <- read_csv("data/raw/demographics-race-ethnicity/data_161208
   ) %>% 
   filter(race != "Hispanic All Races") %>% 
   filter(race != "All Non-White Races") %>% 
-  group_by(county_fips) %>% 
-  slice(which.max(value))
+  # tidy data
+  pivot_wider(
+    names_from = race,
+    values_from = value
+  ) %>% 
+  clean_names() %>% 
+  get_max_column(
+    c(
+      white, 
+      black, 
+      other, 
+      asian_pacific_islander,
+      american_indian_alaskan_native
+    ), 
+    county_fips
+  )
 
 highway_living <- read_csv("data/raw/highway-living/data_151056.csv") %>% 
   clean_names()
@@ -169,7 +202,6 @@ gender_demographics <- rename_val_vul(gender_demographics, value, vulnerable)
 highway_living <- rename_val_vul(highway_living, value)
 highway_schools <- rename_val_vul(highway_schools, value)
 parks_access <- rename_val_vul(parks_access, value)
-race_and_ethnicity <- rename_val_vul(race_and_ethnicity, value)
 socioeconomic_vulnerability <- rename_val_vul(socioeconomic_vulnerability, value, vulnerable)
 transportation_none <- rename_val_vul(transportation_none, value)
 transportation_public <- rename_val_vul(transportation_public, value)
@@ -218,27 +250,29 @@ transportation_public <- transportation_public %>%
 
 # join datasets ----
 full_data <- counties %>% 
-  left_join(age_demographics) %>% 
-  left_join(asthma_adult_crude) %>%   
-  left_join(asthma_child_crude) %>%   
-  left_join(asthma_ed_adjusted) %>%   
-  left_join(asthma_ed_crude) %>%   
-  left_join(cancer_adjusted) %>%   
-  left_join(copd_adjusted) %>%   
-  left_join(copd_crude) %>%   
-  left_join(days_over_o3_standard) %>%   
-  left_join(days_over_pm_standard) %>%   
-  left_join(gender_demographics) %>%   
-  left_join(highway_living) %>%   
-  left_join(highway_schools) %>% 
-  left_join(parks_access) %>% 
-  left_join(pollutants) %>% 
-  left_join(race_and_ethnicity) %>% 
-  left_join(socioeconomic_vulnerability) %>% 
-  left_join(transportation_active) %>% 
-  left_join(transportation_none) %>% 
-  left_join(transportation_private) %>% 
-  left_join(transportation_public)
+  left_join(age_demographics, join_by(county_fips)) %>% 
+  left_join(asthma_adult_crude, join_by(county_fips)) %>%   
+  left_join(asthma_child_crude, join_by(state)) %>%   
+  left_join(asthma_ed_adjusted, join_by(county_fips)) %>%   
+  left_join(asthma_ed_crude, join_by(county_fips)) %>%   
+  left_join(cancer_adjusted, join_by(state)) %>%   
+  left_join(copd_adjusted, join_by(county_fips)) %>%   
+  left_join(copd_crude, join_by(county_fips)) %>%   
+  left_join(days_over_o3_standard, join_by(county_fips)) %>%   
+  left_join(days_over_pm_standard, join_by(county_fips)) %>%   
+  left_join(gender_demographics, join_by(county_fips)) %>%   
+  left_join(highway_living, join_by(county_fips)) %>%   
+  left_join(highway_schools, join_by(county_fips)) %>% 
+  left_join(parks_access, join_by(county_fips)) %>% 
+  left_join(pollutants, join_by(county_fips)) %>% 
+  left_join(race_and_ethnicity, join_by(county_fips)) %>% 
+  left_join(socioeconomic_vulnerability, join_by(county_fips)) %>% 
+  left_join(transportation_active, join_by(county_fips)) %>% 
+  left_join(transportation_none, join_by(county_fips)) %>% 
+  left_join(transportation_private, join_by(county_fips)) %>% 
+  left_join(transportation_public, join_by(county_fips))
+
+anti_join(counties, asthma_adult_crude)
 
 # save data as .rda
 save(full_data, file = "data/full_air_quality_data.rda")

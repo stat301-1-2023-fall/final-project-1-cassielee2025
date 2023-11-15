@@ -1,7 +1,6 @@
 library(tidyverse)
 
-# trying to make the function work ----
-## rename "value" variable in all datasets ----
+# rename value variable in all datasets ----
 rename_value <- function(df, variable) {
   # copy name of dataset
   name <- deparse(substitute(df))
@@ -19,7 +18,7 @@ rename_value(age_demographics, value)
 age_demographics %>% 
   rename_value(value)
 
-# make a reprex for campus wire ----
+## make a reprex for campus wire ----
 library(tidyverse)
 
 # random data
@@ -46,7 +45,7 @@ rename_value(mydata, value)
 mydata %>% 
   rename_value(value)
 
-## rename value and vulnerability together ----
+# rename value and vulnerability together ----
 mydata <- tibble(
   value = 1:5,
   data = 6:10,
@@ -95,3 +94,50 @@ rename_val_vul2 <- function(df, variable1, variable2 = NULL) {
 rename_val_vul(mydata, value, vulnerable)
 rename_val_vul2(mydata, value, vulnerable)
 
+# USE THIS: rename "value" and "vulnerable" with name of dataframe ----
+rename_val_vul <- function(df, variable1 = NULL, variable2 = NULL) {
+  # copy name of dataset
+  name <- deparse(substitute(df))
+  
+  # depending on if vulnerable is in the data frame
+  if("vulnerable" %in% names(df)){
+    df <- df %>%
+      rename({{  name  }} := {{  variable1  }}) %>% 
+      rename_with(~paste(name, .x, sep = "_"), {{  variable2  }})
+  }
+  else{
+    df <- df %>%
+      rename({{  name  }} := {{  variable1  }})
+  }
+  
+  return(df)
+  
+}
+
+
+# getting the name of the column with the highest value ----
+get_max_column <- function(df, columns, grouping = NULL) {
+  df %>% 
+    # only work with columns of interest
+    select(c({{  columns  }}, {{  grouping  }})) %>% 
+    # pivot longer to be able to find max value
+    pivot_longer(
+      -{{  grouping  }},
+      names_to = "category",
+      values_to = "max_value"
+    ) %>%
+    # group by desired grouping
+    group_by({{  grouping  }}) %>% 
+    # find the maximum value
+    slice_max(order_by = max_value) %>%
+    # remove the maximum value from the mini dataframe
+    select(-max_value) %>% 
+    # rename category into majority
+    rename("majority" := category) %>%
+    # join it back to the main dataframe
+    right_join(df, join_by({{  grouping  }}))
+}
+
+race_and_ethnicity %>% 
+  get_max_column(c(white, black, other, asian_pacific_islander,
+                   american_indian_alaskan_native), county_fips) # yay!
