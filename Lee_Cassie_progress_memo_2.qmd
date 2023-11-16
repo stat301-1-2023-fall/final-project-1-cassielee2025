@@ -12,7 +12,7 @@ format:
     embed-resources: true
     
 execute:
-  echo: true
+  echo: false
   warning: false
 
 code-fold: true
@@ -26,9 +26,231 @@ from: markdown+emoji
 [Cassie's Final Project Github Repo Link](https://github.com/stat301-1-2023-fall/final-project-1-cassielee2025.git)
 :::
 
+```{r}
+#| label: load-packages-data
 
+# load libraries
+library(tidyverse)
+library(janitor)
+library(naniar)
+library(skimr)
 
-## Univariate analysis
+# load data ----------------------------------------------------------------
+
+age_demographics <- read_csv("data/raw/demographics-age/data_160814.csv") %>% 
+  clean_names()
+
+asthma_adult_crude <- read_csv("data/raw/adult-asthma-prevalence-crude/data_135355.csv") %>% 
+  clean_names()
+
+asthma_child_crude <- read_csv("data/raw/child-asthma/data_134936.csv") %>% 
+  clean_names() %>% 
+  mutate(value = na_if(value, "Data Not Collected"),
+         value = as.numeric(value))
+
+asthma_ed_adjusted <- read_csv("data/raw/asthma-emergency-department-age-adjusted/data_135130.csv") %>% 
+  clean_names() %>% 
+  mutate(value = na_if(value, "Suppressed"),
+         value = as.numeric(value)) 
+
+asthma_ed_crude <- read_csv("data/raw/asthma-emergency-department-crude/data_135101.csv") %>% 
+  clean_names() %>% 
+  mutate(value = na_if(value, "Suppressed"),
+         value = as.numeric(value)) 
+
+cancer_adjusted <- read_csv("data/raw/cancer-age-adjusted/data_134453.csv") %>% 
+  clean_names()
+
+copd_adjusted <- read_csv("data/raw/copd-age-adjusted/data_135253.csv") %>% 
+  clean_names()
+
+copd_crude <- read_csv("data/raw/copd-crude/data_135330.csv") %>% 
+  clean_names()
+
+days_over_o3_standard <- read_csv("data/raw/days-over-O3-standard/data_135022.csv") %>% 
+  clean_names()
+
+days_over_pm_standard <- read_csv("data/raw/days-over-pm-standard/data_134954.csv") %>% 
+  clean_names()
+
+gender_demographics <- read_csv("data/raw/demographics-gender/data_160859.csv") %>% 
+  clean_names()
+
+race_and_ethnicity <- read_csv("data/raw/demographics-race-ethnicity/data_161208.csv") %>% 
+  clean_names()
+
+highway_living <- read_csv("data/raw/highway-living/data_151056.csv") %>% 
+  clean_names()
+
+highway_schools <- read_csv("data/raw/highway-schools/data_151116.csv") %>% 
+  clean_names()
+
+parks_access <- read_csv("data/raw/parks-access/data_143718.csv") %>% 
+  clean_names()
+
+pollutants <- read_csv("data/raw/selected-pollutant-concentration/data_134821.csv") %>% 
+  clean_names()
+
+socioeconomic_vulnerability <- read_csv("data/raw/socioeconomic-vulnerability-index/data_161326.csv") %>% 
+  clean_names()
+
+transportation_active <- read_csv("data/raw/transportation_active/data_155606.csv") %>% 
+  clean_names()
+
+transportation_none <- read_csv("data/raw/transportation_none/data_160159.csv") %>% 
+  clean_names()
+
+transportation_private <- read_csv("data/raw/transportation_private/data_160024.csv") %>% 
+  clean_names()
+
+transportation_public <- read_csv("data/raw/transportation_public/data_160116.csv") %>% 
+  clean_names()
+
+```
+
+## Overview of progress
+
+## Identifying sociodemographic vulnerability
+
+### Age demographics
+```{r}
+#| label: age_demographics
+age_demographics2 <- age_demographics %>% 
+  mutate(
+    # collapse the age groups
+    age_group = factor(age_group),
+    age_group = fct_collapse(
+      age_group,
+      "0 TO 19" = c("0 TO 4", "5 TO 19")
+    )
+  ) %>% 
+  # edit the value variable
+  summarise(
+    value = sum(value),
+    .by = c(state, county, county_fips, age_group)
+  ) %>% 
+  filter(age_group %in% c("0 TO 19", "65 AND OLDER"))
+
+age_demographics2 %>% 
+  mutate(
+    # create a variable that is true if the percent is over one standard
+    # deviation above the mean, false if it is not
+    vulnerable = value >= mean(value) + sd(value),
+    .by = age_group,
+    .keep = "all"
+  ) %>% 
+  # graph it to see if it works
+  ggplot(aes(value, fill = vulnerable)) +
+  geom_histogram(binwidth = 2, boundary = 0) +
+  facet_wrap(~age_group)  +
+  labs(
+    title = "Distribution of percentage of population in each age category",
+    x = "Percent",
+    y = NULL
+  )
+```
+
+I identified counties with a particularly high percentage of young or old people because they are generally more susceptible to the effects of air quality. I create a histogram to graph the distribution of percentage of each county that is under 19 years old or over 65 years old. Since the distributions looked fairly normal, I identified counties that had a percentage of each given age group that was one standard deviation above the mean. I created a category to identify whether or not the counties had a high population of vulnerable people. When joining this data with the rest of the data, I collapsed the vulnerability variable to consider a county vulnerable if they have a high percentage of young or old people.
+
+### Gender demographics
+```{r}
+#| label: gender-demographics
+
+gender_demographics %>% 
+  # filter out men bc we only care about women
+  filter(gender == "Female") %>% 
+  mutate(
+    vulnerable = if_else(
+      value <= mean(value) - sd(value),
+      # if low percentage of women,
+      "low",
+      # if not low percentage of women
+      if_else(
+        value >= mean(value) + sd(value),
+        # if high percentage of women
+        "high",
+        # if not low or high
+        NA
+      )
+    ),
+    .keep = "all"
+  ) %>% 
+  # graph it to see if it works
+  ggplot(aes(value, fill = vulnerable)) +
+  geom_histogram(binwidth = 2, boundary = 0) +
+  labs(
+    title = "Distribution of percentage of population that are women",
+    x = "Percent",
+    y = NULL
+  )
+```
+
+The distribution of percentage of women in each county is fairly narrow, however there are several counties that have a particularly low or high percentage of women. To identify counties with a low or high percentage of women, I identified counties that had a percentage of women that was one standard deviation above or below the mean. 
+
+### Race demogrpahics
+```{r}
+#| label: race-demographics
+race <- race_and_ethnicity %>% 
+  separate_wider_regex(
+    race_ethnicity,
+    patterns = c(
+      race = ".*",
+      " including Hispanic"
+    ),
+    too_few = "align_start"
+  ) %>% 
+  filter(race != "Hispanic All Races")
+
+race <- race %>% 
+  # filter out al non white category
+  filter(race != "All Non-White Races") %>% 
+  # group by county
+  group_by(county_fips) %>% 
+  # slice highest value to id main race in county
+  slice(which.max(value)) %>% 
+  arrange(race)
+
+race %>% 
+  ggplot(aes(race)) +
+  geom_bar() +
+  labs(
+    title = "Majority race in each county",
+    x = "Race",
+    y = NULL
+  )
+```
+
+Upon exploration, I realized that the dataset for race and ethnicity did not actually separate by ethnicity, and each cateogory was just "race + including hispanic". I extracted the race from this data and dropped "including hispanic". I then identified the race with the highest percentage in each county and plotted the distribution. I originally identified the majority race in each county because I wanted to be able to facet by the majority race when looking at other distributions. However, since there are so few counties that were not majority white, I decided to also keep the original percentages of each race when joining the dataset.
+
+### Socioeconomic vulnerability index
+```{r}
+#| label: socioeconomic-vulnerability
+
+# classify top 0.25 as highest vulnerability
+socioeconomic_vulnerability %>% 
+  arrange(value) %>% 
+  mutate(
+    vulnerable = if_else(
+      value >= 0.75, 
+      "high vulnerability", 
+      "low vulnerability"
+    )
+  ) %>% 
+  ggplot(aes(value, fill = vulnerable)) +
+  geom_histogram(boundary = 0) +
+  labs(
+    title = "Distribution of socioeconomic vulnerability index",
+    x = "SVI",
+    y = NULL
+  )
+```
+
+The socioeconomic vulnerability index identifies the relative vulnerability of each county in the United States when in comes to preparing for responding to hazardous events.[^1] The index ranges from 0 to 1, with 1 being the most vulnerable. Since this was a normal distribution, I identified the top 25% of counties as vulnerable.
+
+[^1]: [Socioeconomic Vulnerability Index](https://www.atsdr.cdc.gov/placeandhealth/svi/documentation/SVI_documentation_2018.html).
+
+## Distribution of select variables
+
 
 
 
