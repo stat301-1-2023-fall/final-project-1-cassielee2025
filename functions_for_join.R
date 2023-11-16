@@ -42,3 +42,30 @@ get_max_column <- function(df, columns, grouping = NULL) {
     # join it back to the main dataframe
     right_join(df, join_by({{  grouping  }}))
 }
+
+# renaming count and fips ----
+rename_counties <- function(df, county, fips) {
+  df %>% 
+    mutate(
+      county = if_else(
+        county == "Wade Hampton",
+        "Kusilvak",
+        county
+      ),
+      county = if_else(
+        county == "Shannon",
+        "Oglala Lakota",
+        county
+      ),
+      county_fips = if_else(
+        county_fips == "46113",
+        "02158",
+        county_fips
+      ),
+      county_fips = if_else(
+        county_fips == "02270",
+        "46102",
+        county_fips
+      )
+    )
+}

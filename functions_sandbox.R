@@ -141,3 +141,30 @@ get_max_column <- function(df, columns, grouping = NULL) {
 race_and_ethnicity %>% 
   get_max_column(c(white, black, other, asian_pacific_islander,
                    american_indian_alaskan_native), county_fips) # yay!
+
+# renaming count and fips function ----
+rename_counties <- function(df, county, fips) {
+  df %>% 
+    mutate(
+      county = if_else(
+        county == "Wade Hampton",
+        "Kusilvak",
+        county
+      ),
+      county = if_else(
+        county == "Shannon",
+        "Oglala Lakota",
+        county
+      ),
+      county_fips = if_else(
+        county_fips == "46113",
+        "02158",
+        county_fips
+      ),
+      county_fips = if_else(
+        county_fips == "02270",
+        "46102",
+        county_fips
+      )
+    )
+}

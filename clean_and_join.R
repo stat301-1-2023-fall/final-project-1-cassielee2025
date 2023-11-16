@@ -248,31 +248,7 @@ transportation_private <- transportation_private %>%
 transportation_public <- transportation_public %>% 
   select(-contains(c("comment", "confidence", "x", "year", "state_fips")))
 
-# join datasets ----
-full_data <- counties %>% 
-  left_join(age_demographics, join_by(county_fips)) %>% 
-  left_join(asthma_adult_crude, join_by(county_fips)) %>%   
-  left_join(asthma_child_crude, join_by(state)) %>%   
-  left_join(asthma_ed_adjusted, join_by(county_fips)) %>%   
-  left_join(asthma_ed_crude, join_by(county_fips)) %>%   
-  left_join(cancer_adjusted, join_by(state)) %>%   
-  left_join(copd_adjusted, join_by(county_fips)) %>%   
-  left_join(copd_crude, join_by(county_fips)) %>%   
-  left_join(days_over_o3_standard, join_by(county_fips)) %>%   
-  left_join(days_over_pm_standard, join_by(county_fips)) %>%   
-  left_join(gender_demographics, join_by(county_fips)) %>%   
-  left_join(highway_living, join_by(county_fips)) %>%   
-  left_join(highway_schools, join_by(county_fips)) %>% 
-  left_join(parks_access, join_by(county_fips)) %>% 
-  left_join(pollutants, join_by(county_fips)) %>% 
-  left_join(race_and_ethnicity, join_by(county_fips)) %>% 
-  left_join(socioeconomic_vulnerability, join_by(county_fips)) %>% 
-  left_join(transportation_active, join_by(county_fips)) %>% 
-  left_join(transportation_none, join_by(county_fips)) %>% 
-  left_join(transportation_private, join_by(county_fips)) %>% 
-  left_join(transportation_public, join_by(county_fips))
-
-# are there any counties that did not get joined?
+# are there any counties that will not get joined? ----
 anti_join(age_demographics, counties, join_by(county_fips))
 # county fips 02270 and 46113
 anti_join(asthma_adult_crude, counties, join_by(county_fips))
@@ -309,6 +285,55 @@ anti_join(transportation_private, counties, join_by(county_fips))
 # county fips 02270, 46113, 02063, and 02066
 anti_join(transportation_public, counties, join_by(county_fips))
 # county fips 02270, 46113, 02063, and 02066
+
+# mutate Wade Hampton (fips 46113) and Shannon (fips 02270) counties to 
+# Kusilvak (02158) and Oglala Lakota (fips 46102)
+age_demographics <- age_demographics %>% 
+  rename_counties(county, county_fips)
+asthma_adult_crude <- asthma_adult_crude %>% 
+  rename_counties(county, county_fips)
+copd_adjusted <- copd_adjusted %>% 
+  rename_counties(county, county_fips)
+copd_crude <- copd_crude %>% 
+  rename_counties(county, county_fips)
+gender_demographics <- gender_demographics %>% 
+  rename_counties(county, county_fips)
+race_and_ethnicity <- race_and_ethnicity %>% 
+  rename_counties(county, county_fips)
+socioeconomic_vulnerability <- socioeconomic_vulnerability %>% 
+  rename_counties(county, county_fips)
+transportation_active <- transportation_active %>% 
+  rename_counties(county, county_fips)
+transportation_none <- transportation_none %>% 
+  rename_counties(county, county_fips)
+transportation_private <- transportation_private %>% 
+  rename_counties(county, county_fips)
+transportation_public <- transportation_public %>% 
+  rename_counties(county, county_fips)
+
+# join datasets ----
+full_data <- counties %>% 
+  left_join(age_demographics, join_by(county_fips)) %>% 
+  left_join(asthma_adult_crude, join_by(county_fips)) %>%   
+  left_join(asthma_child_crude, join_by(state)) %>%   
+  left_join(asthma_ed_adjusted, join_by(county_fips)) %>%   
+  left_join(asthma_ed_crude, join_by(county_fips)) %>%   
+  left_join(cancer_adjusted, join_by(state)) %>%   
+  left_join(copd_adjusted, join_by(county_fips)) %>%   
+  left_join(copd_crude, join_by(county_fips)) %>%   
+  left_join(days_over_o3_standard, join_by(county_fips)) %>%   
+  left_join(days_over_pm_standard, join_by(county_fips)) %>%   
+  left_join(gender_demographics, join_by(county_fips)) %>%   
+  left_join(highway_living, join_by(county_fips)) %>%   
+  left_join(highway_schools, join_by(county_fips)) %>% 
+  left_join(parks_access, join_by(county_fips)) %>% 
+  left_join(pollutants, join_by(county_fips)) %>% 
+  left_join(race_and_ethnicity, join_by(county_fips)) %>% 
+  left_join(socioeconomic_vulnerability, join_by(county_fips)) %>% 
+  left_join(transportation_active, join_by(county_fips)) %>% 
+  left_join(transportation_none, join_by(county_fips)) %>% 
+  left_join(transportation_private, join_by(county_fips)) %>% 
+  left_join(transportation_public, join_by(county_fips))
 
 # save data as .rda
 save(full_data, file = "data/full_air_quality_data.rda")
