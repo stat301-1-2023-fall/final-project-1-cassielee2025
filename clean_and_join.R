@@ -272,7 +272,43 @@ full_data <- counties %>%
   left_join(transportation_private, join_by(county_fips)) %>% 
   left_join(transportation_public, join_by(county_fips))
 
-anti_join(counties, asthma_adult_crude)
+# are there any counties that did not get joined?
+anti_join(age_demographics, counties, join_by(county_fips))
+# county fips 02270 and 46113
+anti_join(asthma_adult_crude, counties, join_by(county_fips))
+# county fips 02270 and 46113
+anti_join(asthma_child_crude, counties, join_by(state))
+anti_join(asthma_ed_adjusted, counties, join_by(county_fips))
+anti_join(asthma_ed_crude, counties, join_by(county_fips))
+anti_join(cancer_adjusted, counties, join_by(state))
+anti_join(copd_adjusted, counties, join_by(county_fips))
+# county fips 02270 and 46113
+anti_join(copd_crude, counties, join_by(county_fips))
+# county fips 02270 and 46113
+anti_join(copd_adjusted, counties, join_by(county_fips))
+anti_join(days_over_o3_standard, counties, join_by(county_fips))
+anti_join(days_over_pm_standard, counties, join_by(county_fips))
+anti_join(gender_demographics, counties, join_by(county_fips))
+# county fips 02270 and 46113
+anti_join(gender_demographics, counties, join_by(county_fips))
+anti_join(highway_living, counties, join_by(county_fips))
+# county fips 02063 and 02066
+anti_join(highway_schools, counties, join_by(county_fips))
+anti_join(parks_access, counties, join_by(county_fips))
+# county fips 02063 and 02066
+anti_join(pollutants, counties, join_by(county_fips))
+anti_join(race_and_ethnicity, counties, join_by(county_fips))
+# county fips 02270 and 46113
+anti_join(socioeconomic_vulnerability, counties, join_by(county_fips))
+# county fips 02270 and 46113
+anti_join(transportation_active, counties, join_by(county_fips))
+# county fips 02270, 46113, 02063, and 02066
+anti_join(transportation_none, counties, join_by(county_fips))
+# county fips 02270, 46113, 02063, and 02066
+anti_join(transportation_private, counties, join_by(county_fips))
+# county fips 02270, 46113, 02063, and 02066
+anti_join(transportation_public, counties, join_by(county_fips))
+# county fips 02270, 46113, 02063, and 02066
 
 # save data as .rda
 save(full_data, file = "data/full_air_quality_data.rda")
