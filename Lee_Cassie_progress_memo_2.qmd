@@ -1,0 +1,44 @@
+---
+title: "Progress Memo 2"
+subtitle: |
+  | Final Project 
+  | Data Science 1 with R (STAT 301-1)
+author: "Cassie Lee"
+date: today
+
+format:
+  html:
+    toc: true
+    embed-resources: true
+    
+execute:
+  echo: true
+  warning: false
+
+code-fold: true
+
+from: markdown+emoji 
+---
+
+::: {.callout-tip icon="false"}
+## Github Repo Link
+
+[Cassie's Final Project Github Repo Link](https://github.com/stat301-1-2023-fall/final-project-1-cassielee2025.git)
+:::
+
+
+
+## Univariate analysis
+
+
+
+## Data cleaning and joining
+
+
+
+## Bivariate analysis
+
+
+
+## Miscellaneous 
+
