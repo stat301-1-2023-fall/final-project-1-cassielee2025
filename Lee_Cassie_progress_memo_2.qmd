@@ -299,7 +299,7 @@ days_over_o3_standard %>%
   )
 ```
 
-This ozone indicator is the number of days in 2018 in which the maximum 8-hour ozone concentration within each county exceeded the 8-hr NAAQS of 0.070 ppm. High levels of ozone are associated with respiratory issues, the aggravation of asthma, and likely a cause of asthma development.[^2] The distribution of days over the ozone standard is extremely skewed right. I wonder if this is associated with the prevalence of asthma, cancer, and chronic obstructive pulmonary disease, since each of these distributions are slightly skewed right. 
+This ozone indicator is the number of days in 2018 in which the maximum 8-hour ozone concentration within each county exceeded the 8-hr NAAQS of 0.070 ppm. High levels of ozone are associated with respiratory issues, the aggravation of asthma, and likely a cause of asthma development.[^2] The distribution of days over the ozone standard is extremely skewed right. I wonder if this is associated with the prevalence of asthma, cancer, and chronic obstructive pulmonary disease, since each of those distributions are slightly skewed right. 
 
 [^2]: [Health Effects of Ozone Pollution](https://www.epa.gov/ground-level-ozone-pollution/health-effects-ozone-pollution).
 
@@ -323,10 +323,6 @@ As expected, most of the pollutants are skewed right, likely due to several coun
 As far as I can tell, there are no national outdoor air quality standards for these pollutants. If the relationships between these pollutants and other variables such as asthma, cancer, and chronic obstructive pulmonary disease is interesting, then I will look more into what research says about the exposure levels required to cause negative health effects. 
 
 ## Data cleaning and joining
-
-
-
-## Bivariate analysis
 
 
 
