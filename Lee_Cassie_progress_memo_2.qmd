@@ -110,6 +110,8 @@ transportation_public <- read_csv("data/raw/transportation_public/data_160116.cs
 
 ## Overview of progress
 
+Since the first progress memo, I have identified vulnerable groups, created histograms for each variable of interest, cleaned and tidied the datasets, and joined them together. I was able to create several functions to help me with cleaning and tidying the datasets, since it would have been quite repetitive to clean all 21 datasets without these functions.
+
 ## Identifying sociodemographic vulnerability
 
 ### Age demographics
@@ -328,5 +330,5 @@ As far as I can tell, there are no national outdoor air quality standards for th
 
 
 
-## Miscellaneous 
+## Next steps
 
