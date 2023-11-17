@@ -145,7 +145,7 @@ age_demographics2 %>%
   facet_wrap(~age_group)  +
   labs(
     title = "Distribution of percentage of population in each age category",
-    x = "Percent",
+    x = "Percentage",
     y = NULL
   )
 ```
@@ -180,7 +180,7 @@ gender_demographics %>%
   geom_histogram(binwidth = 2, boundary = 0) +
   labs(
     title = "Distribution of percentage of population that are women",
-    x = "Percent",
+    x = "Percentage",
     y = NULL
   )
 ```
@@ -220,7 +220,7 @@ race %>%
   )
 ```
 
-Upon exploration, I realized that the dataset for race and ethnicity did not actually separate by ethnicity, and each cateogory was just "race + including hispanic". I extracted the race from this data and dropped "including hispanic". I then identified the race with the highest percentage in each county and plotted the distribution. I originally identified the majority race in each county because I wanted to be able to facet by the majority race when looking at other distributions. However, since there are so few counties that were not majority white, I decided to also keep the original percentages of each race when joining the dataset.
+Upon exploration, I realized that the dataset for race and ethnicity did not actually separate by ethnicity, and each category was just "race + including hispanic". I extracted the race from this data and dropped "including hispanic". I then identified the race with the highest percentage in each county and plotted the distribution. I originally identified the majority race in each county because I wanted to be able to facet by the majority race when looking at other distributions. However, since there are so few counties that were not majority white, I decided to also keep the original percentages of each race when joining the dataset.
 
 ### Socioeconomic vulnerability index
 ```{r}
@@ -251,8 +251,74 @@ The socioeconomic vulnerability index identifies the relative vulnerability of e
 
 ## Distribution of select variables
 
+### Asthma
+```{r}
+#| label: asthma-adult
 
+asthma_adult_crude %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 0.5, boundary = 0) +
+  labs(
+    title = "Distribution of percentage of adults with asthma",
+    x = "Percentage",
+    y = NULL
+  )
+```
 
+The distribution of percentage of adults with asthma is slightly skewed right. There are a few counties in which more than ~14% of the adult population has asthma, and it could be interesting to explore why.
+
+```{r}
+#| label: asthma-child
+
+asthma_child_crude %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 1, boundary = 0) +
+  labs(
+    title = "Distribution of percentage of children with asthma",
+    x = "Percentage",
+    y = NULL
+  )
+```
+
+There is a lot of missing data for the distribution of childhood asthma, as the data is reported by state, and many states do not have data reported. However, from the data available, it is clear that the percentage of children with asthma is generally higher than the percentage of adults with asthma. This aligns with the assumption that children are more vulnerable to the effects of poor air quality.
+
+### Ozone
+
+```{r}
+#| label: ozone
+
+days_over_o3_standard %>% 
+  ggplot(aes(value)) +
+  geom_histogram(binwidth = 10, boundary = 0) + 
+  labs(
+    title = "Distribution of days over ozone standard",
+    x = "Days",
+    y = NULL
+  )
+```
+
+This ozone indicator is the number of days in 2018 in which the maximum 8-hour ozone concentration within each county exceeded the 8-hr NAAQS of 0.070 ppm. High levels of ozone are associated with respiratory issues, the aggravation of asthma, and likely a cause of asthma development.[^2] The distribution of days over the ozone standard is extremely skewed right. I wonder if this is associated with the prevalence of asthma, cancer, and chronic obstructive pulmonary disease, since each of these distributions are slightly skewed right. 
+
+[^2]: [Health Effects of Ozone Pollution](https://www.epa.gov/ground-level-ozone-pollution/health-effects-ozone-pollution).
+
+### Pollutants
+
+```{r}
+#| label: pollutants
+
+pollutants %>% 
+  ggplot(aes(value)) +
+  geom_histogram(boundary = 0) +
+  facet_wrap(~pollutant, scales = "free") +
+  labs(
+    title = "Distribution of annual average air concentration estimates",
+    x = "Concentration (µg/m3)"
+  )
+```
+
+As expected, most of the pollutants are skewed right, likely due to several counties having higher levels of pollution due to the presence of hazardous waste sites. However, carbon tetrachloride is skewed left, which is an unexpected pattern. 
+
+As far as I can tell, there are no national outdoor air quality standards for these pollutants. If the relationships between these pollutants and other variables such as asthma, cancer, and chronic obstructive pulmonary disease is interesting, then I will look more into what research says about the exposure levels required to cause negative health effects. 
 
 ## Data cleaning and joining
 
