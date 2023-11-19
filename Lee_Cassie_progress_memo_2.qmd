@@ -324,7 +324,27 @@ As far as I can tell, there are no national outdoor air quality standards for th
 
 ## Data cleaning and joining
 
+Cleaning and joining the data was the most difficult part of the project so far. 
 
+### Data cleaning and tidying
+
+After reading in each dataset, I modified the data to incorporate categorizations of sociodemograpic vulnerability and pivoted some datasets wider so that each dataframe had one row per county and multiple variables. For example, I pivoted the `pollutants` dataframe wider because it initially had 5 rows per county for the concentration of 5 different pollutants.
+
+### Functions
+
+I was able to create and use three different functions to clean the data. These functions can be found in `funcitons_for_join.R`. 
+
+One function retrieved the name of the variable with the highest value across several variables and returned the variable of interest in a new column. I used this function to identify the majority race in each county.
+
+Another function renamed a variable using the name of the dataframe it is in. This is helpful because I have 21 datasets that I have read in according to the name of the variable of interest, but each dataset usually only contained one value I was actually interested in. The value of interest in each dataset was just labeled `value`, so I replaced each `value` with the name of the dataframe Additionally, after identifying sociodemographic vulnerabilities, I had initially just created a variable in each dataset called `vulnerable`. I renamed this column `name_of_dataframe_vulnerable`. Unfortunately, I could not figure out how to run this function using tidy syntax, likely due to parsing issues in getting the name of the dataframe. However, the dataset returned was still in tidy format. 
+
+The final function I have created so far modified the value for `county` and `county_fips`. Wade Hampton (fips 46113) and Shannon (fips 02270) counties were renamed to Kusilvak (02158) and Oglala Lakota (fips 46102) in 2015.[^3] This change was not reflected in the datasets I downloaded from the CDC National Environmental Public Health Tracking Network, but it was reflected in the county level data I used to join datasets.
+
+[^3]: [2015 Geography Changes](https://www.census.gov/programs-surveys/acs/technical-documentation/table-and-geography-changes/2015/geography-changes.html)
+
+### Counties dataset and joining
+
+I used the `tigris` packaged to download datasets for the states and counties in the United States. I joined the `state` and `counties` datasets together and selected only the `county`, `state_fips`, `county_fips`, and `state`, as well as the geography. I used `left_join` to join all of the cleaned and tidied datasets to this dataset. 
 
 ## Next steps
 

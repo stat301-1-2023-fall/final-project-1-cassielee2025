@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Cassie Lee">
-<meta name="dcterms.date" content="2023-11-16">
+<meta name="dcterms.date" content="2023-11-19">
 
 <title>Progress Memo 2</title>
 <style>
@@ -3005,7 +3005,12 @@ vertical-align: -.125em;
   <li><a href="#ozone" id="toc-ozone" class="nav-link" data-scroll-target="#ozone">Ozone</a></li>
   <li><a href="#pollutants" id="toc-pollutants" class="nav-link" data-scroll-target="#pollutants">Pollutants</a></li>
   </ul></li>
-  <li><a href="#data-cleaning-and-joining" id="toc-data-cleaning-and-joining" class="nav-link" data-scroll-target="#data-cleaning-and-joining">Data cleaning and joining</a></li>
+  <li><a href="#data-cleaning-and-joining" id="toc-data-cleaning-and-joining" class="nav-link" data-scroll-target="#data-cleaning-and-joining">Data cleaning and joining</a>
+  <ul class="collapse">
+  <li><a href="#data-cleaning-and-tidying" id="toc-data-cleaning-and-tidying" class="nav-link" data-scroll-target="#data-cleaning-and-tidying">Data cleaning and tidying</a></li>
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a></li>
+  <li><a href="#counties-dataset-and-joining" id="toc-counties-dataset-and-joining" class="nav-link" data-scroll-target="#counties-dataset-and-joining">Counties dataset and joining</a></li>
+  </ul></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next steps</a></li>
   </ul>
 </nav>
@@ -3033,7 +3038,7 @@ Data Science 1 with R (STAT 301-1)</p><p></p>
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 16, 2023</p>
+      <p class="date">November 19, 2023</p>
     </div>
   </div>
   
@@ -3138,6 +3143,22 @@ Github Repo Link
 </section>
 <section id="data-cleaning-and-joining" class="level2">
 <h2 class="anchored" data-anchor-id="data-cleaning-and-joining">Data cleaning and joining</h2>
+<p>Cleaning and joining the data was the most difficult part of the project so far.</p>
+<section id="data-cleaning-and-tidying" class="level3">
+<h3 class="anchored" data-anchor-id="data-cleaning-and-tidying">Data cleaning and tidying</h3>
+<p>After reading in each dataset, I modified the data to incorporate categorizations of sociodemograpic vulnerability and pivoted some datasets wider so that each dataframe had one row per county and multiple variables. For example, I pivoted the <code>pollutants</code> dataframe wider because it initially had 5 rows per county for the concentration of 5 different pollutants.</p>
+</section>
+<section id="functions" class="level3">
+<h3 class="anchored" data-anchor-id="functions">Functions</h3>
+<p>I was able to create and use three different functions to clean the data. These functions can be found in <code>funcitons_for_join.R</code>.</p>
+<p>One function retrieved the name of the variable with the highest value across several variables and returned the variable of interest in a new column. I used this function to identify the majority race in each county.</p>
+<p>Another function renamed a variable using the name of the dataframe it is in. This is helpful because I have 21 datasets that I have read in according to the name of the variable of interest, but each dataset usually only contained one value I was actually interested in. The value of interest in each dataset was just labeled <code>value</code>, so I replaced each <code>value</code> with the name of the dataframe Additionally, after identifying sociodemographic vulnerabilities, I had initially just created a variable in each dataset called <code>vulnerable</code>. I renamed this column <code>name_of_dataframe_vulnerable</code>. Unfortunately, I could not figure out how to run this function using tidy syntax, likely due to parsing issues in getting the name of the dataframe. However, the dataset returned was still in tidy format.</p>
+<p>The final function I have created so far modified the value for <code>county</code> and <code>county_fips</code>. Wade Hampton (fips 46113) and Shannon (fips 02270) counties were renamed to Kusilvak (02158) and Oglala Lakota (fips 46102) in 2015.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> This change was not reflected in the datasets I downloaded from the CDC National Environmental Public Health Tracking Network, but it was reflected in the county level data I used to join datasets.</p>
+</section>
+<section id="counties-dataset-and-joining" class="level3">
+<h3 class="anchored" data-anchor-id="counties-dataset-and-joining">Counties dataset and joining</h3>
+<p>I used the <code>tigris</code> packaged to download datasets for the states and counties in the United States. I joined the <code>state</code> and <code>counties</code> datasets together and selected only the <code>county</code>, <code>state_fips</code>, <code>county_fips</code>, and <code>state</code>, as well as the geography. I used <code>left_join</code> to join all of the cleaned and tidied datasets to this dataset.</p>
+</section>
 </section>
 <section id="next-steps" class="level2">
 <h2 class="anchored" data-anchor-id="next-steps">Next steps</h2>
@@ -3149,6 +3170,7 @@ Github Repo Link
 <ol>
 <li id="fn1"><p><a href="https://www.atsdr.cdc.gov/placeandhealth/svi/documentation/SVI_documentation_2018.html">Socioeconomic Vulnerability Index</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p><a href="https://www.epa.gov/ground-level-ozone-pollution/health-effects-ozone-pollution">Health Effects of Ozone Pollution</a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p><a href="https://www.census.gov/programs-surveys/acs/technical-documentation/table-and-geography-changes/2015/geography-changes.html">2015 Geography Changes</a><a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main>
 <!-- /main column -->
