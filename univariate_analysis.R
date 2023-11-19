@@ -232,7 +232,7 @@ days_over_o3_standard %>%
 # https://www.epa.gov/ground-level-ozone-pollution/health-effects-ozone-pollution
 
 ## days_over_pm_standard ----
-# number of days each year in which the maximum PM2.5 concentration within 
+# percent of days each year in which the maximum PM2.5 concentration within 
 # each county exceeded the 24-hr PM2.5 NAAQS of 35 mg/m3
 days_over_pm_standard %>% 
   ggplot(aes(value)) +

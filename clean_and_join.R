@@ -152,7 +152,8 @@ pollutants <- read_csv("data/raw/selected-pollutant-concentration/data_134821.cs
   pivot_wider(
     names_from = pollutant,
     values_from = value
-  )
+  ) %>% 
+  clean_names()
 
 socioeconomic_vulnerability <- read_csv("data/raw/socioeconomic-vulnerability-index/data_161326.csv") %>% 
   clean_names() %>% 
@@ -171,7 +172,8 @@ transportation_active <- read_csv("data/raw/transportation_active/data_155606.cs
   pivot_wider(
     names_from = transportation_type,
     values_from = value
-  )
+  ) %>% 
+  clean_names()
 
 transportation_none <- read_csv("data/raw/transportation_none/data_160159.csv") %>% 
   clean_names()
@@ -182,7 +184,8 @@ transportation_private <- read_csv("data/raw/transportation_private/data_160024.
   pivot_wider(
     names_from = occupancy,
     values_from = value
-  )
+  ) %>% 
+  clean_names
 
 transportation_public <- read_csv("data/raw/transportation_public/data_160116.csv") %>% 
   clean_names()
