@@ -376,8 +376,12 @@ full_data %>%
 full_data %>% 
   select(contains("pollutant") | contains("days")) %>% 
   st_drop_geometry() %>% 
-  rename_with(~str_remove(., "pollutant_"), everything()) %>%
-  ggcorr(label = TRUE)
+  rename_with(~str_remove(., "(pollutant_)?(days_over_)?"), everything()) %>%
+  ggcorr(
+    label = TRUE,
+    hjust = 0.6,
+    angle = -15
+  )
 
 
 # transportation correlation matrix ----
@@ -415,7 +419,7 @@ full_data %>%
 
 # pollutant maps ----
 full_data %>% 
-  ggplot(aes(fill = log(pollutant_benzene, geometry = geometry)) +
+  ggplot(aes(fill = log(pollutant_benzene, geometry = geometry))) +
   geom_sf() +
   coord_sf(
     xlim = c(-125, -65), 

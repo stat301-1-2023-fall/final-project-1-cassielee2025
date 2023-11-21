@@ -359,14 +359,22 @@ I started working on bivariate analysis to address my first guiding question, ho
 full_data %>% 
   select(contains("pollutant") | contains("days")) %>% 
   st_drop_geometry() %>% 
-  rename_with(~str_remove(., "pollutant_"), everything()) %>%
-  ggcorr(label = TRUE)
+  rename_with(~str_remove(., "(pollutant_)?(days_over_)?"), everything()) %>%
+  ggcorr(
+    label = TRUE,
+    hjust = 0.6,
+    angle = -15
+  )
 ```
 
-As expected, ozone and particulate matter pollution are positively correlated, and formaldeyde and acetaldehyde have a correlation of nearly 1. 
-
-
-
+As expected, ozone and particulate matter pollution are positively correlated, and formaldeyde and acetaldehyde have a correlation of nearly 1. The ozone and particulate matter standards no not correlate strongly with the 5 pollutants, and the 5 pollutants are more correlated with each other. This could indicate the these two air quality indicators are affected by two different groups of environmental characteristics or sources of pollutants.
 
 ## Next steps
 
+My next steps are to complete bivariate analysis between air pollutants and asthma, cancer, and chronic obstructive pulmonary disease to determine with pollutants are most predictive of these diseases.
+
+For the air quality indicators that are more predictive of disease, I will then explore how sociodemographic vulnerabilities affect the relationship between air pollution and disease prevalence. 
+
+It will also be helpful to make so maps to visualize the distribution, however, creating the maps is taking my computer a long time to load. I am not sure if there is a more efficient way to do it, or I just need to wait longer.
+
+If I have extra time and energy or I would like to make this project public, it would be helpful to go back and make the code more efficient through iteration and functions, since I had already done a lot of work before we learned about these two techniques. 
