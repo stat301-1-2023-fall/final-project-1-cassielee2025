@@ -17,6 +17,60 @@ states <- states(year = 2018, progress_bar = FALSE) %>%
   select(c(state, state_fips)) %>% 
   st_drop_geometry()
 
+states_list <- list(
+  "Alabama",
+  "Alaska",
+  "Arizona",
+  "Arkansas",
+  "California",
+  "Colorado",
+  "Connecticut",
+  "Delaware",
+  "District of Columbia",
+  "Florida",
+  "Georgia",
+  "Hawaii",
+  "Idaho",
+  "Illinois",
+  "Indiana",
+  "Iowa",
+  "Kansas",
+  "Kentucky",
+  "Louisiana",
+  "Maine",
+  "Maryland",
+  "Massachusetts",
+  "Michigan",
+  "Minnesota",
+  "Mississippi",
+  "Missouri",
+  "Montana",
+  "Nebraska",
+  "Nevada",
+  "New Hampshire",
+  "New Jersey",
+  "New Mexico",
+  "New York",
+  "North Carolina",
+  "North Dakota",
+  "Ohio",
+  "Oklahoma",
+  "Oregon",
+  "Pennsylvania",
+  "Rhode Island",
+  "South Carolina",
+  "South Dakota",
+  "Tennessee",
+  "Texas",
+  "Utah",
+  "Vermont",
+  "Virginia",
+  "Washington",
+  "West Virginia",
+  "Wisconsin",
+  "Wyoming"
+)
+
 counties <- counties(year = 2018, progress_bar = FALSE) %>% 
   clean_names() %>% 
   # make a county_fips that matches the downloaded datasets
@@ -27,7 +81,8 @@ counties <- counties(year = 2018, progress_bar = FALSE) %>%
   ) %>% 
   # select only needed variables
   select(c(county, state_fips, county_fips)) %>% 
-  left_join(states)
+  left_join(states) %>% 
+  filter(state %in% states_list)
 
 # load data and modify based on univariate analysis -----
 
@@ -341,3 +396,4 @@ full_data <- counties %>%
 
 # save data as .rda
 save(full_data, file = "data/full_air_quality_data.rda")
+
