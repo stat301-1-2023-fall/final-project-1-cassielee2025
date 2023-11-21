@@ -1,6 +1,8 @@
 # load packages and data
 library(tidyverse)
 library(sf)
+library(viridis)
+library(GGally)
 load("data/full_air_quality_data.rda")
 
 # pollutant variables:
@@ -184,6 +186,17 @@ full_data %>%
     y = "Days over ozone standard"
   )
 
+# get a map of ozone - lol there's so much missing data
+full_data %>% 
+  ggplot(aes(fill = log(days_over_o3_standard), geometry = geometry)) +
+  geom_sf() +
+  coord_sf(
+    xlim = c(-125, -65), 
+    ylim = c(20, 50)
+  ) + 
+  theme_void() + 
+  scale_fill_viridis("Log of days over\nozone standard", option = "mako")
+
 # PM 2.5 ----
 # percent living near highway
 full_data %>% 
@@ -348,4 +361,65 @@ full_data %>%
     y = "Days over PM 2.5 standard"
   )
 
+# get a map of ozone - lol there's so much missing data
+full_data %>% 
+  ggplot(aes(fill = log(days_over_pm_standard), geometry = geometry)) +
+  geom_sf() +
+  coord_sf(
+    xlim = c(-125, -65), 
+    ylim = c(20, 50)
+  ) + 
+  theme_void() + 
+  scale_fill_viridis("Log of percent of days over\nPM 2.5 standard", option = "mako")
 
+# pollutant/air quality correlation matrix ----
+full_data %>% 
+  select(contains("pollutant") | contains("days")) %>% 
+  st_drop_geometry() %>% 
+  rename_with(~str_remove(., "pollutant_"), everything()) %>%
+  ggcorr(label = TRUE)
+
+
+# transportation correlation matrix ----
+full_data %>% 
+  select(
+    contains("transportation") | 
+      contains("occupancy") |
+      contains("highway") |
+      contains("park")
+  ) %>% 
+  st_drop_geometry() %>% 
+  rename_with(~str_remove(., "(transportation_)?(type_)?(occupancy_)?"), 
+              everything()) %>%
+  ggcorr()
+
+# everything correlation matrix ----
+full_data %>% 
+  select(
+    contains("days") | 
+    contains("pollutant") |
+      contains("transportation") | 
+      contains("occupancy") |
+      contains("highway") |
+      contains("park")
+  ) %>% 
+  st_drop_geometry() %>% 
+  rename_with(
+    ~str_remove(
+      ., 
+      "(pollutant_)?(transportation_)?(type_)?(occupancy_)?"
+    ), 
+    everything()
+  ) %>%
+  ggcorr(label = TRUE) 
+
+# pollutant maps ----
+full_data %>% 
+  ggplot(aes(fill = log(pollutant_benzene, geometry = geometry)) +
+  geom_sf() +
+  coord_sf(
+    xlim = c(-125, -65), 
+    ylim = c(20, 50)
+  ) + 
+  theme_void() + 
+  scale_fill_viridis("Concentration (µg/m3)", option = "mako")

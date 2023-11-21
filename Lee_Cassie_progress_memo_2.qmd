@@ -34,6 +34,8 @@ library(tidyverse)
 library(janitor)
 library(naniar)
 library(skimr)
+library(sf)
+library(GGally)
 
 # load data ----------------------------------------------------------------
 
@@ -106,6 +108,7 @@ transportation_private <- read_csv("data/raw/transportation_private/data_160024.
 transportation_public <- read_csv("data/raw/transportation_public/data_160116.csv") %>% 
   clean_names()
 
+load("data/full_air_quality_data.rda")
 ```
 
 ## Overview of progress
@@ -345,6 +348,25 @@ The final function I have created so far modified the value for `county` and `co
 ### Counties dataset and joining
 
 I used the `tigris` packaged to download datasets for the states and counties in the United States. I joined the `state` and `counties` datasets together and selected only the `county`, `state_fips`, `county_fips`, and `state`, as well as the geography. I used `left_join` to join all of the cleaned and tidied datasets to this dataset. 
+
+## Bivariate analysis
+
+I started working on bivariate analysis to address my first guiding question, how air quality indicators are related to each other. 
+
+```{r}
+#| label: indicator-relationship
+
+full_data %>% 
+  select(contains("pollutant") | contains("days")) %>% 
+  st_drop_geometry() %>% 
+  rename_with(~str_remove(., "pollutant_"), everything()) %>%
+  ggcorr(label = TRUE)
+```
+
+As expected, ozone and particulate matter pollution are positively correlated, and formaldeyde and acetaldehyde have a correlation of nearly 1. 
+
+
+
 
 ## Next steps
 
