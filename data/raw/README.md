@@ -15,6 +15,6 @@ Each download is a separate folder and contains .csv data file, footnotes, and g
 
 Folders were re-named to with a shorthand for indicators selected. 
 
-## Indicator information and Codebook
+## Indicator information and codebook
 
 Indicator information can be seen at https://ephtracking.cdc.gov/indicatorPages.
