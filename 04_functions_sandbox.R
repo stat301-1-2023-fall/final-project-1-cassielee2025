@@ -180,14 +180,15 @@ bivariate_plot <- function(dataframe, variable1, variable2){
     theme_minimal()
 }
 
-# multivariate analysis: scallerplot with color ----
-multivariate_plot <- function(dataframe, variable1, variable2, variable3){
+# multivariate analysis: scatterplot with color ----
+multivariate_plot <- function(dataframe, var1, var2, var3, ...){
   
   dataframe %>% 
     ggplot(
-      aes({{ variable1 }}, {{ variable2 }}, color = {{ variable3 }})
+      aes({{ var1 }}, {{ var2 }}, color = {{ var3 }})
     ) +
-    geom_point() +
+    # add alpha using ...
+    geom_point(...) +
     geom_smooth(method = lm, se = FALSE) +
     theme_minimal()
 }
