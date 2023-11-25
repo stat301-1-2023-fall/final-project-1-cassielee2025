@@ -1,0 +1,51 @@
+---
+title: "Aiq Quality Indicators and Disease Prevalence Across the US"
+subtitle: |
+  | Final Project 
+  | Data Science 1 with R (STAT 301-1)
+author: "Cassie Lee"
+date: today
+
+format:
+  html:
+    toc: true
+    embed-resources: true
+    
+execute:
+  echo: false
+  warning: false
+
+code-fold: true
+
+from: markdown+emoji 
+---
+
+::: {.callout-tip icon="false"}
+## Github Repo Link
+
+[Cassie's Final Project Github Repo Link](https://github.com/stat301-1-2023-fall/final-project-1-cassielee2025.git)
+:::
+
+# Introduction
+
+Air pollution is the presence of sufficient quantities of contaminants in the atmosphere for a duration that is long enough to cause harm to human health.[^1] Air pollution mainly enters the body through the lungs, and while it mostly impacts the heart, lungs, and brain, it has the potential to affect other organs as well by traveling through the bloodstream.[^2]
+
+This EDA explores the relationships between air quality indicators, certain lung diseases, and how sociodemographic vulnerabilities affect the relationships between air quality and health in the United States (excluding territories). The goal of this analysis is to build a deeper understanding of how various air pollutants impact health across the United States.
+
+The data was queried and downloaded from the CDC National Environmental Public Health Tracking Network interactive data explorer.[^3] This network was built to centralize environmental health data on the national, state, and county level across the United States.[^4]
+
+The three central questions explored in this analysis were:
+
+1.  How are various air quality indicators related to each other?
+
+2.  What are the most important indicators for determining the prevalence of asthma, cancer, and chronic obstructive pulmonary disease?
+
+3.  How do sociodemographics like age, gender, race, and socioeconomic vulnerability affect the relationships between air quality and health outcomes?
+
+[^1]: [Air quality and health](https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts)
+
+[^2]: [Air quality and health](https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts)
+
+[^3]: [CDC National Environmental Public Health Tracking Network](http://www.cdc.gov/ephtracking)
+
+[^4]: [CDC National Environmental Public Health Tracking Network](http://www.cdc.gov/ephtracking)
