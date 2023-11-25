@@ -534,7 +534,7 @@ full_data %>%
     alpha = 0.2
   )
 
-# cancer and acetaldehyde ----
+# copd and acetaldehyde ----
 
 full_data %>% 
   st_drop_geometry() %>% 
@@ -573,7 +573,7 @@ full_data %>%
     alpha = 0.2
   )
 
-# cancer and carbon tetrachloride ----
+# copd and carbon tetrachloride ----
 
 full_data %>% 
   st_drop_geometry() %>% 
