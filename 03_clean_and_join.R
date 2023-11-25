@@ -397,3 +397,60 @@ full_data <- counties %>%
 # save data as .rda
 save(full_data, file = "data/full_air_quality_data.rda")
 
+# codebook
+codebook <- tribble(
+  ~variable,                                ~description,
+  "county",                                 "county name",
+  "state_fips",                             "state level fips code",
+  "county_fips",                            "state level fips code and county level fips code",
+  "state",                                  "state name",
+  "x0_to_19",                               "percentage of population in age group 0-19",
+  "x65_and_older",                          "percentage of population in age group 65+",
+  "age_demographics_vulnerable",            "true: high proportion of population in age group 0-19 or 65+",
+  "asthma_adult_crude",                     "crude percentage of adults with asthma",
+  "asthma_child_crude",                     "crude percentage of children with asthma",
+  "asthma_ed_adjusted",                     "age adjusted rate of emergency department visits for asthma per 10,000 population",
+  "asthma_ed_crude",                        "crude rate of emergency department visits for asthma per 10,000 population",
+  "cancer_adjusted",                        "age adjusted rate of lung and bronchus cancer per 100,000 population",
+  "copd_adjusted",                          "age adjusted percent of chronic pulmonary obstructive disease in adults",
+  "copd_crude",                             "crude percent of chronic pulmonary obstructive disease in adults",
+  "days_over_o3_standard",                  "number of days each year in which the maximum 8-hour ozone concentration within each county exceeded the 8-hr NAAQS of 0.070 ppm",
+  "days_over_pm_standard",                  "percent of days each year in which the maximum PM2.5 concentration within each county exceeded the 24-hr PM2.5 NAAQS of 35 mg/m3",
+  "gender_demographics",                    "percent of population that identifies as female",
+  "gender",                                 "Female",
+  "gender_demographics_vulnerable",         "high: high percentage of population is female, low: low percentage of population is female",
+  "highway_living",                         "percent of people living within 150 m of a highway",
+  "highway_schools",                        "percent of public schools within 150 m of a highway",
+  "parks_access",                           "percent of people living within 1/2 mile of a park",
+  "pollutant_benzene",                      "annual average air concentration estimate of benzene in µg/m3 (modeled)",
+  "pollutant_formaldehyde",                 "annual average air concentration estimate of formaldehyde in µg/m3 (modeled)",
+  "pollutant_acetaldehyde",                 "annual average air concentration estimate of acetaldehyde in µg/m3 (modeled)",
+  "pollutant_carbon_tetrachloride",         "annual average air concentration estimate of carbon tetrachloride in µg/m3 (modeled)",
+  "pollutant_1_3_butadiene",                "annual average air concentration estimate of 1,3-butadiene in µg/m3 (modeled)",
+  "majority",                               "majority race demographic",
+  "white",                                  "percentage white demographic",
+  "black",                                  "percentage black demographic",
+  "other",                                  "percentage other demographic",
+  "asian_pacific_islander",                 "percentage asian pacific islander demographic",
+  "american_indian_alaskan_native",         "percentage native demographic",
+  "socioeconomic_vulnerability",            "score on CDC/ATSDR social vulnerability index (SVI) (1 highsest vulnerability)",
+  "socioeconomic_vulnerability_vulnerable", "high SVI",
+  "transportation_type_bicycle",            "percent of workers >16 years that used biking for transportation to work",
+  "transportation_type_walking",            "percent of workers >16 years that used walking for transportation to work",
+  "transportation_none",                    "percent of workers >16 years that did not use transportation for work",
+  "occupancy_drove_alone",                  "percent of workers >16 years that drove alone to work",
+  "occupancy_carpooled",                    "percent of workers >16 years that carpooled to work",
+  "transportation_public",                  "percent of workers >16 years that used public transportation to go to work",
+  "geometry",                               "simple features geometry for mapping"
+)
+
+codebook <- codebook %>% 
+  mutate(
+    year = if_else(
+      str_detect(variable, "transportation") | str_detect(variable, "occupancy" ),
+      "2017-2021",
+      "2018"
+    )
+  )
+
+write_csv(codebook, "data/codebook.csv")           

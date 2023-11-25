@@ -58,6 +58,6 @@ The air pollutants selected includes the days over the ozone standard, the perce
 
 The indicators selected for prevalence of lung diseases includes the crude prevalence of adult and child asthma, the crude and age adjusted rates of emergency department visits for asthma, age adjusted rates of lung and bronchus cancer, and the crude and age adjusted rates of chronic pulmonary obstructive disease. 
 
-The indicators of sociodemographic data selected includes age, gender, race, and and the socioeconomic vulnerability index[^5]. 
+The indicators of sociodemographic data selected includes age, gender, race, and and the social vulnerability index[^5]. 
 
 [^5]: [CDC/ATSDR Social Vulnerability Index](https://www.atsdr.cdc.gov/placeandhealth/svi/index.html)
