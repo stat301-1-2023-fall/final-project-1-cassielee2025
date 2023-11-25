@@ -1,5 +1,5 @@
 ---
-title: "Aiq Quality Indicators and Disease Prevalence Across the US"
+title: "Air Quality Indicators and Disease Prevalence Across the US"
 subtitle: |
   | Final Project 
   | Data Science 1 with R (STAT 301-1)
@@ -32,7 +32,7 @@ Air pollution is the presence of sufficient quantities of contaminants in the at
 
 This EDA explores the relationships between air quality indicators, certain lung diseases, and how sociodemographic vulnerabilities affect the relationships between air quality and health in the United States (excluding territories). The goal of this analysis is to build a deeper understanding of how various air pollutants impact health across the United States.
 
-The data was queried and downloaded from the CDC National Environmental Public Health Tracking Network interactive data explorer.[^3] This network was built to centralize environmental health data on the national, state, and county level across the United States.[^4]
+The data was queried at the county level and downloaded from the CDC National Environmental Public Health Tracking Network interactive data explorer.[^3] This network was built to centralize environmental health data on the national, state, and county level across the United States.[^4]
 
 The three central questions explored in this analysis were:
 
@@ -52,12 +52,19 @@ The three central questions explored in this analysis were:
 
 # Data overview & quality
 
-All data was downloaded at the county level for 2018. 
-
 The air pollutants selected includes the days over the ozone standard, the percent of days over the PM 2.5 standard, benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene pollution. Environmental quality indicators selected includes the percent of people living near highways, the percent of public schools near highways, access to parks, and methods of transportation to work (walking, biking, driving alone, carpooling, public transportation, and none).
 
 The indicators selected for prevalence of lung diseases includes the crude prevalence of adult and child asthma, the crude and age adjusted rates of emergency department visits for asthma, age adjusted rates of lung and bronchus cancer, and the crude and age adjusted rates of chronic pulmonary obstructive disease. 
 
-The indicators of sociodemographic data selected includes age, gender, race, and and the social vulnerability index[^5]. 
+The indicators of sociodemographic data selected includes age, gender, race, and and the social vulnerability index[^5]. Sociodemographic characteristics of each county was compared to other counties in the United States and used to identify counties with comparatively higher percentages of vulnerable groups (Appendix A). The majority race demographic in each county was also identified.
+
+If available, all data was downloaded at the county level for 2018. Crude rates of child asthma and age adjusted rates of lung and bronchus cancer were only available at the state level. Data for the usual method of transportation to work was downloaded for the time period of 2017 to 2021. 
+
+The final merged dataset includes 42 variables and 3144 observations matching each county and Washington DC. There are 4 identifying variables, 5 factor variables, 32 numeric variables, and one simple features geometry variable for mapping. 
+
+With the exception of Rio Arriba, Mexico, all counties have complete sociodemographic information. Rio Arriba, Mexico is missing data for the social vulnerability index. The prevalence of adult asthma is complete across all observations, but 1402 observations are missing for the prevalence of child asthma and 1789 observations are missing for crude and age adjusted emergency department visits for asthma. The majority of counties do not have information about the days over the ozone and PM 2.5 air quality standards. 1567 observations are missing data for the percent of public school near highways. All other variables are either complete or missing at most 1 observation.
 
 [^5]: [CDC/ATSDR Social Vulnerability Index](https://www.atsdr.cdc.gov/placeandhealth/svi/index.html)
+
+# Appendix:
+## A: Identifying sociodemographic vulnerabilities
