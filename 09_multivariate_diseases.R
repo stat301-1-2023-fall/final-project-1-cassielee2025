@@ -494,3 +494,119 @@ full_data %>%
     age_demographics_vulnerable,
     alpha = 0.2
   )
+
+# copd and formaldehyde ----
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_formaldehyde, 
+    copd_adjusted, 
+    gender_demographics_vulnerable
+  )
+# higher slope for more men
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_formaldehyde, 
+    copd_adjusted, 
+    majority,
+    alpha = 0.2
+  )
+# negative slope for majority black and asian populations
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(socioeconomic_vulnerability_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_formaldehyde, 
+    copd_adjusted, 
+    socioeconomic_vulnerability_vulnerable,
+    alpha = 0.2
+  )
+# high SVI???
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_formaldehyde, 
+    copd_adjusted, 
+    age_demographics_vulnerable,
+    alpha = 0.2
+  )
+
+# cancer and acetaldehyde ----
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_acetaldehyde, 
+    copd_adjusted, 
+    gender_demographics_vulnerable
+  )
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_acetaldehyde, 
+    copd_adjusted, 
+    majority,
+    alpha = 0.2
+  )
+# negative slope for majority black and asian populations
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(socioeconomic_vulnerability_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_acetaldehyde, 
+    copd_adjusted, 
+    socioeconomic_vulnerability_vulnerable,
+    alpha = 0.2
+  )
+# high SVI ???
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_acetaldehyde, 
+    copd_adjusted, 
+    age_demographics_vulnerable,
+    alpha = 0.2
+  )
+
+# cancer and carbon tetrachloride ----
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_carbon_tetrachloride, 
+    copd_adjusted, 
+    gender_demographics_vulnerable
+  )
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_carbon_tetrachloride, 
+    copd_adjusted, 
+    majority,
+    alpha = 0.2
+  )
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(socioeconomic_vulnerability_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_carbon_tetrachloride, 
+    copd_adjusted, 
+    socioeconomic_vulnerability_vulnerable,
+    alpha = 0.2
+  )
+# high slope for high SVI
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_carbon_tetrachloride, 
+    copd_adjusted, 
+    age_demographics_vulnerable,
+    alpha = 0.2
+  )
