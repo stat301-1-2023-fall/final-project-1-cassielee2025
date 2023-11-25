@@ -301,3 +301,196 @@ full_data %>%
     alpha = 0.2
   )
 
+# cancer and benzene ----
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_benzene, 
+    cancer_adjusted, 
+    gender_demographics_vulnerable
+  )
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_benzene, 
+    cancer_adjusted, 
+    majority,
+    alpha = 0.2
+  )
+# negative slope for majority black populations
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(socioeconomic_vulnerability_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_benzene, 
+    cancer_adjusted, 
+    socioeconomic_vulnerability_vulnerable,
+    alpha = 0.2
+  )
+# high vulnerability higher slope
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_benzene, 
+    cancer_adjusted, 
+    age_demographics_vulnerable,
+    alpha = 0.2
+  )
+# yeah children don't typically develop lung cancer
+
+# cancer and formaldehyde ----
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_formaldehyde, 
+    cancer_adjusted, 
+    gender_demographics_vulnerable
+  )
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_formaldehyde, 
+    cancer_adjusted, 
+    majority,
+    alpha = 0.2
+  )
+# negative slope for majority black and asian populations
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(socioeconomic_vulnerability_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_formaldehyde, 
+    cancer_adjusted, 
+    socioeconomic_vulnerability_vulnerable,
+    alpha = 0.2
+  )
+# pretty much the same between high and low SVI
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_formaldehyde, 
+    cancer_adjusted, 
+    age_demographics_vulnerable,
+    alpha = 0.2
+  )
+
+# cancer and acetaldehyde ----
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_acetaldehyde, 
+    cancer_adjusted, 
+    gender_demographics_vulnerable
+  )
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_acetaldehyde, 
+    cancer_adjusted, 
+    majority,
+    alpha = 0.2
+  )
+# negative slope for majority black and asian populations
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(socioeconomic_vulnerability_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_acetaldehyde, 
+    cancer_adjusted, 
+    socioeconomic_vulnerability_vulnerable,
+    alpha = 0.2
+  )
+# pretty much the same between high and low SVI
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_acetaldehyde, 
+    cancer_adjusted, 
+    age_demographics_vulnerable,
+    alpha = 0.2
+  )
+
+# cancer and carbon tetrachloride ----
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_carbon_tetrachloride, 
+    cancer_adjusted, 
+    gender_demographics_vulnerable
+  )
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_carbon_tetrachloride, 
+    cancer_adjusted, 
+    majority,
+    alpha = 0.2
+  )
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(socioeconomic_vulnerability_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_carbon_tetrachloride, 
+    cancer_adjusted, 
+    socioeconomic_vulnerability_vulnerable,
+    alpha = 0.2
+  )
+# higher slope for high SVI
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_carbon_tetrachloride, 
+    cancer_adjusted, 
+    age_demographics_vulnerable,
+    alpha = 0.2
+  )
+
+# cancer and 1,3 butadiene ----
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_1_3_butadiene, 
+    cancer_adjusted, 
+    gender_demographics_vulnerable
+  )
+# negative slope for high female population
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_1_3_butadiene, 
+    cancer_adjusted, 
+    majority,
+    alpha = 0.2
+  )
+# negative slope for majority black counties
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  filter(!is.na(socioeconomic_vulnerability_vulnerable)) %>% 
+  multivariate_plot(
+    pollutant_1_3_butadiene, 
+    cancer_adjusted, 
+    socioeconomic_vulnerability_vulnerable,
+    alpha = 0.2
+  )
+# higher slope for high SVI
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_1_3_butadiene, 
+    cancer_adjusted, 
+    age_demographics_vulnerable,
+    alpha = 0.2
+  )
