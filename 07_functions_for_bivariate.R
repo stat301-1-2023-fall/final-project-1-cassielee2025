@@ -1,3 +1,5 @@
+library(tidyverse)
+
 # bivariate analysis: scatterplot
 bivariate_plot <- function(dataframe, variable1, variable2){
   
