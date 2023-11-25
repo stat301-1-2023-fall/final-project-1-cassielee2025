@@ -26,6 +26,16 @@ from: markdown+emoji
 [Cassie's Final Project Github Repo Link](https://github.com/stat301-1-2023-fall/final-project-1-cassielee2025.git)
 :::
 
+```{r}
+#| label: load-pckgs-data
+
+library(tidyverse)
+library(skimr)
+library(sf)
+library(patchwork)
+load("data/full_air_quality_data.rda")
+```
+
 # Introduction
 
 Air pollution is the presence of sufficient quantities of contaminants in the atmosphere for a duration that is long enough to cause harm to human health.[^1] Air pollution mainly enters the body through the lungs, and while it mostly impacts the heart, lungs, and brain, it has the potential to affect other organs as well by traveling through the bloodstream.[^2]
@@ -36,7 +46,7 @@ The data was queried at the county level and downloaded from the CDC National En
 
 The three central questions explored in this analysis were:
 
-1.  How are various air quality indicators related to each other?
+1.  How are various air and environmental quality indicators related to each other?
 
 2.  What are the most important indicators for determining the prevalence of asthma, cancer, and chronic obstructive pulmonary disease?
 
@@ -66,5 +76,65 @@ With the exception of Rio Arriba, Mexico, all counties have complete sociodemogr
 
 [^5]: [CDC/ATSDR Social Vulnerability Index](https://www.atsdr.cdc.gov/placeandhealth/svi/index.html)
 
-# Appendix:
-## A: Identifying sociodemographic vulnerabilities
+# Explorations
+
+## Indicators of air and environmental quality
+
+As seen in @days-over-distribution, the distribution of days over the ozone and particulate matter size 2.5 microns (PM 2.5) standards are both skewed right by observations with significantly more days over the standard. For both ozone and PM 2.5, most of the counties experienced no more than 20 days over the standard. However, the degree of right skewing for the distribtion of days over ozone standard is significantly higher than for the distribution of days over the PM 2.5 standard. 
+
+@days-over-relationship shows the relationship between the days over the ozone and PM 2.5 standard.
+
+```{r}
+#| label: days-over-distribution
+#| fig-cap: Distribution of days over air quality standards.
+
+p1 <- full_data %>% 
+  ggplot(aes(days_over_o3_standard)) +
+  geom_histogram(binwidth = 10, boundary = 0, fill = "#f56042") +
+  theme_minimal() +
+  labs(
+    title = "Days over ozone standard",
+    x = "Days",
+    y = NULL
+  )
+
+p2 <- full_data %>% 
+  mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
+  ggplot(aes(pm_standard)) +
+  geom_histogram(binwidth = 10, boundary = 0, fill = "#f5a442") +
+  theme_minimal() +
+  labs(
+    title = "Days over PM 2.5 standard",
+    x = "Days",
+    y = NULL
+  )
+
+p1 + p2
+```
+
+```{r}
+#| label: days-over-relationship
+#| fig-cap: Relationship between days over PM 2.5 standard and days over ozone standards excluding outliers (over 50 days over one or both standards)
+
+full_data %>% 
+  mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
+  ggplot(aes(days_over_o3_standard, pm_standard)) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  lims(
+    x = c(0, 50),
+    y = c(0, 50)
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Days over PM 2.5 standard vs days over ozone standard",
+    x = "Days ozone standard",
+    y = "Days over PM 2.5 standard"
+  )
+```
+
+
+
+
+# Appendix
+## A. Identifying sociodemographic vulnerabilities
