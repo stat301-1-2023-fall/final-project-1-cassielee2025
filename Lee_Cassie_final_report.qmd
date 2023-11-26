@@ -268,7 +268,6 @@ full_data %>%
   rename_with(~str_remove(., "(pollutant_)?(days_over_)?"), everything()) %>%
   rename_with(~str_to_title(.), everything()) %>% 
   ggcorr(
-    label = TRUE,
     hjust = 0.7,
     geom = "circle",
     max_size = 15,
@@ -294,6 +293,110 @@ full_data %>%
     y = "Days over ozone standard"
   )
 ```
+
+## Lung disease and air quality indicators
+
+Once I had an understanding of how the air quality indicators were related to each other, I was interested in seeing how air pollution and various lung diseases were related.
+
+@fig-ed-asthma shows that although ozone and PM 2.5 pollution are known to aggravate lung diseases such as asthma, there is not particularly clear relationship between emergency department visits for asthma and ozone or PM 2.5 pollution.[^9] It is possible that given better predictions and access to air quality information online, individuals with asthma are better able to avoid long exposures to high ozone and PM 2.5 levels, allowing them to avoid aggravating their asthma. 
+
+[^9]: [Ground-level Ozone Basics](https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics#effects), [Health and Environmental Effects of Particulate Matter (PM)](https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm)
+
+```{r}
+#| label: fig-ed-asthma
+#| label: The crude rate of emergency deartment visits for asthma per 10 K population as a function of days over the ozone and PM 2.5 standard. 
+
+p10 <- full_data %>% 
+  ggplot(aes(days_over_o3_standard, asthma_ed_crude)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE)  +
+  coord_cartesian(
+    x = c(0, 20),
+    y = c(0, 150)
+  ) +
+  labs(
+    title = "Days over ozone standard",
+    x = "Days over ozone standard",
+    y = "Crude emergency department visits"
+  ) +
+  theme_minimal()
+
+p11 <- full_data %>% 
+  ggplot(aes(days_over_pm_standard, asthma_ed_crude)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  coord_cartesian(
+    x = c(0, 20),
+    y = c(0, 150)
+  ) +
+  labs(
+    title = "Days over PM 2.5 standard",
+    x = "Days over PM 2.5 standard",
+    y = "Crude emergency department visits"
+  ) +
+  theme_minimal()
+  
+p10 + p11
+```
+
+However, @fig-pollutants-asthma shows a clear positive relationship between the prevalence of asthma and exposure to the pollutants formaldehyde and acetaldehyde for both adults and children. Since the relationship between asthma and these two pollutants holds in both childhood and adulthood, I suspect that exposure to these pollutants in childhood is can be associated with the development of asthma, which is then carried into adulthood. The relationship between childhood asthma and formaldehyde exposure has been supported by various studies.[^10]
+
+[^10]: [Formaldehyde Exposure and Asthma in Children: A Systematic Review](https://doi.org/10.1289%2Fehp.0901143)
+
+```{r}
+#| label: fig-pollutants-asthma
+#| label: The prevalence of ault and child asthma prevalence as a function of formaldehyde and acetaldehyde concentrations.
+
+
+p12 <- full_data %>% 
+  ggplot(aes(pollutant_formaldehyde, asthma_adult_crude)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Crude adult asthma prevalance vs formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Crude percentage of adults with asthma"
+  ) +
+  theme_minimal()
+
+p13 <- full_data %>% 
+  ggplot(aes(pollutant_acetaldehyde, asthma_adult_crude)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Crude adult asthma prevalance vs acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Crude percentage of adults with asthma"
+  ) +
+  theme_minimal()
+
+p14 <- full_data %>% 
+  ggplot(aes(pollutant_acetaldehyde, asthma_child_crude)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Crude child asthma prevalance vs formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Crude percentage of children with asthma"
+  ) +
+  theme_minimal()
+
+p15 <- full_data %>% 
+  ggplot(aes(pollutant_acetaldehyde, asthma_child_crude)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Crude child asthma prevalance vs acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Crude percentage of children with asthma"
+  ) +
+  theme_minimal()
+
+(p12 + p13) / (p14 + p15)
+```
+
+
+
 
 
 # Appendix

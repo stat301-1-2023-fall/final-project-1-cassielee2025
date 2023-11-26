@@ -149,7 +149,6 @@ full_data %>%
   rename_with(~str_remove(., "(pollutant_)?(days_over_)?"), everything()) %>%
   rename_with(~str_to_title(.), everything()) %>% 
   ggcorr(
-    label = TRUE,
     hjust = 0.7,
     geom = "circle",
     max_size = 15,
@@ -168,3 +167,86 @@ full_data %>%
     x = "Percent of people living within 150 M of a highway",
     y = "Days over ozone standard"
   )
+
+# lung disease and air quality indicators ----
+
+# asthma
+p10 <- full_data %>% 
+  ggplot(aes(days_over_o3_standard, asthma_ed_crude)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE)  +
+  coord_cartesian(
+    x = c(0, 20),
+    y = c(0, 150)
+  ) +
+  labs(
+    title = "Days over ozone standard",
+    x = "Days over ozone standard",
+    y = "Crude emergency department visits"
+  ) +
+  theme_minimal()
+
+p11 <- full_data %>% 
+  ggplot(aes(days_over_pm_standard, asthma_ed_crude)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  coord_cartesian(
+    x = c(0, 20),
+    y = c(0, 150)
+  ) +
+  labs(
+    title = "Days over PM 2.5 standard",
+    x = "Days over PM 2.5 standard",
+    y = "Crude emergency department visits"
+  ) +
+  theme_minimal()
+  
+p10 + p11
+
+p12 <- full_data %>% 
+  ggplot(aes(pollutant_formaldehyde, asthma_adult_crude)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Crude adult asthma prevalance vs formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Crude percentage of adults with asthma"
+  ) +
+  theme_minimal()
+
+p13 <- full_data %>% 
+  ggplot(aes(pollutant_acetaldehyde, asthma_adult_crude)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Crude adult asthma prevalance vs acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Crude percentage of adults with asthma"
+  ) +
+  theme_minimal()
+
+p14 <- full_data %>% 
+  ggplot(aes(pollutant_acetaldehyde, asthma_child_crude)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Crude child asthma prevalance vs formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Crude percentage of children with asthma"
+  ) +
+  theme_minimal()
+
+p15 <- full_data %>% 
+  ggplot(aes(pollutant_acetaldehyde, asthma_child_crude)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Crude child asthma prevalance vs acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Crude percentage of children with asthma"
+  ) +
+  theme_minimal()
+
+(p12 + p13) / (p14 + p15)
+
+
