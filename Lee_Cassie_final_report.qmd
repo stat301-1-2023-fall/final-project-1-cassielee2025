@@ -154,6 +154,7 @@ However, there are a large number of counties that report having 0 days over the
 [^6]: [Ground-level Ozone Basics](https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics#formation) and [Particulate Matter (PM) Basics](https://www.epa.gov/pm-pollution/particulate-matter-pm-basics)
 
 [^7]: [Particulate Matter (PM) Basics](https://www.epa.gov/pm-pollution/particulate-matter-pm-basics)
+
 ```{r}
 #| label: fig-days-over-relationship
 #| fig-cap: Relationship between days over PM 2.5 standard and days over ozone standards excluding outliers (over 50 days over one or both standards).
@@ -174,6 +175,109 @@ full_data %>%
     y = "Days over PM 2.5 standard"
   )
 ```
+
+The other group of air quality indicators I was interested in were benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene concentrations. @fig-pollutants shows the distribution of these air pollutants. Benzene, formaldehyde, acetaldehyde, and 1,3-butadiene are skewed right, indicating that there are several counties that have unusually high levels of these pollutants. This is expected, as counties with usually high industrial pollution would cause this distribution. However, carbon tetrachloride is skewed left, indicating that there are several counties that have unusually low levels of these pollutants. One reason that this distribution may differ from the others is that carbon tetrachloride is not naturally occuring, while the other pollutants are. Thus counties with usually low levels of carbon tetrachloride may be counties that have never had high levels of carbon tetrachloride exposure.[^8]
+
+[^8]: [Benzene](https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html), [Public Health Statement for Formaldehyde](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39), [Acetaldehyde](https://ntp.niehs.nih.gov/ntp/roc/content/profiles/acetaldehyde.pdf), [Where Is Carbon Tetrachloride Found?](https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html), [Public Health Statement for 1,3-Butadiene](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02)
+
+
+```{r}
+#| label: fig-pollutants
+#| fig-cap: Distribution of five air pollutants
+
+p5 <- full_data %>% 
+  ggplot(aes(pollutant_benzene)) +
+  geom_histogram(fill = "#f0f921") +
+  theme_minimal() +
+  labs(
+    title = "Benzene",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  )
+
+p6 <- full_data %>% 
+  ggplot(aes(pollutant_formaldehyde)) +
+  geom_histogram(fill = "#f89540") +
+  theme_minimal() +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  )
+
+p7 <- full_data %>% 
+  ggplot(aes(pollutant_acetaldehyde)) +
+  geom_histogram(fill = "#cc4778") +
+  theme_minimal() +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  )
+
+p8 <- full_data %>% 
+  ggplot(aes(pollutant_carbon_tetrachloride)) +
+  geom_histogram(fill = "#7e03a8") +
+  theme_minimal() +
+  labs(
+    title = "Carbon Tetrachloride",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  )
+
+p9 <- full_data %>% 
+  ggplot(aes(pollutant_1_3_butadiene)) +
+  geom_histogram(fill = "#0d0887") +
+  theme_minimal() +
+  labs(
+    title = "1,3-Butadiene",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  )
+
+(p5 + p6 + p7) / (p8 + p9)
+```
+
+Then, I explored how these five air pollutants were correlated with each other. @fig-pollutants-corr shows a correlation matrix of these air pollutants. Formaldehyde and acetaldehyde are highly correlated with each other, while the rest of the pollutants were somewhat or barely correlated with each other. Carbon tetrachloride and benzene are somewhat correlated, and 1,3-butadiene is somewhat correlated with both formaldehyde and acetaldehyde. Benzene is barely correlated with formaldehyde and acetaldehyde. Correlation between these pollutants indicate similar sources of pollution that emit multiple pollutants at the same time. 
+
+```{r}
+#| label: fig-pollutants-corr
+#| fig-cap: Correlation matrix of five air pollutants
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  select(contains("pollutant")) %>% 
+  rename_with(~str_remove(., "(pollutant_)"), everything()) %>%
+  rename_with(~str_to_title(.), everything()) %>% 
+  ggcorr(
+    hjust = 0.6,
+    geom = "circle",
+    max_size = 20
+  )  
+```
+
+After exploring how these five pollutants were correlated with each other, I wanted to see if they were correlated with ozone and PM 2.5 pollution. @fig-indicators-corr shows that ozone and PM 2.5 pollution are not particularly correlated with the other 5 pollutants. This is likely because the five chemicals are nearly striclty from industrial pollution, while ozone and PM 2.5 pollution can have significant non-industrial sources, such as from automobiles.
+
+```{r}
+#| label: fig-indicators-corr
+#| fig-cap: Correlation matrix of all air quality indicators
+
+full_data %>% 
+  select(contains("pollutant") | contains("days")) %>% 
+  st_drop_geometry() %>% 
+  rename_with(~str_remove(., "(pollutant_)?(days_over_)?"), everything()) %>%
+  rename_with(~str_to_title(.), everything()) %>% 
+  ggcorr(
+    label = TRUE,
+    hjust = 0.7,
+    geom = "circle",
+    max_size = 15,
+    size = 3
+  )
+```
+
+
+
 
 # Appendix
 

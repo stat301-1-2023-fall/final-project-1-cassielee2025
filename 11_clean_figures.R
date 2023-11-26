@@ -4,6 +4,7 @@ library(skimr)
 library(sf)
 library(patchwork)
 library(viridis)
+library(GGally)
 load("data/full_air_quality_data.rda")
 
 # air and environmental quality ----
@@ -74,3 +75,81 @@ p4 <- full_data %>%
   theme(legend.position = "bottom")
 
 p3 + p4
+
+# pollutants
+
+p5 <- full_data %>% 
+  ggplot(aes(pollutant_benzene)) +
+  geom_histogram(fill = "#f0f921") +
+  theme_minimal() +
+  labs(
+    title = "Benzene",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  )
+
+p6 <- full_data %>% 
+  ggplot(aes(pollutant_formaldehyde)) +
+  geom_histogram(fill = "#f89540") +
+  theme_minimal() +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  )
+
+p7 <- full_data %>% 
+  ggplot(aes(pollutant_acetaldehyde)) +
+  geom_histogram(fill = "#cc4778") +
+  theme_minimal() +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  )
+
+p8 <- full_data %>% 
+  ggplot(aes(pollutant_carbon_tetrachloride)) +
+  geom_histogram(fill = "#7e03a8") +
+  theme_minimal() +
+  labs(
+    title = "Carbon Tetrachloride",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  )
+
+p9 <- full_data %>% 
+  ggplot(aes(pollutant_1_3_butadiene)) +
+  geom_histogram(fill = "#0d0887") +
+  theme_minimal() +
+  labs(
+    title = "1,3-Butadiene",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  )
+
+(p5 + p6 + p7) / (p8 + p9)
+
+full_data %>% 
+  st_drop_geometry() %>% 
+  select(contains("pollutant")) %>% 
+  rename_with(~str_remove(., "(pollutant_)"), everything()) %>%
+  rename_with(~str_to_title(.), everything()) %>% 
+  ggcorr(
+    hjust = 0.6,
+    geom = "circle",
+    max_size = 20
+  ) 
+
+full_data %>% 
+  select(contains("pollutant") | contains("days")) %>% 
+  st_drop_geometry() %>% 
+  rename_with(~str_remove(., "(pollutant_)?(days_over_)?"), everything()) %>%
+  rename_with(~str_to_title(.), everything()) %>% 
+  ggcorr(
+    label = TRUE,
+    hjust = 0.7,
+    geom = "circle",
+    max_size = 15,
+    size = 3
+  )
