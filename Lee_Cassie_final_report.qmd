@@ -339,7 +339,7 @@ p11 <- full_data %>%
 p10 + p11
 ```
 
-However, @fig-pollutants-asthma shows a clear positive relationship between the prevalence of asthma and exposure to the pollutants formaldehyde and acetaldehyde for both adults and children. Since the relationship between asthma and these two pollutants holds in both childhood and adulthood, I suspect that exposure to these pollutants in childhood is can be associated with the development of asthma, which is then carried into adulthood. The relationship between childhood asthma and formaldehyde exposure has been supported by various studies.[^10]
+However, @fig-pollutants-asthma shows a clear positive relationship between the prevalence of asthma and exposure to the pollutants formaldehyde and acetaldehyde for both adults and children. Since the relationship between asthma and these two pollutants holds in both childhood and adulthood, I suspect that exposure to these pollutants in childhood is can be associated with the development of asthma, which is then carried into adulthood. The relationship between childhood asthma and formaldehyde exposure has been supported by various studies.[^10] 
 
 [^10]: [Formaldehyde Exposure and Asthma in Children: A Systematic Review](https://doi.org/10.1289%2Fehp.0901143)
 
