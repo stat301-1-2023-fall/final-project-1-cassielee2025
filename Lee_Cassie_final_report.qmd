@@ -33,6 +33,7 @@ library(tidyverse)
 library(skimr)
 library(sf)
 library(patchwork)
+library(viridis)
 load("data/full_air_quality_data.rda")
 ```
 
@@ -44,15 +45,15 @@ Air pollution is the presence of sufficient quantities of contaminants in the at
 
 [^2]: [Air quality and health](https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts)
 
-This EDA explores the relationships between air quality indicators, certain lung diseases, and how sociodemographic vulnerabilities affect the relationships between air quality and health in the United States (excluding territories). The goal of this analysis is to build a deeper understanding of how various air pollutants impact health across the United States.
+In the EDA, I explore the relationships between air quality indicators, certain lung diseases, and how sociodemographic vulnerabilities affect the relationships between air quality and health in the United States (excluding territories). The goal of this analysis is to build a deeper understanding of how various air pollutants impact health across the United States.
 
-The data was queried at the county level and downloaded from the CDC National Environmental Public Health Tracking Network interactive data explorer.[^3] This network was built to centralize environmental health data on the national, state, and county level across the United States.[^4]
+I queried the data at the county level and downloaded from the CDC National Environmental Public Health Tracking Network interactive data explorer.[^3] This network was built to centralize environmental health data on the national, state, and county level across the United States.[^4]
 
 [^3]: [CDC National Environmental Public Health Tracking Network](http://www.cdc.gov/ephtracking)
 
 [^4]: [CDC National Environmental Public Health Tracking Network](http://www.cdc.gov/ephtracking)
 
-The three central questions explored in this analysis were:
+The three central questions I explored in this analysis were:
 
 1.  How are various air and environmental quality indicators related to each other?
 
@@ -62,15 +63,15 @@ The three central questions explored in this analysis were:
 
 # Data overview & quality
 
-The air pollutants selected includes the days over the ozone standard, the percent of days over the PM 2.5 standard, benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene pollution. Environmental quality indicators selected includes the percent of people living near highways, the percent of public schools near highways, access to parks, and methods of transportation to work (walking, biking, driving alone, carpooling, public transportation, and none).
+The air pollutants I selected includes the days over the ozone standard, the percent of days over the PM 2.5 standard, benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene pollution. The environmental quality indicators I selected includes the percent of people living near highways, the percent of public schools near highways, access to parks, and methods of transportation to work (walking, biking, driving alone, carpooling, public transportation, and none).
 
-The indicators selected for prevalence of lung diseases includes the crude prevalence of adult and child asthma, the crude and age adjusted rates of emergency department visits for asthma, age adjusted rates of lung and bronchus cancer, and the crude and age adjusted rates of chronic pulmonary obstructive disease.
+The indicators I selected for prevalence of lung diseases includes the crude prevalence of adult and child asthma, the crude and age adjusted rates of emergency department visits for asthma, age adjusted rates of lung and bronchus cancer, and the crude and age adjusted rates of chronic pulmonary obstructive disease.
 
-The indicators of sociodemographic data selected includes age, gender, race, and and the social vulnerability index[^5]. Sociodemographic characteristics of each county was compared to other counties in the United States and used to identify counties with comparatively higher percentages of vulnerable groups (Appendix A). The majority race demographic in each county was also identified.
+The indicators of sociodemographic data I selected includes age, gender, race, and and the social vulnerability index[^5]. I compared sociodemographic characteristics of each county to other counties in the United States and used this to identify counties with comparatively higher percentages of vulnerable groups (Appendix A). I also identified the majority race demographic in each county.
 
 [^5]: [CDC/ATSDR Social Vulnerability Index](https://www.atsdr.cdc.gov/placeandhealth/svi/index.html)
 
-If available, all data was downloaded at the county level for 2018. Crude rates of child asthma and age adjusted rates of lung and bronchus cancer were only available at the state level. Data for the usual method of transportation to work was downloaded for the time period of 2017 to 2021.
+If available, I downloaded all data at the county level for 2018. Crude rates of child asthma and age adjusted rates of lung and bronchus cancer were only available at the state level. I downloaded data for the usual method of transportation to work for the time period of 2017 to 2021.
 
 The final merged dataset includes 42 variables and 3144 observations matching each county and Washington DC. There are 4 identifying variables, 5 factor variables, 32 numeric variables, and one simple features geometry variable for mapping.
 
@@ -80,11 +81,7 @@ With the exception of Rio Arriba, Mexico, all counties have complete sociodemogr
 
 ## Indicators of air and environmental quality
 
-As seen in @fig-days-over-distribution, the distribution of days over the ozone and particulate matter size 2.5 microns (PM 2.5) standards are both skewed right by observations with significantly more days over the standard. For both ozone and PM 2.5, most of the counties experienced no more than 20 days over the standard. However, the degree of right skewing for the distribtion of days over ozone standard is significantly higher than for the distribution of days over the PM 2.5 standard.
-
-@fig-days-over-relationship shows the relationship between the days over the ozone and PM 2.5 standard. There is a positive relationship between the two air quality indicators, indicating that counties with worse ozone pollution generally also have worse PM 2.5 pollution. This is consistent with research about the sources of ozone and PM 2.5 pollution. 
-
-There are a large number of counties that report having 0 days over the PM 2.5 standard while having several days over the ozone standard and several counties that report having 0 days over the ozone standard while having several days over the PM 2.5 standard. 
+As seen in @fig-days-over-distribution, the distribution of days over the ozone and particulate matter size 2.5 microns (PM 2.5) standards are both skewed right by observations with significantly more days over the standard. For both ozone and PM 2.5, most of the counties experienced no more than 20 days over the standard. However, the degree of right skewing for the distribution of days over ozone standard is significantly higher than for the distribution of days over the PM 2.5 standard.
 
 ```{r}
 #| label: fig-days-over-distribution
@@ -92,7 +89,7 @@ There are a large number of counties that report having 0 days over the PM 2.5 s
 
 p1 <- full_data %>% 
   ggplot(aes(days_over_o3_standard)) +
-  geom_histogram(binwidth = 10, boundary = 0, fill = "#f56042") +
+  geom_histogram(binwidth = 10, boundary = 0, fill = "#def5e5ff") +
   theme_minimal() +
   labs(
     title = "Days over ozone standard",
@@ -103,7 +100,7 @@ p1 <- full_data %>%
 p2 <- full_data %>% 
   mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
   ggplot(aes(pm_standard)) +
-  geom_histogram(binwidth = 10, boundary = 0, fill = "#f5a442") +
+  geom_histogram(binwidth = 10, boundary = 0, fill = "#ed6925") +
   theme_minimal() +
   labs(
     title = "Days over PM 2.5 standard",
@@ -114,6 +111,49 @@ p2 <- full_data %>%
 p1 + p2
 ```
 
+Given that the distribution is so heavily skewed right, I was interested to see the distribution of the days over the ozone and PM 2.5 standards across the US. Although most of the data is missing, it is clear that Southern California has high levels of ozone pollution and Central California has high levels of PM 2.5 pollution. For PM 2.5, the days over the PM 2.5 standard aligns with the California wildfire incident map in 2018.[^8]
+
+[^8]: [CalFire 2018 Incident Archive](https://www.fire.ca.gov/incidents/2018)
+
+```{r}
+#| label: fig-map-days-over
+#| fig-cap: Distribution of days over ozone and PM 2.5 pollution across the United States, excluding Hawaii and Alaska
+
+p3 <- full_data %>% 
+  ggplot(aes(fill = log(days_over_o3_standard), geometry = geometry)) +
+  geom_sf() +
+  coord_sf(
+    xlim = c(-125, -65), 
+    ylim = c(20, 50)
+  ) + 
+  theme_void() + 
+  scale_fill_viridis("Log of days over\nozone standard", option = "mako") +
+  labs(title = "Distribution of ozone pollution") +
+  theme(legend.position = "bottom")
+
+p4 <- full_data %>% 
+  mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
+  ggplot(aes(fill = log(pm_standard), geometry = geometry)) +
+  geom_sf() +
+  coord_sf(
+    xlim = c(-125, -65), 
+    ylim = c(20, 50)
+  ) + 
+  theme_void() + 
+  scale_fill_viridis("Log of days over\nPM 2.5 standard", option = "inferno") +
+  labs(title = "Distribution of PM 2.5 pollution") +
+  theme(legend.position = "bottom")
+
+p3 + p4
+```
+
+@fig-days-over-relationship shows the relationship between the days over the ozone and PM 2.5 standard. There is a positive relationship between the two air quality indicators, indicating that counties with worse ozone pollution generally also have worse PM 2.5 pollution. This is consistent with research about the sources of ozone and PM 2.5 pollution, as they can both originate from nitrogen oxides from power plants, industrial pollution, and automobiles.[^6]
+
+However, there are a large number of counties that report having 0 days over the PM 2.5 standard while having several days over the ozone standard and several counties that report having 0 days over the ozone standard while having several days over the PM 2.5 standard. This is also consistent with research showing that these pollutants also have sources that produce one pollutant, but not the other. For example, construction sites, unpaved roads, fields, smokestacks and fires produce PM 2.5 pollution, but not ozone pollution.[^7]
+
+[^6]: [Ground-level Ozone Basics](https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics#formation) and [Particulate Matter (PM) Basics](https://www.epa.gov/pm-pollution/particulate-matter-pm-basics)
+
+[^7]: [Particulate Matter (PM) Basics](https://www.epa.gov/pm-pollution/particulate-matter-pm-basics)
 ```{r}
 #| label: fig-days-over-relationship
 #| fig-cap: Relationship between days over PM 2.5 standard and days over ozone standards excluding outliers (over 50 days over one or both standards).

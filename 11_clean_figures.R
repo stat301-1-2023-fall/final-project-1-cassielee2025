@@ -3,6 +3,7 @@ library(tidyverse)
 library(skimr)
 library(sf)
 library(patchwork)
+library(viridis)
 load("data/full_air_quality_data.rda")
 
 # air and environmental quality ----
@@ -10,7 +11,7 @@ load("data/full_air_quality_data.rda")
 # days over air quality standards
 p1 <- full_data %>% 
   ggplot(aes(days_over_o3_standard)) +
-  geom_histogram(binwidth = 10, boundary = 0, fill = "#f56042") +
+  geom_histogram(binwidth = 10, boundary = 0, fill = "#def5e5ff") +
   theme_minimal() +
   labs(
     title = "Days over ozone standard",
@@ -21,7 +22,7 @@ p1 <- full_data %>%
 p2 <- full_data %>% 
   mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
   ggplot(aes(pm_standard)) +
-  geom_histogram(binwidth = 10, boundary = 0, fill = "#f5a442") +
+  geom_histogram(binwidth = 10, boundary = 0, fill = "#ed6925") +
   theme_minimal() +
   labs(
     title = "Days over PM 2.5 standard",
@@ -47,3 +48,29 @@ full_data %>%
     y = "Days over PM 2.5 standard"
   )
   
+p3 <- full_data %>% 
+  ggplot(aes(fill = log(days_over_o3_standard), geometry = geometry)) +
+  geom_sf() +
+  coord_sf(
+    xlim = c(-125, -65), 
+    ylim = c(20, 50)
+  ) + 
+  theme_void() + 
+  scale_fill_viridis("Log of days over\nozone standard", option = "mako") +
+  labs(title = "Distribution of ozone pollution") +
+  theme(legend.position = "bottom")
+
+p4 <- full_data %>% 
+  mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
+  ggplot(aes(fill = log(pm_standard), geometry = geometry)) +
+  geom_sf() +
+  coord_sf(
+    xlim = c(-125, -65), 
+    ylim = c(20, 50)
+  ) + 
+  theme_void() + 
+  scale_fill_viridis("Log of days over\nPM 2.5 standard", option = "inferno") +
+  labs(title = "Distribution of PM 2.5 pollution") +
+  theme(legend.position = "bottom")
+
+p3 + p4
