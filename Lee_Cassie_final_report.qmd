@@ -276,7 +276,24 @@ full_data %>%
   )
 ```
 
+Upon bivariate analysis between air quality indicators and environmental quality indicators, I decided not to move forward with analysis including environmental indicators because they were not particularly predictive of air quality. For example, I had originally suspected that the percent of population living near a highway would be predictive of ozone levels, however, @fig-environmental shows that it is not. This lack of relationship between environmental quality and air quality suggested that continuing to explore indicators of environmental quality would not help me answer my three main questions.
 
+```{r}
+#| label: fig-environmental
+#| label: The relationship between the days over ozone standard and the percent of people living within 150 M of a highway is an example of how environmental quality indicators were not particularly predictive of air quality indicators.
+
+full_data %>% 
+  ggplot(aes(highway_living, days_over_o3_standard)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  coord_cartesian(ylim = c(0, 50)) +
+  theme_minimal() +
+  labs(
+    title = "Days over ozone standard vs population living near a highway",
+    x = "Percent of people living within 150 M of a highway",
+    y = "Days over ozone standard"
+  )
+```
 
 
 # Appendix

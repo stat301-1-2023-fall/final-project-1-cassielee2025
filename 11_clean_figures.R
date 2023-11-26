@@ -141,6 +141,8 @@ full_data %>%
     max_size = 20
   ) 
 
+# all air quality indicators
+
 full_data %>% 
   select(contains("pollutant") | contains("days")) %>% 
   st_drop_geometry() %>% 
@@ -152,4 +154,17 @@ full_data %>%
     geom = "circle",
     max_size = 15,
     size = 3
+  )
+
+# environmental quality
+full_data %>% 
+  ggplot(aes(highway_living, days_over_o3_standard)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  coord_cartesian(ylim = c(0, 50)) +
+  theme_minimal() +
+  labs(
+    title = "Days over ozone standard vs population living near a highway",
+    x = "Percent of people living within 150 M of a highway",
+    y = "Days over ozone standard"
   )
