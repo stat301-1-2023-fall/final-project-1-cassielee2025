@@ -92,7 +92,7 @@ As seen in @fig-days-over-distribution, the distribution of days over the ozone 
 
 p1 <- full_data %>% 
   ggplot(aes(days_over_o3_standard)) +
-  geom_histogram(binwidth = 10, boundary = 0, fill = "#def5e5ff") +
+  geom_histogram(binwidth = 10, boundary = 0, fill = "#0094bf") +
   theme_minimal() +
   labs(
     title = "Days over ozone standard",
