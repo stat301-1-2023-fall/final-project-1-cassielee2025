@@ -261,4 +261,39 @@ full_data %>%
          max_size = 15,
          size = 3)
 
+p16 <- full_data %>% 
+  ggplot(aes(pollutant_formaldehyde, cancer_adjusted)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of lung and bronchus cancer"
+  ) +
+  theme_minimal()
+
+p17 <- full_data %>% 
+  ggplot(aes(pollutant_acetaldehyde, cancer_adjusted)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal()
+
+p18 <- full_data %>% 
+  ggplot(aes(pollutant_carbon_tetrachloride, cancer_adjusted)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Carbon tetrachloride",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal()
+
+p16 + p17 + p18
+
 

@@ -179,7 +179,7 @@ full_data %>%
   )
 ```
 
-The other group of air quality indicators I was interested in were benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene concentrations. @fig-pollutants shows the distribution of these air pollutants. Benzene, formaldehyde, acetaldehyde, and 1,3-butadiene are skewed right, indicating that there are several counties that have unusually high levels of these pollutants. This is expected, as counties with usually high industrial pollution would cause this distribution. However, carbon tetrachloride is skewed left, indicating that there are several counties that have unusually low levels of these pollutants. One reason that this distribution may differ from the others is that carbon tetrachloride is not naturally occuring, while the other pollutants are. Thus counties with usually low levels of carbon tetrachloride may be counties that have never had high levels of carbon tetrachloride exposure.[^9]
+The other group of air quality indicators I was interested in were benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene concentrations. @fig-pollutants shows the distribution of these air pollutants. Benzene, formaldehyde, acetaldehyde, and 1,3-butadiene are skewed right, indicating that there are several counties that have unusually high levels of these pollutants. This is expected, as counties with usually high industrial pollution would cause this distribution. However, carbon tetrachloride is skewed left, indicating that there are several counties that have unusually low levels of these pollutants. One reason that this distribution may differ from the others is that carbon tetrachloride is not naturally occuring, while the other pollutants are. Thus counties with usually low levels of carbon tetrachloride may be counties that have never had high levels of carbon tetrachloride exposure, and thus are capable of having extremely low values.[^9]
 
 [^9]: [Benzene](https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html), [Public Health Statement for Formaldehyde](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39), [Acetaldehyde](https://ntp.niehs.nih.gov/ntp/roc/content/profiles/acetaldehyde.pdf), [Where Is Carbon Tetrachloride Found?](https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html), [Public Health Statement for 1,3-Butadiene](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02)
 
@@ -414,6 +414,54 @@ full_data %>%
          max_size = 15,
          size = 3)
 ```
+
+@fig-cancer-scatters visualizes the relationship between the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride and the prevalence of lung and bronchus cancer. As expected, formaldehyde and acetaldehyde have very similar relationships with the prevalence of lung and bronchus cancer. However, it is surprising that the relationship between lung and bronchus cancer and carbon tetrachloride because this pollutant primarily affects the liver, kidneys, and central nervous system.[^12] The main carcinogenic properties affect the liver, not the lungs.[^13] @fig-cancer-correlation shows that carbon tetrachloride is most strongly correlated with benzene, however, benzene is not strongly correlated with cancer risk. Thus, carbon tetrachloride is likely correlated with a different carcinogenic air pollutant which affects the respiratory system that was not explored here.
+
+[^12]: [Carbon tetrachloride](https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf)
+[^13]: [Carbon tetrachloride](https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf)
+
+```{r}
+#| label: fig-cancer-scatters
+#| fig-cap: Scatterplots between the prevalence of lung and bronchus cancer per 100 K population and the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride.
+
+p16 <- full_data %>% 
+  ggplot(aes(pollutant_formaldehyde, cancer_adjusted)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of lung and bronchus cancer"
+  ) +
+  theme_minimal()
+
+p17 <- full_data %>% 
+  ggplot(aes(pollutant_acetaldehyde, cancer_adjusted)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal()
+
+p18 <- full_data %>% 
+  ggplot(aes(pollutant_carbon_tetrachloride, cancer_adjusted)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Carbon tetrachloride",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal()
+
+p16 + p17 + p18
+```
+
+
+
 
 # Appendix
 
