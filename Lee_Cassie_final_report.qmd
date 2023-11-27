@@ -34,6 +34,7 @@ library(skimr)
 library(sf)
 library(patchwork)
 library(viridis)
+library(GGally)
 load("data/full_air_quality_data.rda")
 ```
 
@@ -81,6 +82,8 @@ With the exception of Rio Arriba, Mexico, all counties have complete sociodemogr
 
 ## Indicators of air and environmental quality
 
+To address the first central question, I used univariate variate analysis to understand the distribution of the indicators of air and environmental quality. I also used bivariate analysis to understand if and how certain indicators were related to each other.
+
 As seen in @fig-days-over-distribution, the distribution of days over the ozone and particulate matter size 2.5 microns (PM 2.5) standards are both skewed right by observations with significantly more days over the standard. For both ozone and PM 2.5, most of the counties experienced no more than 20 days over the standard. However, the degree of right skewing for the distribution of days over ozone standard is significantly higher than for the distribution of days over the PM 2.5 standard.
 
 ```{r}
@@ -111,13 +114,13 @@ p2 <- full_data %>%
 p1 + p2
 ```
 
-Given that the distribution is so heavily skewed right, I was interested to see the distribution of the days over the ozone and PM 2.5 standards across the US. Although most of the data is missing, it is clear that Southern California has high levels of ozone pollution and Central California has high levels of PM 2.5 pollution. For PM 2.5, the days over the PM 2.5 standard aligns with the California wildfire incident map in 2018.[^8]
+Given that the distribution is so heavily skewed right, I was interested to see the distribution of the days over the ozone and PM 2.5 standards across the US. Although most of the data is missing, @fig-map-days-over shows that Southern California has high levels of ozone pollution and Central California has high levels of PM 2.5 pollution. For PM 2.5, the days over the PM 2.5 standard aligns with the California wildfire incident map in 2018.[^6]
 
-[^8]: [CalFire 2018 Incident Archive](https://www.fire.ca.gov/incidents/2018)
+[^6]: [Benzene](https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html), [Public Health Statement for Formaldehyde](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39), [Acetaldehyde](https://ntp.niehs.nih.gov/ntp/roc/content/profiles/acetaldehyde.pdf), [Where Is Carbon Tetrachloride Found?](https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html), [Public Health Statement for 1,3-Butadiene](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02)
 
 ```{r}
 #| label: fig-map-days-over
-#| fig-cap: Distribution of days over ozone and PM 2.5 pollution across the United States, excluding Hawaii and Alaska
+#| fig-cap: Distribution of days over the ozone and PM 2.5 standard across the United States, excluding Hawaii and Alaska.
 
 p3 <- full_data %>% 
   ggplot(aes(fill = log(days_over_o3_standard), geometry = geometry)) +
@@ -147,17 +150,17 @@ p4 <- full_data %>%
 p3 + p4
 ```
 
-@fig-days-over-relationship shows the relationship between the days over the ozone and PM 2.5 standard. There is a positive relationship between the two air quality indicators, indicating that counties with worse ozone pollution generally also have worse PM 2.5 pollution. This is consistent with research about the sources of ozone and PM 2.5 pollution, as they can both originate from nitrogen oxides from power plants, industrial pollution, and automobiles.[^6]
+@fig-days-over-relationship shows the relationship between the days over the ozone and PM 2.5 standard. There is a positive relationship between the two air quality indicators, indicating that counties with worse ozone pollution generally also have worse PM 2.5 pollution. This is consistent with research about the sources of ozone and PM 2.5 pollution, as they can both originate from nitrogen oxides from power plants, industrial pollution, and automobiles.[^7]
 
-However, there are a large number of counties that report having 0 days over the PM 2.5 standard while having several days over the ozone standard and several counties that report having 0 days over the ozone standard while having several days over the PM 2.5 standard. This is also consistent with research showing that these pollutants also have sources that produce one pollutant, but not the other. For example, construction sites, unpaved roads, fields, smokestacks and fires produce PM 2.5 pollution, but not ozone pollution.[^7]
+[^7]: [Ground-level Ozone Basics](https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics#formation) and [Particulate Matter (PM) Basics](https://www.epa.gov/pm-pollution/particulate-matter-pm-basics)
 
-[^6]: [Ground-level Ozone Basics](https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics#formation) and [Particulate Matter (PM) Basics](https://www.epa.gov/pm-pollution/particulate-matter-pm-basics)
+However, there are a large number of counties that report having 0 days over the PM 2.5 standard while having several days over the ozone standard and several counties that report having 0 days over the ozone standard while having several days over the PM 2.5 standard. This is also consistent with research showing that these pollutants also have sources that produce one pollutant, but not the other. For example, construction sites, unpaved roads, fields, smokestacks and fires produce PM 2.5 pollution, but not ozone pollution.[^8]
 
-[^7]: [Particulate Matter (PM) Basics](https://www.epa.gov/pm-pollution/particulate-matter-pm-basics)
+[^8]: [Particulate Matter (PM) Basics](https://www.epa.gov/pm-pollution/particulate-matter-pm-basics)
 
 ```{r}
 #| label: fig-days-over-relationship
-#| fig-cap: Relationship between days over PM 2.5 standard and days over ozone standards excluding outliers (over 50 days over one or both standards).
+#| fig-cap: Relationship between days over the PM 2.5 standard and days over the ozone standard excluding outliers (over 50 days over one or both standards).
 
 full_data %>% 
   mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
@@ -176,14 +179,13 @@ full_data %>%
   )
 ```
 
-The other group of air quality indicators I was interested in were benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene concentrations. @fig-pollutants shows the distribution of these air pollutants. Benzene, formaldehyde, acetaldehyde, and 1,3-butadiene are skewed right, indicating that there are several counties that have unusually high levels of these pollutants. This is expected, as counties with usually high industrial pollution would cause this distribution. However, carbon tetrachloride is skewed left, indicating that there are several counties that have unusually low levels of these pollutants. One reason that this distribution may differ from the others is that carbon tetrachloride is not naturally occuring, while the other pollutants are. Thus counties with usually low levels of carbon tetrachloride may be counties that have never had high levels of carbon tetrachloride exposure.[^8]
+The other group of air quality indicators I was interested in were benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene concentrations. @fig-pollutants shows the distribution of these air pollutants. Benzene, formaldehyde, acetaldehyde, and 1,3-butadiene are skewed right, indicating that there are several counties that have unusually high levels of these pollutants. This is expected, as counties with usually high industrial pollution would cause this distribution. However, carbon tetrachloride is skewed left, indicating that there are several counties that have unusually low levels of these pollutants. One reason that this distribution may differ from the others is that carbon tetrachloride is not naturally occuring, while the other pollutants are. Thus counties with usually low levels of carbon tetrachloride may be counties that have never had high levels of carbon tetrachloride exposure.[^9]
 
-[^8]: [Benzene](https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html), [Public Health Statement for Formaldehyde](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39), [Acetaldehyde](https://ntp.niehs.nih.gov/ntp/roc/content/profiles/acetaldehyde.pdf), [Where Is Carbon Tetrachloride Found?](https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html), [Public Health Statement for 1,3-Butadiene](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02)
-
+[^9]: [Benzene](https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html), [Public Health Statement for Formaldehyde](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39), [Acetaldehyde](https://ntp.niehs.nih.gov/ntp/roc/content/profiles/acetaldehyde.pdf), [Where Is Carbon Tetrachloride Found?](https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html), [Public Health Statement for 1,3-Butadiene](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02)
 
 ```{r}
 #| label: fig-pollutants
-#| fig-cap: Distribution of five air pollutants
+#| fig-cap: Distribution of five air pollutants.
 
 p5 <- full_data %>% 
   ggplot(aes(pollutant_benzene)) +
@@ -238,11 +240,11 @@ p9 <- full_data %>%
 (p5 + p6 + p7) / (p8 + p9)
 ```
 
-Then, I explored how these five air pollutants were correlated with each other. @fig-pollutants-corr shows a correlation matrix of these air pollutants. Formaldehyde and acetaldehyde are highly correlated with each other, while the rest of the pollutants were somewhat or barely correlated with each other. Carbon tetrachloride and benzene are somewhat correlated, and 1,3-butadiene is somewhat correlated with both formaldehyde and acetaldehyde. Benzene is barely correlated with formaldehyde and acetaldehyde. Correlation between these pollutants indicate similar sources of pollution that emit multiple pollutants at the same time. 
+Then, I explored how these five air pollutants were correlated with each other. @fig-pollutants-corr shows a correlation matrix of these air pollutants. Formaldehyde and acetaldehyde are highly correlated with each other, while the rest of the pollutants were somewhat or barely correlated with each other. Carbon tetrachloride and benzene are somewhat correlated, and 1,3-butadiene is somewhat correlated with both formaldehyde and acetaldehyde. Benzene is barely correlated with formaldehyde and acetaldehyde. Correlation between these pollutants indicate similar sources of pollution that emit multiple pollutants at the same time.
 
 ```{r}
 #| label: fig-pollutants-corr
-#| fig-cap: Correlation matrix of five air pollutants
+#| fig-cap: Correlation matrix of five air pollutants.
 
 full_data %>% 
   st_drop_geometry() %>% 
@@ -260,7 +262,7 @@ After exploring how these five pollutants were correlated with each other, I wan
 
 ```{r}
 #| label: fig-indicators-corr
-#| fig-cap: Correlation matrix of all air quality indicators
+#| fig-cap: Correlation matrix of all air quality indicators.
 
 full_data %>% 
   select(contains("pollutant") | contains("days")) %>% 
@@ -279,7 +281,7 @@ Upon bivariate analysis between air quality indicators and environmental quality
 
 ```{r}
 #| label: fig-environmental
-#| label: The relationship between the days over ozone standard and the percent of people living within 150 M of a highway is an example of how environmental quality indicators were not particularly predictive of air quality indicators.
+#| fig-cap: The relationship between the days over ozone standard and the percent of people living within 150 M of a highway is an example of how environmental quality indicators were not particularly predictive of air quality indicators.
 
 full_data %>% 
   ggplot(aes(highway_living, days_over_o3_standard)) +
@@ -298,13 +300,13 @@ full_data %>%
 
 Once I had an understanding of how the air quality indicators were related to each other, I was interested in seeing how air pollution and various lung diseases were related.
 
-@fig-ed-asthma shows that although ozone and PM 2.5 pollution are known to aggravate lung diseases such as asthma, there is not particularly clear relationship between emergency department visits for asthma and ozone or PM 2.5 pollution.[^9] It is possible that given better predictions and access to air quality information online, individuals with asthma are better able to avoid long exposures to high ozone and PM 2.5 levels, allowing them to avoid aggravating their asthma. 
+@fig-ed-asthma shows that although ozone and PM 2.5 pollution are known to aggravate lung diseases such as asthma, there is not particularly clear relationship between emergency department visits for asthma and ozone or PM 2.5 pollution.[^10] It is possible that given better predictions and access to air quality information online, individuals with asthma are better able to avoid long exposures to high ozone and PM 2.5 levels, allowing them to avoid aggravating their asthma.
 
-[^9]: [Ground-level Ozone Basics](https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics#effects), [Health and Environmental Effects of Particulate Matter (PM)](https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm)
+[^10]: [Ground-level Ozone Basics](https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics#effects), [Health and Environmental Effects of Particulate Matter (PM)](https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm)
 
 ```{r}
 #| label: fig-ed-asthma
-#| label: The crude rate of emergency deartment visits for asthma per 10 K population as a function of days over the ozone and PM 2.5 standard. 
+#| fig-cap: The crude rate of emergency deartment visits for asthma per 10 K population as a function of days over the ozone and PM 2.5 standard. 
 
 p10 <- full_data %>% 
   ggplot(aes(days_over_o3_standard, asthma_ed_crude)) +
@@ -339,13 +341,13 @@ p11 <- full_data %>%
 p10 + p11
 ```
 
-However, @fig-pollutants-asthma shows a clear positive relationship between the prevalence of asthma and exposure to the pollutants formaldehyde and acetaldehyde for both adults and children. Since the relationship between asthma and these two pollutants holds in both childhood and adulthood, I suspect that exposure to these pollutants in childhood is can be associated with the development of asthma, which is then carried into adulthood. The relationship between childhood asthma and formaldehyde exposure has been supported by various studies.[^10] 
+However, @fig-pollutants-asthma shows a clear positive relationship between the prevalence of asthma and exposure to the pollutants formaldehyde and acetaldehyde for both adults and children. Since the relationship between asthma and these two pollutants holds in both childhood and adulthood, I suspect that exposure to these pollutants in childhood is can be associated with the development of asthma, which is then carried into adulthood. The relationship between childhood asthma and formaldehyde exposure has been supported by various studies.[^11] There is limited and conflicting evidence about the long term effects of acetaldehyde exposure, so the positive relationship between childhood asthma and acetaldehyde exposure in these graphs may just be a result of the extremely strong correlation between formaldehyde and acetaldehyde.
 
-[^10]: [Formaldehyde Exposure and Asthma in Children: A Systematic Review](https://doi.org/10.1289%2Fehp.0901143)
+[^11]: [Formaldehyde Exposure and Asthma in Children: A Systematic Review](https://doi.org/10.1289%2Fehp.0901143)
 
 ```{r}
 #| label: fig-pollutants-asthma
-#| label: The prevalence of ault and child asthma prevalence as a function of formaldehyde and acetaldehyde concentrations.
+#| fig-cap: The prevalence of adult and child asthma prevalence (percent of population) as a function of formaldehyde and acetaldehyde concentrations.
 
 
 p12 <- full_data %>% 
@@ -353,9 +355,9 @@ p12 <- full_data %>%
   geom_point() + 
   geom_smooth(method = lm, se = FALSE) +
   labs(
-    title = "Crude adult asthma prevalance vs formaldehyde",
+    title = "Adult asthma vs formaldehyde",
     x = "Concentration (µg/m3)",
-    y = "Crude percentage of adults with asthma"
+    y = "Crude percentage"
   ) +
   theme_minimal()
 
@@ -364,9 +366,9 @@ p13 <- full_data %>%
   geom_point() + 
   geom_smooth(method = lm, se = FALSE) +
   labs(
-    title = "Crude adult asthma prevalance vs acetaldehyde",
+    title = "Adult asthma vs acetaldehyde",
     x = "Concentration (µg/m3)",
-    y = "Crude percentage of adults with asthma"
+    y = "Crude percentage"
   ) +
   theme_minimal()
 
@@ -375,9 +377,9 @@ p14 <- full_data %>%
   geom_point() + 
   geom_smooth(method = lm, se = FALSE) +
   labs(
-    title = "Crude child asthma prevalance vs formaldehyde",
+    title = "Child asthma vs formaldehyde",
     x = "Concentration (µg/m3)",
-    y = "Crude percentage of children with asthma"
+    y = "Crude percentage"
   ) +
   theme_minimal()
 
@@ -386,18 +388,32 @@ p15 <- full_data %>%
   geom_point() + 
   geom_smooth(method = lm, se = FALSE) +
   labs(
-    title = "Crude child asthma prevalance vs acetaldehyde",
+    title = "Child asthma vs acetaldehyde",
     x = "Concentration (µg/m3)",
-    y = "Crude percentage of children with asthma"
+    y = "Crude percentage"
   ) +
   theme_minimal()
 
 (p12 + p13) / (p14 + p15)
 ```
 
+To explore how lung and bronchus cancer was associated with the air quality indicators, I used a correlation matrix to identify potentially interesting relationships to explore. @fig-cancer-correlation shows that the measure of days over the ozone and PM 2.25 standard were not positively correlated with cancer, but it is important to note that there was a lot of missing data for these two indicators. On the other hand, there are relatively strong positive correlations between lung and bronchus cancer and the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride.
 
+```{r}
+#| label: fig-cancer-correlation
+#| fig-cap: Correlation matrix of lung and bronchus cancer and air quality indicators.
 
-
+full_data %>% 
+  select(cancer_adjusted, contains("days"), contains("pollutant")) %>% 
+  st_drop_geometry() %>% 
+  rename_with(~str_remove(., "(pollutant_)?(days_over_)?"), everything()) %>%
+  rename_with(~str_remove(., "(_adjusted)?$"), everything()) %>%
+  rename_with(~str_to_title(.), everything()) %>% 
+  ggcorr(hjust = 0.75,
+         geom = "circle",
+         max_size = 15,
+         size = 3)
+```
 
 # Appendix
 

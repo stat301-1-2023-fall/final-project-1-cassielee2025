@@ -208,9 +208,9 @@ p12 <- full_data %>%
   geom_point() + 
   geom_smooth(method = lm, se = FALSE) +
   labs(
-    title = "Crude adult asthma prevalance vs formaldehyde",
+    title = "Adult asthma vs formaldehyde",
     x = "Concentration (µg/m3)",
-    y = "Crude percentage of adults with asthma"
+    y = "Crude percentage"
   ) +
   theme_minimal()
 
@@ -219,9 +219,9 @@ p13 <- full_data %>%
   geom_point() + 
   geom_smooth(method = lm, se = FALSE) +
   labs(
-    title = "Crude adult asthma prevalance vs acetaldehyde",
+    title = "Adult asthma vs acetaldehyde",
     x = "Concentration (µg/m3)",
-    y = "Crude percentage of adults with asthma"
+    y = "Crude percentage"
   ) +
   theme_minimal()
 
@@ -230,9 +230,9 @@ p14 <- full_data %>%
   geom_point() + 
   geom_smooth(method = lm, se = FALSE) +
   labs(
-    title = "Crude child asthma prevalance vs formaldehyde",
+    title = "Child asthma vs formaldehyde",
     x = "Concentration (µg/m3)",
-    y = "Crude percentage of children with asthma"
+    y = "Crude percentage"
   ) +
   theme_minimal()
 
@@ -241,12 +241,24 @@ p15 <- full_data %>%
   geom_point() + 
   geom_smooth(method = lm, se = FALSE) +
   labs(
-    title = "Crude child asthma prevalance vs acetaldehyde",
+    title = "Child asthma vs acetaldehyde",
     x = "Concentration (µg/m3)",
-    y = "Crude percentage of children with asthma"
+    y = "Crude percentage"
   ) +
   theme_minimal()
 
 (p12 + p13) / (p14 + p15)
+
+# cancer
+full_data %>% 
+  select(cancer_adjusted, contains("days"), contains("pollutant")) %>% 
+  st_drop_geometry() %>% 
+  rename_with(~str_remove(., "(pollutant_)?(days_over_)?"), everything()) %>%
+  rename_with(~str_remove(., "(_adjusted)?$"), everything()) %>%
+  rename_with(~str_to_title(.), everything()) %>% 
+  ggcorr(hjust = 0.75,
+         geom = "circle",
+         max_size = 15,
+         size = 3)
 
 
