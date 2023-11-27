@@ -60,13 +60,13 @@ The three central questions I explored in this analysis were:
 
 2.  What are the most important indicators for determining the prevalence of asthma, cancer, and chronic obstructive pulmonary disease?
 
-3.  How do sociodemographics like age, gender, race, and socioeconomic vulnerability affect the relationships between air quality and health outcomes?
+3.  How do sociodemographics like age, gender, race, and socioeconomic vulnerability affect the relationships between lung disease and air quality?
 
 # Data overview & quality
 
 The air pollutants I selected includes the days over the ozone standard, the percent of days over the PM 2.5 standard, benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene pollution. The environmental quality indicators I selected includes the percent of people living near highways, the percent of public schools near highways, access to parks, and methods of transportation to work (walking, biking, driving alone, carpooling, public transportation, and none).
 
-The indicators I selected for prevalence of lung diseases includes the crude prevalence of adult and child asthma, the crude and age adjusted rates of emergency department visits for asthma, age adjusted rates of lung and bronchus cancer, and the crude and age adjusted rates of chronic pulmonary obstructive disease.
+The indicators I selected for prevalence of lung diseases includes the crude prevalence of adult and child asthma, the crude and age adjusted rates of emergency department visits for asthma, age adjusted rates of lung and bronchus cancer, and the crude and age adjusted rates of chronic obstructive pulmonary disease.
 
 The indicators of sociodemographic data I selected includes age, gender, race, and and the social vulnerability index[^5]. I compared sociodemographic characteristics of each county to other counties in the United States and used this to identify counties with comparatively higher percentages of vulnerable groups (Appendix A). I also identified the majority race demographic in each county.
 
@@ -415,7 +415,7 @@ full_data %>%
          size = 3)
 ```
 
-@fig-cancer-scatters visualizes the relationship between the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride and the prevalence of lung and bronchus cancer. As expected, formaldehyde and acetaldehyde have very similar relationships with the prevalence of lung and bronchus cancer. However, it is surprising that the relationship between lung and bronchus cancer and carbon tetrachloride because this pollutant primarily affects the liver, kidneys, and central nervous system.[^12] The main carcinogenic properties affect the liver, not the lungs.[^13] @fig-cancer-correlation shows that carbon tetrachloride is most strongly correlated with benzene, however, benzene is not strongly correlated with cancer risk. Thus, carbon tetrachloride is likely correlated with a different carcinogenic air pollutant which affects the respiratory system that was not explored here.
+@fig-cancer-scatters visualizes the relationship between the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride and the prevalence of lung and bronchus cancer. As expected, formaldehyde and acetaldehyde have very similar relationships with the prevalence of lung and bronchus cancer. However, it is surprising that the relationship between lung and bronchus cancer and carbon tetrachloride has such a high correlation and a relatively high slope because this pollutant primarily affects the liver, kidneys, and central nervous system.[^12] The main carcinogenic properties affect the liver, not the lungs.[^13] @fig-cancer-correlation shows that carbon tetrachloride is most strongly correlated with benzene, however, benzene is not strongly correlated with cancer risk. Thus, carbon tetrachloride is likely correlated with a different carcinogenic air pollutant which affects the respiratory system that was not explored here.
 
 [^12]: [Carbon tetrachloride](https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf)
 [^13]: [Carbon tetrachloride](https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf)
@@ -460,7 +460,137 @@ p18 <- full_data %>%
 p16 + p17 + p18
 ```
 
+Finally, to explore the relationship between chronic obstructive pulmonary disease (COPD) and air quality, I created another correlation matrix to identify potentially interesting relationships. @fig-copd-correlation and @fig-copd-scatters show that like lung and bronchus cancer, formaldehyde, acetaldehyde, and carbon tetrachloride pollution were strongly correlated with COPD. However, unlike the relationships for lung and bronchus cancer, formaldehyde and acetaldehyde have higher slopes. This is consistent with studies showing that formaldehyde exposure through inhalation increases the risk of COPD.[^14] The relationship between COPD and acetaldehyde is likely just a result of the strong correlation between formaldehyde and acetaldehyde because acetaldehyde is not known to have chronic health effects.
 
+[^14]:[Indoor air quality, ventilation and respiratory health in elderly residents living in nursing homes in Europe](http://dx.doi.org/10.1183/09031936.00082414); [
+Respiratory health of plywood workers occupationally exposed to formaldehyde](https://doi.org/10.1080/00039896.1990.10118748)
+
+```{r}
+#| label: fig-copd-correlation
+#| fig-cap: Correlation matrix of COPD and air quality indicators.
+
+full_data %>% 
+  select(copd_adjusted, contains("days"), contains("pollutant")) %>% 
+  st_drop_geometry() %>% 
+  rename_with(~str_remove(., "(pollutant_)?(days_over_)?"), everything()) %>%
+  rename_with(~str_remove(., "(_adjusted)?$"), everything()) %>%
+  rename_with(~str_to_title(.), everything()) %>% 
+  rename(COPD = Copd) %>% 
+  ggcorr(hjust = 0.75,
+         geom = "circle",
+         max_size = 15,
+         size = 3)
+```
+
+```{r}
+#| label: fig-copd-scatters
+#| fig-cap: Scatterplots between the age adjusted percentage of COPD and the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride.
+
+p19 <- full_data %>% 
+  ggplot(aes(pollutant_formaldehyde, copd_adjusted)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of COPD"
+  ) +
+  theme_minimal()
+
+p20 <- full_data %>% 
+  ggplot(aes(pollutant_acetaldehyde, copd_adjusted)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal()
+
+p21 <- full_data %>% 
+  ggplot(aes(pollutant_carbon_tetrachloride, copd_adjusted)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Carbon tetrachloride",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal()
+
+p19 + p20 + p21
+
+```
+
+## Sociodemographic effects on lung disease and air quality
+
+Given that poor air quality generally affects the young and the old, I explored how the distribution of age affected the relationship between lung disease and air quality. I identified counties with a relatively high proportion of young people or a relatively high proportion of older people as vulnerable.
+
+Although @fig-ed-asthma did not show a clear relationship between emergency department visits and days over the ozone and PM 2.5 standards, @fig-asthma-ed-age highlights how counties with a high population of young or old individuals do in fact expect to see an increase in emergency department visits for asthma given poor air quality. For counties that are not vulnerable by age demographics, emergency department visits still does not have a clear relationship with ozone. However, for PM 2.5 pollution, emergency department visits decrease with increasing number of days over the PM 2.5 standard. This may still reflect the tendency of individuals to use air quality forecasts to limit exposure. 
+
+```{r}
+#| label: fig-asthma-ed-age
+#| fig-cap: The crude rate of emergency deartment visits for asthma per 10 K population as a function of days over the ozone and PM 2.5 standard, disaggregated by age vulnerability.
+
+p22 <- full_data %>% 
+  ggplot(aes(
+    days_over_o3_standard, 
+    asthma_ed_crude, 
+    color = age_demographics_vulnerable,
+  )) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = lm, se = FALSE) +
+  coord_cartesian(
+    x = c(0, 50),
+    y = c(0, 100)
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Days over ozone standard",
+    x = "Days over ozone standard",
+    y = "Crude emergency department visits"
+  ) +
+  scale_color_viridis(
+    "Age vulnerability",
+    option = "mako", 
+    discrete = TRUE,
+    end = 0.7
+  ) +
+  theme(legend.position = "bottom")
+
+p23 <- full_data %>% 
+  mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
+  ggplot(aes(
+    pm_standard, 
+    asthma_ed_crude, 
+    color = age_demographics_vulnerable,
+  )) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = lm, se = FALSE) +
+  coord_cartesian(
+    x = c(0, 70),
+    y = c(0, 100)
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Days over PM 2.5 standard",
+    x = "Days over PM 2.5 standard",
+    y = "Crude emergency department visits"
+  ) +
+  scale_color_viridis(
+    "Age vulnerability",
+    option = "magma", 
+    discrete = TRUE,
+    end = 0.7
+  ) +
+  theme(legend.position = "bottom")
+
+p22 + p23 + plot_annotation(
+  title = "Age vulnerability and emergency department visits for asthma",
+  theme = theme(plot.title = element_text(face = "bold"))
+)
+```
 
 
 # Appendix

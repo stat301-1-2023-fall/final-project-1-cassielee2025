@@ -296,4 +296,120 @@ p18 <- full_data %>%
 
 p16 + p17 + p18
 
+# copd
 
+full_data %>% 
+  select(copd_adjusted, contains("days"), contains("pollutant")) %>% 
+  st_drop_geometry() %>% 
+  rename_with(~str_remove(., "(pollutant_)?(days_over_)?"), everything()) %>%
+  rename_with(~str_remove(., "(_adjusted)?$"), everything()) %>%
+  rename_with(~str_to_title(.), everything()) %>% 
+  rename(COPD = Copd) %>% 
+  ggcorr(hjust = 0.75,
+         geom = "circle",
+         max_size = 15,
+         size = 3)
+
+p19 <- full_data %>% 
+  ggplot(aes(pollutant_formaldehyde, copd_adjusted)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of COPD"
+  ) +
+  theme_minimal()
+
+p20 <- full_data %>% 
+  ggplot(aes(pollutant_acetaldehyde, copd_adjusted)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal()
+
+p21 <- full_data %>% 
+  ggplot(aes(pollutant_carbon_tetrachloride, copd_adjusted)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Carbon tetrachloride",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal()
+
+p19 + p20 + p21
+
+# sociodemographic effects
+
+# age
+p22 <- full_data %>% 
+  ggplot(aes(
+    days_over_o3_standard, 
+    asthma_ed_crude, 
+    color = age_demographics_vulnerable,
+  )) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = lm, se = FALSE) +
+  coord_cartesian(
+    x = c(0, 50),
+    y = c(0, 100)
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Days over ozone standard",
+    x = "Days over ozone standard",
+    y = "Crude emergency department visits"
+  ) +
+  scale_color_viridis(
+    "Age vulnerability",
+    option = "mako", 
+    discrete = TRUE,
+    end = 0.7
+  ) +
+  theme(legend.position = "bottom")
+
+p23 <- full_data %>% 
+  mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
+  ggplot(aes(
+    pm_standard, 
+    asthma_ed_crude, 
+    color = age_demographics_vulnerable,
+  )) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = lm, se = FALSE) +
+  coord_cartesian(
+    x = c(0, 70),
+    y = c(0, 100)
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Days over PM 2.5 standard",
+    x = "Days over PM 2.5 standard",
+    y = "Crude emergency department visits"
+  ) +
+  scale_color_viridis(
+    "Age vulnerability",
+    option = "magma", 
+    discrete = TRUE,
+    end = 0.7
+  ) +
+  theme(legend.position = "bottom")
+
+p22 + p23 + plot_annotation(
+  title = "Age vulnerability and emergency department visits for asthma",
+  theme = theme(plot.title = element_text(face = "bold"))
+)
+
+full_data %>% 
+  multivariate_plot(
+    pollutant_benzene, 
+    cancer_adjusted, 
+    age_demographics_vulnerable,
+    alpha = 0.2
+  )
