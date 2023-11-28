@@ -9,7 +9,7 @@ load("data/full_air_quality_data.rda")
 
 # air and environmental quality ----
 
-# days over air quality standards
+## days over air quality standards ----
 p1 <- full_data %>% 
   ggplot(aes(days_over_o3_standard)) +
   geom_histogram(binwidth = 10, boundary = 0, fill = "#0094bf") +
@@ -61,7 +61,11 @@ p3 <- full_data %>%
     ylim = c(20, 50)
   ) + 
   theme_void() + 
-  scale_fill_viridis("Log of days over\nozone standard", option = "mako") +
+  scale_fill_viridis(
+    "Log of days over\nozone standard", 
+    option = "mako", 
+    direction = -1
+  ) +
   labs(title = "Ozone") +
   theme(legend.position = "bottom")
 
@@ -74,7 +78,11 @@ p4 <- full_data %>%
     ylim = c(20, 50)
   ) + 
   theme_void() + 
-  scale_fill_viridis("Log of days over\nPM 2.5 standard", option = "inferno") +
+  scale_fill_viridis(
+    "Log of days over\nPM 2.5 standard", 
+    option = "magma",
+    direction = -1
+  ) +
   labs(title = "PM 2.5") +
   theme(legend.position = "bottom")
 
@@ -83,7 +91,7 @@ p3 + p4 + plot_annotation(
   theme = theme(plot.title = element_text(face = "bold"))
 )
 
-# pollutants
+## pollutants ----
 
 p5 <- full_data %>% 
   ggplot(aes(pollutant_benzene)) +
@@ -151,7 +159,7 @@ full_data %>%
     max_size = 20
   ) 
 
-# all air quality indicators
+## all air quality indicators ----
 
 full_data %>% 
   select(contains("pollutant") | contains("days")) %>% 
@@ -165,7 +173,7 @@ full_data %>%
     size = 3
   )
 
-# environmental quality
+## environmental quality ----
 full_data %>% 
   ggplot(aes(highway_living, days_over_o3_standard)) +
   geom_point(color = "#0094bf", alpha = 0.2) + 
@@ -180,7 +188,7 @@ full_data %>%
 
 # lung disease and air quality indicators ----
 
-# asthma
+## asthma ----
 p10 <- full_data %>% 
   ggplot(aes(days_over_o3_standard, asthma_ed_crude)) +
   geom_point(color = "#0094bf", alpha = 0.2) + 
@@ -266,7 +274,7 @@ p15 <- full_data %>%
   theme = theme(plot.title = element_text(face = "bold"))
 )
 
-# cancer
+## cancer ----
 full_data %>% 
   select(cancer_adjusted, contains("days"), contains("pollutant")) %>% 
   st_drop_geometry() %>% 
@@ -316,7 +324,7 @@ p16 + p17 + p18 + plot_annotation(
   theme = theme(plot.title = element_text(face = "bold"))
 )
 
-# copd
+## copd ----
 
 full_data %>% 
   select(copd_adjusted, contains("days"), contains("pollutant")) %>% 
@@ -370,7 +378,7 @@ p19 + p20 + p21 + plot_annotation(
 
 # sociodemographic effects ----
 
-# age
+## age ----
 p22 <- full_data %>% 
   ggplot(aes(
     days_over_o3_standard, 
@@ -443,7 +451,11 @@ p24 <- full_data %>%
     "Age vulnerability",
     values = c("black", "#f89540")
   ) +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
 
 p25 <- full_data %>% 
   ggplot(aes(
@@ -463,7 +475,11 @@ p25 <- full_data %>%
     "Age vulnerability",
     values = c("black", "#cc4778")
   ) +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
 
 p26 <- full_data %>% 
   ggplot(aes(
@@ -483,7 +499,11 @@ p26 <- full_data %>%
     "Age vulnerability",
     values = c("black", "#7e03a8")
   ) +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
 
 p24 + p25 + p26 + plot_annotation(
   title = "Age vulnerability and prevalence of lung and bronchus cancer",
@@ -555,7 +575,7 @@ p27 + p28 + p29 + plot_annotation(
   theme = theme(plot.title = element_text(face = "bold"))
 )
 
-# gender
+## gender ----
 p30 <- full_data %>% 
   filter(!is.na(gender_demographics_vulnerable)) %>% 
   ggplot(aes(
@@ -573,7 +593,7 @@ p30 <- full_data %>%
     y = "Crude ED visits"
   ) +
   scale_color_manual(
-    "Gender vulnerability",
+    "Proportion women",
     values = c("black", "#0094bf")
   ) +
   theme(legend.position = "bottom")
@@ -596,7 +616,7 @@ p31<- full_data %>%
     y = NULL
   ) +
   scale_color_manual(
-    "Gender vulnerability",
+    "Proportion women",
     values = c("black", "#ed6925")
   ) +
   theme(legend.position = "bottom")
@@ -611,7 +631,7 @@ p32 <- full_data %>%
   geom_point(alpha = 0.5) + 
   geom_smooth(method = lm, se = FALSE) +
   scale_color_manual(
-    "Gender vulnerability",
+    "Proportion women",
     values = c("black", "#f89540")
   ) +
   theme_minimal() +
@@ -632,7 +652,7 @@ p33 <- full_data %>%
   geom_point(alpha = 0.5) + 
   geom_smooth(method = lm, se = FALSE) +
   scale_color_manual(
-    "Gender vulnerability",
+    "Proportion women",
     values = c("black", "#cc4778")
   ) +
   theme_minimal() +
@@ -647,3 +667,458 @@ p30 + p31 + p32 + p33 + plot_annotation(
   title = "Gender vulnerability and emergency department visits for asthma",
   theme = theme(plot.title = element_text(face = "bold"))
 )
+
+p34 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    cancer_adjusted, 
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of lung and bronchus cancer"
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#f89540")
+  ) +
+  theme(legend.position = "none")
+
+p35 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>%
+  ggplot(aes(
+    pollutant_acetaldehyde, 
+    cancer_adjusted,
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#cc4778")
+  ) +
+  theme(legend.position = "none")
+
+p36 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>%
+  ggplot(aes(
+    pollutant_carbon_tetrachloride, 
+    cancer_adjusted,
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Carbon tetrachloride",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#7e03a8")
+  ) +
+  theme(legend.position = "none")
+
+p37 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>%
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    copd_adjusted, 
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of COPD"
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#f89540")
+  ) +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
+
+p38 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>%
+  ggplot(aes(
+    pollutant_acetaldehyde, 
+    copd_adjusted,
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#cc4778")
+  ) +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
+
+p39 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>%
+  ggplot(aes(
+    pollutant_carbon_tetrachloride, 
+    copd_adjusted,
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#7e03a8")
+  ) +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
+
+(p34 + p35 + p36) / (p37 + p38 + p39) + plot_annotation(
+  title = "Gender vulnerability and prevalence of lung and bronchus cancer and COPD",
+  theme = theme(plot.title = element_text(face = "bold"))
+)
+
+## race ----
+p40 <- full_data %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    asthma_adult_crude, 
+    color = majority
+  )) +
+  geom_point(alpha = 0.3) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Crude percentage"
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) +
+  theme(legend.position = "right")
+
+p41 <- full_data %>% 
+  ggplot(aes(
+    pollutant_acetaldehyde, 
+    asthma_adult_crude,
+    color = majority
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Crude percentage"
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) + 
+  theme(legend.position = "none")
+
+p40 + p41 + plot_layout(guides = "collect") +
+  plot_annotation(
+    title = "Race and prevalence of adult asthma",
+    theme = theme(plot.title = element_text(face = "bold"))
+  )
+
+p42 <- full_data %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    cancer_adjusted, 
+    color = majority
+  )) +
+  geom_point(alpha = 0.3) + 
+  geom_smooth(method = lm) +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of lung and bronchus cancer"
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) +
+  theme(legend.position = "none")
+
+p43 <- full_data %>% 
+  ggplot(aes(
+    pollutant_acetaldehyde, 
+    cancer_adjusted,
+    color = majority
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm) +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) + 
+  theme(legend.position = "bottom")
+
+p44 <- full_data %>% 
+  ggplot(aes(
+    pollutant_carbon_tetrachloride, 
+    cancer_adjusted,
+    color = majority
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm) +
+  labs(
+    title = "Carbon tetrachloride",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) + 
+  theme(legend.position = "none")
+
+p42 + p43 + p44 + plot_layout(guides = "collect") +
+  plot_annotation(
+    title = "Race and prevalence of lung and bronchus cancer",
+    theme = theme(plot.title = element_text(face = "bold"))
+  )
+
+p45 <- full_data %>% 
+  ggplot(aes(
+    pollutant_carbon_tetrachloride, 
+    copd_adjusted,
+    color = majority
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) + 
+  theme(legend.position = "none")
+
+p46 <- full_data %>% 
+  ggplot(aes(
+    pollutant_acetaldehyde, 
+    copd_adjusted,
+    color = majority
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) + 
+  theme(legend.position = "bottom")
+
+p47 <- full_data %>% 
+  ggplot(aes(
+    pollutant_carbon_tetrachloride, 
+    copd_adjusted,
+    color = majority
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Carbon tetrachloride",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) + 
+  theme(legend.position = "none")
+
+p45 + p46 + p47 + plot_layout(guides = "collect") +
+  plot_annotation(
+    title = "Race and prevalence of COPD",
+    theme = theme(plot.title = element_text(face = "bold"))
+  ) &
+  theme(legend.position = "bottom")
+
+## SVI ----
+p48 <- full_data %>% 
+  filter(!is.na(socioeconomic_vulnerability_vulnerable)) %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    asthma_adult_crude, 
+    color = socioeconomic_vulnerability_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Asthma",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of adult asthma"
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Social vulnerability",
+    values = c("black", "#f89540")
+  ) +
+  theme(legend.position = "bottom")
+
+p49 <- full_data %>% 
+  filter(!is.na(socioeconomic_vulnerability_vulnerable)) %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    cancer_adjusted, 
+    color = socioeconomic_vulnerability_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Lung and bronchus cancer",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of lung and bronchus cancer"
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Social vulnerability",
+    values = c("black", "#f89540")
+  ) +
+  theme(legend.position = "bottom")
+
+p50 <- full_data %>% 
+  filter(!is.na(socioeconomic_vulnerability_vulnerable)) %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    copd_adjusted, 
+    color = socioeconomic_vulnerability_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "COPD",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of COPD"
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Social vulnerability",
+    values = c("black", "#f89540")
+  ) +
+  theme(legend.position = "bottom")
+
+p48 + p49 + p50 + plot_layout(guides = "collect") +
+  plot_annotation(
+    title = "Social vulnerability index and the relationship between\nlung disease and formaldehyde pollution",
+    theme = theme(plot.title = element_text(face = "bold"))
+  ) &
+  theme(legend.position = "bottom")

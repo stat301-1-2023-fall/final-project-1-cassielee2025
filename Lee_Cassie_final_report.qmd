@@ -1,5 +1,5 @@
 ---
-title: "Air Quality Indicators and Disease Prevalence Across the US"
+title: "Air Quality Indicators and Disease Prevalence Across the United States"
 subtitle: |
   | Final Project 
   | Data Science 1 with R (STAT 301-1)
@@ -46,7 +46,7 @@ Air pollution is the presence of sufficient quantities of contaminants in the at
 
 [^2]: [Air quality and health](https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts)
 
-In the EDA, I explore the relationships between air quality indicators, certain lung diseases, and how sociodemographic vulnerabilities affect the relationships between air quality and health in the United States (excluding territories). The goal of this analysis is to build a deeper understanding of how various air pollutants impact health across the United States.
+In this exploratory data analysis, I explore the relationships between air quality indicators, certain lung diseases, and how sociodemographic vulnerabilities affect the relationships between air quality and health in the United States (excluding territories). The goal of this analysis is to build a deeper understanding of how various air pollutants impact health across the United States.
 
 I queried the data at the county level and downloaded from the CDC National Environmental Public Health Tracking Network interactive data explorer.[^3] This network was built to centralize environmental health data on the national, state, and county level across the United States.[^4]
 
@@ -60,7 +60,7 @@ The three central questions I explored in this analysis were:
 
 2.  What are the most important indicators for determining the prevalence of asthma, cancer, and chronic obstructive pulmonary disease?
 
-3.  How do sociodemographics like age, gender, race, and socioeconomic vulnerability affect the relationships between lung disease and air quality?
+3.  How do sociodemographics like age, gender, race, and the social vulnerability index affect the relationships between lung disease and air quality?
 
 # Data overview & quality
 
@@ -135,7 +135,11 @@ p3 <- full_data %>%
     ylim = c(20, 50)
   ) + 
   theme_void() + 
-  scale_fill_viridis("Log of days over\nozone standard", option = "mako") +
+  scale_fill_viridis(
+    "Log of days over\nozone standard", 
+    option = "mako", 
+    direction = -1
+  ) +
   labs(title = "Ozone") +
   theme(legend.position = "bottom")
 
@@ -148,7 +152,11 @@ p4 <- full_data %>%
     ylim = c(20, 50)
   ) + 
   theme_void() + 
-  scale_fill_viridis("Log of days over\nPM 2.5 standard", option = "inferno") +
+  scale_fill_viridis(
+    "Log of days over\nPM 2.5 standard", 
+    option = "magma",
+    direction = -1
+  ) +
   labs(title = "PM 2.5") +
   theme(legend.position = "bottom")
 
@@ -190,7 +198,7 @@ full_data %>%
 
 ### Air quality: benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene
 
-The other group of air quality indicators I was interested in were benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene concentrations. @fig-pollutants shows the distribution of these air pollutants. Benzene, formaldehyde, acetaldehyde, and 1,3-butadiene are skewed right, indicating that there are several counties that have unusually high levels of these pollutants. This is expected, as counties with usually high industrial pollution would cause this distribution. However, carbon tetrachloride is skewed left, indicating that there are several counties that have unusually low levels of these pollutants. One reason that this distribution may differ from the others is that carbon tetrachloride is not naturally occuring, while the other pollutants are. Thus counties with usually low levels of carbon tetrachloride may be counties that have never had high levels of carbon tetrachloride exposure, and thus are capable of having extremely low values.[^9]
+The other group of air quality indicators I was interested in were benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene concentrations. @fig-pollutants shows the distribution of these air pollutants. Benzene, formaldehyde, acetaldehyde, and 1,3-butadiene are skewed right, indicating that there are several counties that have unusually high levels of these pollutants. This is expected, as counties with usually high industrial pollution would cause this distribution. However, carbon tetrachloride is skewed left, indicating that there are several counties that have unusually low levels of these pollutants. One reason that this distribution may differ from the others is that carbon tetrachloride is not naturally occuring, while the other pollutants are. Thus counties with usually low levels of carbon tetrachloride may be counties that have never had high levels of carbon tetrachloride exposure, and thus are capable of having extremely low values(Agency for Toxic Substances and Disease Registry, n.d.-a.;).
 
 [^9]: [Benzene](https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html), [Public Health Statement for Formaldehyde](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39), [Acetaldehyde](https://ntp.niehs.nih.gov/ntp/roc/content/profiles/acetaldehyde.pdf), [Where Is Carbon Tetrachloride Found?](https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html), [Public Health Statement for 1,3-Butadiene](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02)
 
@@ -446,6 +454,7 @@ full_data %>%
 @fig-cancer-scatters visualizes the relationship between the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride and the prevalence of lung and bronchus cancer. As expected, formaldehyde and acetaldehyde have very similar relationships with the prevalence of lung and bronchus cancer. However, it is surprising that the relationship between lung and bronchus cancer and carbon tetrachloride has such a high correlation and a relatively high slope because this pollutant primarily affects the liver, kidneys, and central nervous system.[^12] The main carcinogenic properties affect the liver, not the lungs.[^13] @fig-cancer-correlation shows that carbon tetrachloride is most strongly correlated with benzene, however, benzene is not strongly correlated with cancer risk. Thus, carbon tetrachloride is likely correlated with a different carcinogenic air pollutant which affects the respiratory system that was not explored here.
 
 [^12]: [Carbon tetrachloride](https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf)
+
 [^13]: [Carbon tetrachloride](https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf)
 
 ```{r}
@@ -495,8 +504,7 @@ p16 + p17 + p18 + plot_annotation(
 
 Finally, to explore the relationship between chronic obstructive pulmonary disease (COPD) and air quality, I created another correlation matrix to identify potentially interesting relationships. @fig-copd-correlation and @fig-copd-scatters show that like lung and bronchus cancer, formaldehyde, acetaldehyde, and carbon tetrachloride pollution were strongly correlated with COPD. However, unlike the relationships for lung and bronchus cancer, formaldehyde and acetaldehyde have higher slopes. This is consistent with studies showing that formaldehyde exposure through inhalation increases the risk of COPD.[^14] The relationship between COPD and acetaldehyde is likely just a result of the strong correlation between formaldehyde and acetaldehyde because acetaldehyde is not known to have chronic health effects.
 
-[^14]:[Indoor air quality, ventilation and respiratory health in elderly residents living in nursing homes in Europe](http://dx.doi.org/10.1183/09031936.00082414); [
-Respiratory health of plywood workers occupationally exposed to formaldehyde](https://doi.org/10.1080/00039896.1990.10118748)
+[^14]: [Indoor air quality, ventilation and respiratory health in elderly residents living in nursing homes in Europe](http://dx.doi.org/10.1183/09031936.00082414); [Respiratory health of plywood workers occupationally exposed to formaldehyde](https://doi.org/10.1080/00039896.1990.10118748)
 
 ```{r}
 #| label: fig-copd-correlation
@@ -561,11 +569,11 @@ p19 + p20 + p21 + plot_annotation(
 
 ## Sociodemographic effects on lung disease and air quality
 
-### Demographic age vulnerability
+### Age vulnerability
 
 Given that poor air quality generally affects the young and the old, I explored how the distribution of age affected the relationship between lung disease and air quality. I identified counties with a relatively high proportion of young people or a relatively high proportion of older people as vulnerable.
 
-Although @fig-ed-asthma did not show a clear relationship between emergency department visits and days over the ozone and PM 2.5 standards, @fig-asthma-ed-age highlights how counties with a high population of young or old individuals do in fact expect to see an increase in emergency department visits for asthma given poor air quality. For counties that are not vulnerable by age demographics, emergency department visits still does not have a clear relationship with ozone. However, for PM 2.5 pollution, emergency department visits decrease with increasing number of days over the PM 2.5 standard. This may still reflect the tendency of individuals to use air quality forecasts to limit exposure. 
+Although @fig-ed-asthma did not show a clear relationship between emergency department visits and days over the ozone and PM 2.5 standards, @fig-asthma-ed-age highlights how counties with a high population of young or old individuals do in fact expect to see an increase in emergency department visits for asthma given poor air quality. For counties that are not vulnerable by age demographics, emergency department visits still does not have a clear relationship with ozone. However, for PM 2.5 pollution, emergency department visits decrease with increasing number of days over the PM 2.5 standard. This may still reflect the tendency of individuals to use air quality forecasts to limit exposure.
 
 ```{r}
 #| label: fig-asthma-ed-age
@@ -650,7 +658,11 @@ p24 <- full_data %>%
     "Age vulnerability",
     values = c("black", "#f89540")
   ) +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
 
 p25 <- full_data %>% 
   ggplot(aes(
@@ -670,7 +682,11 @@ p25 <- full_data %>%
     "Age vulnerability",
     values = c("black", "#cc4778")
   ) +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
 
 p26 <- full_data %>% 
   ggplot(aes(
@@ -690,7 +706,11 @@ p26 <- full_data %>%
     "Age vulnerability",
     values = c("black", "#7e03a8")
   ) +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
 
 p24 + p25 + p26 + plot_annotation(
   title = "Age vulnerability and prevalence of lung and bronchus cancer",
@@ -698,7 +718,7 @@ p24 + p25 + p26 + plot_annotation(
 )
 ```
 
-@fig-copd-age shows that demographic age vulnerability had a similar effect on the relationship between COPD and air pollutants. However, it seems that for counties that did not have a high population of young and old individuals, the effect of formaldehyde and acetaldehyde pollution on COPD prevalence is greater. This is also likely another effect of how chronic diseases develop and affect age distributions. 
+@fig-copd-age shows that demographic age vulnerability had a similar effect on the relationship between COPD and air pollutants. However, it seems that for counties that did not have a high population of young and old individuals, the effect of formaldehyde and acetaldehyde pollution on COPD prevalence is greater. This is also likely another effect of how chronic diseases develop and affect age distributions.
 
 ```{r}
 #| label: fig-copd-age
@@ -770,16 +790,17 @@ p27 + p28 + p29 + plot_annotation(
 )
 ```
 
-## Gender vulnerability
+### Gender vulnerability
 
-Given that there are often differences in exposure to environmental hazards between men and women, I was interested to see if counties with a relatively higher proportion of women had a different relationship with asthma and air quality than counties with a relatively lower proportion of women. @fig-ed-asthma-gender shows that in general, the effect of poor air quality on emergency department visits for asthma was larger for counties with a relatively higher proportion of women. The exception to this is PM 2.5, and this could be due to gendered differences in risk perception for poor air quality.[^15]
+Given that there are often differences in exposure to environmental hazards between men and women,[^15] I was interested to see if counties with a relatively higher proportion of women had a different relationship with asthma and air quality than counties with a relatively lower proportion of women. @fig-ed-asthma-gender shows that in general, the effect of poor air quality on emergency department visits for asthma was larger for counties with a relatively higher proportion of women. The exception to this is PM 2.5, and this could be due to gendered differences in risk perception for poor air quality.[^16]
 
-[^15]: [The impact of gender on risk perception: Implications for EU member states’ national risk assessment processes](https://doi.org/10.1016/j.ijdrr.2021.102452)
+[^15]: [Gender and environmental statistics](https://www.oecd.org/environment/brochure-gender-and-environmental-statistics.pdf)
+
+[^16]: [The impact of gender on risk perception: Implications for EU member states' national risk assessment processes](https://doi.org/10.1016/j.ijdrr.2021.102452)
 
 ```{r}
 #| label: fig-ed-asthma-gender
-#| fig-cap: The crude rate of emergency deartment visits for asthma per 10 K population as a function of days over the ozone and PM 2.5 standard, disaggregated by gender vulnerability. 
-
+#| fig-cap: The crude rate of emergency deartment visits for asthma per 10 K population as a function of days over the ozone and PM 2.5 standard and the pollutnats formaldehyde and acetaldehyde, disaggregated by gender vulnerability. 
 
 p30 <- full_data %>% 
   filter(!is.na(gender_demographics_vulnerable)) %>% 
@@ -798,7 +819,7 @@ p30 <- full_data %>%
     y = "Crude ED visits"
   ) +
   scale_color_manual(
-    "Gender vulnerability",
+    "Proportion women",
     values = c("black", "#0094bf")
   ) +
   theme(legend.position = "bottom")
@@ -821,7 +842,7 @@ p31<- full_data %>%
     y = NULL
   ) +
   scale_color_manual(
-    "Gender vulnerability",
+    "Proportion women",
     values = c("black", "#ed6925")
   ) +
   theme(legend.position = "bottom")
@@ -836,7 +857,7 @@ p32 <- full_data %>%
   geom_point(alpha = 0.5) + 
   geom_smooth(method = lm, se = FALSE) +
   scale_color_manual(
-    "Gender vulnerability",
+    "Proportion women",
     values = c("black", "#f89540")
   ) +
   theme_minimal() +
@@ -857,7 +878,7 @@ p33 <- full_data %>%
   geom_point(alpha = 0.5) + 
   geom_smooth(method = lm, se = FALSE) +
   scale_color_manual(
-    "Gender vulnerability",
+    "Proportion women",
     values = c("black", "#cc4778")
   ) +
   theme_minimal() +
@@ -874,6 +895,559 @@ p30 + p31 + p32 + p33 + plot_annotation(
 )
 ```
 
+For both lung and bronchus cancer and COPD, the effect of gender demographics on the relationship between air quality and disease is generally the opposite than for asthma. @fig-cancer-copd-gender shows that increased formaldehyde and acetaldehyde concentrations have a larger effect on lung and bronchus cancer and COPD for counties with a relatively high proportion of men (lower proportion of women). With the exception of carbon tetrachloride, the gendered differences in the development of chronic lung diseases in response to air pollution may reflect gendered differences in exposure duration, possible through occupation.[^17]
+
+[^17]: [Gender and environmental statistics](https://www.oecd.org/environment/brochure-gender-and-environmental-statistics.pdf)
+
+```{r}
+#| label: fig-cancer-copd-gender
+#| fig-cap: The prevalence of lung and bronchus cancer per 100 K population and the age adjusted percentage of COPD as a function of the pollutnats formaldehyde, acetaldehyde, and carbon tetrachloride, disaggregated by gender vulnerability. 
+
+p34 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    cancer_adjusted, 
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of lung and bronchus cancer"
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#f89540")
+  ) +
+  theme(legend.position = "none")
+
+p35 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>%
+  ggplot(aes(
+    pollutant_acetaldehyde, 
+    cancer_adjusted,
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#cc4778")
+  ) +
+  theme(legend.position = "none")
+
+p36 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>%
+  ggplot(aes(
+    pollutant_carbon_tetrachloride, 
+    cancer_adjusted,
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Carbon tetrachloride",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#7e03a8")
+  ) +
+  theme(legend.position = "none")
+
+p37 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>%
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    copd_adjusted, 
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of COPD"
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#f89540")
+  ) +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
+
+p38 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>%
+  ggplot(aes(
+    pollutant_acetaldehyde, 
+    copd_adjusted,
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#cc4778")
+  ) +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
+
+p39 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>%
+  ggplot(aes(
+    pollutant_carbon_tetrachloride, 
+    copd_adjusted,
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#7e03a8")
+  ) +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
+
+(p34 + p35 + p36) / (p37 + p38 + p39) + plot_annotation(
+  title = "Gender vulnerability and prevalence of lung and bronchus cancer and COPD",
+  theme = theme(plot.title = element_text(face = "bold"))
+)
+```
+
+### Race
+
+I was interested in how the predominant race in each county affected the relationship between lung disease and air quality. However, there are so few counties that are predominantly American Indian Alaskan Native and Asian Pacific Islander, that that comparisons can only be made between predominantly Black and white counties. However, limited variability within the disaggregation of predominant race greatly limited the ability to draw conclusions about the effect of predominant race on the relationship between lung disease and air quality.
+
+@fig-asthma-race shows that predominantly Black counties have higher levels of both formaldehyde and acetaldehyde pollution and a higher prevalence of asthma, however, the effect of increased air pollution on the prevalence of asthma is either equal to or less than in predomnantly white counties. This may be a limitation of lower variation in pollution levels in counties that are predominantly Black.
+
+```{r}
+#| label: fig-asthma-race
+#| fig-cap:  The prevalence of adult and child asthma prevalence (percent of population) as a function of formaldehyde and acetaldehyde concentrations, disaggregated by predominant race.
+
+p40 <- full_data %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    asthma_adult_crude, 
+    color = majority
+  )) +
+  geom_point(alpha = 0.3) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Crude percentage"
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) +
+  theme(legend.position = "right")
+
+p41 <- full_data %>% 
+  ggplot(aes(
+    pollutant_acetaldehyde, 
+    asthma_adult_crude,
+    color = majority
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Crude percentage"
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) + 
+  theme(legend.position = "none")
+
+p40 + p41 + plot_layout(guides = "collect") +
+  plot_annotation(
+    title = "Race and prevalence of adult asthma",
+    theme = theme(plot.title = element_text(face = "bold"))
+  )
+```
+
+Unexpectedly, @fig-cancer-race shows that in predominantly Black counties, as the level of formaldehyde and acetaldehyde pollution increases, the prevalence of lung and bronchus cancer decreases. Even though the confidence interval for predominantly Black counties is fairly large, it still clearly shows a different relationship than for predominantly white counties. For carbon tetrachloride, however, all predominant races have very similar effects on the relationship between cancer and pollution, just with varying levels of cancer prevalence overall.
+
+```{r}
+#| label: fig-cancer-race
+#| fig-cap: The prevalence of lung and bronchus cancer per 100 K population as a function of the pollutnats formaldehyde, acetaldehyde, and carbon tetrachloride, disaggregated by predominant race. 
+
+p42 <- full_data %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    cancer_adjusted, 
+    color = majority
+  )) +
+  geom_point(alpha = 0.3) + 
+  geom_smooth(method = lm) +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of lung and bronchus cancer"
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) +
+  theme(legend.position = "none")
+
+p43 <- full_data %>% 
+  ggplot(aes(
+    pollutant_acetaldehyde, 
+    cancer_adjusted,
+    color = majority
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm) +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) + 
+  theme(legend.position = "bottom")
+
+p44 <- full_data %>% 
+  ggplot(aes(
+    pollutant_carbon_tetrachloride, 
+    cancer_adjusted,
+    color = majority
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm) +
+  labs(
+    title = "Carbon tetrachloride",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) + 
+  theme(legend.position = "none")
+
+p42 + p43 + p44 + plot_layout(guides = "collect") +
+  plot_annotation(
+    title = "Race and prevalence of lung and bronchus cancer",
+    theme = theme(plot.title = element_text(face = "bold"))
+  )
+```
+
+@fig-copd-race shows that between predominantly Black and white counties, the predominant race does not particularly affect the relationship between COPD and the pollutants formaldehyde and acetaldehyde. The relationship between COPD and carbon tetrachloride in predominantly Black counties is nearly opposite of the relationship for predominantly white counties, but I suspect this is due to the limited variability in the level of carbon tetrachloride pollution measured in predominantly Black counties.
+
+```{r}
+#| label: fig-copd-race
+#| fig-cap: Age adjusted percentage of COPD as a function of the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride, disaggregated by predominant race.
+
+p45 <- full_data %>% 
+  ggplot(aes(
+    pollutant_carbon_tetrachloride, 
+    copd_adjusted,
+    color = majority
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) + 
+  theme(legend.position = "none")
+
+p46 <- full_data %>% 
+  ggplot(aes(
+    pollutant_acetaldehyde, 
+    copd_adjusted,
+    color = majority
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) + 
+  theme(legend.position = "bottom")
+
+p47 <- full_data %>% 
+  ggplot(aes(
+    pollutant_carbon_tetrachloride, 
+    copd_adjusted,
+    color = majority
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Carbon tetrachloride",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_viridis(
+    "Predominant race",
+    option = "inferno",
+    discrete = TRUE,
+    end = 0.8,
+    labels = c(
+      "American Indian\nAlaskan Native",
+      "Asian Pacific Islander",
+      "Black", 
+      "White"
+    )
+  ) + 
+  theme(legend.position = "none")
+
+p45 + p46 + p47 + plot_layout(guides = "collect") +
+  plot_annotation(
+    title = "Race and prevalence of COPD",
+    theme = theme(plot.title = element_text(face = "bold"))
+  ) &
+  theme(legend.position = "bottom")
+```
+
+### Social Vulnerability Index
+
+Initially, I was interested in exploring how the social vulnerability index (SVI) of each county affected the relationship between lung disease and air quality. However, upon exploration, there was little difference in the relationship between lung disease and air quality for counties with a high SVI score compared to a low SVI score. @fig-svi shows that although counties with high social vulnerability have a slight negative slope for the prevalence of asthma and an overall higher prevalence, the relationship between increased air pollution and the prevalence of asthma is not much different than for counties with low social vulnerability. Similarly, although the prevalence of COPD is higher for counties with high social vulnerability, the slope is not much different from counties with low social vulnerability. For lung and bronchus cancer, social vulnerability has an extremely negligible effect on the relationship between the prevalence of cancer and formaldehyde pollution.
+
+I suspect that part of the reason SVI does not greatly affect the relationship between lung disease and air pollution is that SVI was designed to capture the social vulnerability in responding to emergency events such as hurricanes, disease outbreaks, or exposure to dangerous chemicals, whereas my explorations focus more on the chronic effects of long term air pollution.[^18]
+
+[^18]: [CDC/ATSDR Social Vulnerability Index](https://www.atsdr.cdc.gov/placeandhealth/svi/index.html)
+
+```{r}
+#| label: fig-svi
+#| fig-cap: The prevalence of adult asthma (percent of popultion), lung and bronchus cancer per 100 K population, and COPD (age adjusted percentage of population) as a function of formaldehyde pollution, disaggregated by SVI.
+
+p48 <- full_data %>% 
+  filter(!is.na(socioeconomic_vulnerability_vulnerable)) %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    asthma_adult_crude, 
+    color = socioeconomic_vulnerability_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Asthma",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of adult asthma"
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Social vulnerability",
+    values = c("black", "#f89540")
+  ) +
+  theme(legend.position = "bottom")
+
+p49 <- full_data %>% 
+  filter(!is.na(socioeconomic_vulnerability_vulnerable)) %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    cancer_adjusted, 
+    color = socioeconomic_vulnerability_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Lung and bronchus cancer",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of lung and bronchus cancer"
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Social vulnerability",
+    values = c("black", "#f89540")
+  ) +
+  theme(legend.position = "bottom")
+
+p50 <- full_data %>% 
+  filter(!is.na(socioeconomic_vulnerability_vulnerable)) %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    copd_adjusted, 
+    color = socioeconomic_vulnerability_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "COPD",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of COPD"
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Social vulnerability",
+    values = c("black", "#f89540")
+  ) +
+  theme(legend.position = "bottom")
+
+p48 + p49 + p50 + plot_layout(guides = "collect") +
+  plot_annotation(
+    title = "Social vulnerability index and the relationship between\nlung disease and formaldehyde pollution",
+    theme = theme(plot.title = element_text(face = "bold"))
+  ) &
+  theme(legend.position = "bottom")
+```
+
+# Conclusions
+
+In this exploratory data analysis, I visualized the distributions of air quality indicators and their relationships with lung disease across the United States.
+
+The distributions of the air quality standards were all skewed right, with the exception of carbon tetrachloride. I suspect that the extremely low values for carbon tetrachloride concentrations could reflect areas that have not had carbon tetrachloride pollution before, as this chemical does not occur naturally. Additionally, analysis showed that the two categories of air quality indicators, days over the ozone and PM 2.5 standard, and five industrial pollutants, benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene were not highly correlated with each other. However, correlation between air quality indicators within both categories were relatively high.
+
+Explorations of the relationships between lung disease and air quality showed that formaldehyde, acetaldehyde, and carbon tetrachloride were generally most predictive of lung disease. However, since formaldehyde and acetaldehyde were very highly correlated, and exposure to acetaldehyde is not known to have chronic health effects, formaldehyde is likely confounding the relationship between acetaldehyde and formaldehyde. The prevalence of both adult and child asthma were associated with formaldehyde and acetaldehyde, and emergency department visits for asthma were also associated with the days over the ozone and PM 2.5 standards for counties that had a high population of younger and older people. Lung and bronchus cancer was associated with formaldehyde, acetaldehyde, and carbon tetrachloride, and counties that had a relatively higher proportion of men experienced a greater effect of pollution on the prevalence of cancer. Chronic obstructive pulmonary disease was also most strongly associated with formaldehyde, acetaldehyde, and carbon tetrachloride, and similar to lung and bronchus cancer, counties that had a relatively higher proportion of men experienced a greater effect of pollution on the prevalence of COPD.
+
+Finally, although I disaggregated the relationship between air pollution and lung cancer by the predominant race in each county, it is difficult to draw conclusions because there was very little variation in each category, with the exception of Black and white counties. Even then, there was often limited variation in the exposure to pollution in Black counties because they tended to cluster around the higher end of pollution exposure.
+
+One further question this exploratory data analysis raises is what other air pollutant is highly correlated with carbon tetrachloride? Although the relationship between lung and bronchus cancer and carbon tetracholoride is strong and holds even when I disaggregated by various sociodemographic vulnerabilities, carbon tetrachloride is not known to cause cancer in the respiratory system, but rather cause liver cancer. Since carbon tetrachloride was not particularly associated with another air pollutant explored here, there must be another air pollutant that actually directly causes an increased prevalence of lung and bronchus cancer.
+
+Additionally, future work could have a greater emphasis on mapping the exposures and health outcomes across the United States. Mapping would allow for a greater understanding of the spatial distributions of air pollution and health outcomes. For example, mapping allows us to identify places with extreme industrial pollution, like Louisiana's Cancer Alley.[^19] Additionally, mapping enables the ability to put results into greater historical and political context to understand how and why air pollution and health outcomes concentrate in certain counties, allowing for a better application of the data exploration to efforts in environmental justice.
+
+[^19]: [Down Cancer Alley: The Lived Experience of Health and Environmental Suffering in Louisiana's Chemical Corridor](https://doi.org/10.1111/j.1548-1387.2011.01154.x)
+
+# Sources
+
+Agency for Toxic Substances and Disease Registry. (n.d.-a). Public Health Statement for 1,3-Butadiene. Retrieved November 28, 2023, from [https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02)
+
+Agency for Toxic Substances and Disease Registry. (n.d.-b). Public Health Statement for Formaldehyde. Retrieved November 28, 2023, from https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39 
+
+Agency for Toxic Substances and Disease Registry. (2019, January 3). Benzene. https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html 
+
+Agency for Toxic Substances and Disease Registry. (2023a, May 25). Carbon Tetrachloride Toxicity: Where Is Carbon Tetrachloride Found? https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html 
+
+Agency for Toxic Substances and Disease Registry. (2023b, July 12). CDC/ATSDR Social Vulnerability Index (SVI). https://www.atsdr.cdc.gov/placeandhealth/svi/index.html 
+
+Bentayeb, M., Norback, D., Bednarek, M., Bernard, A., Cai, G., Cerrai, S., Eleftheriou, K. K., Gratziou, C., Holst, G. J., Lavaud, F., Nasilowski, J., Sestini, P., Sarno, G., Sigsgaard, T., Wieslander, G., Zielinski, J., Viegi, G., & Annesi-Maesano, I. (2015). Indoor air quality, ventilation and respiratory health in elderly residents living in nursing homes in Europe. European Respiratory Journal, 45(5), 1228--1238. https://doi.org/10.1183/09031936.00082414 
+
+Brown, G. D., Largey, A., & McMullan, C. (2021). The impact of gender on risk perception: Implications for EU member states' national risk assessment processes. International Journal of Disaster Risk Reduction, 63, 102452. https://doi.org/10.1016/j.ijdrr.2021.102452 
+
+Cal Fire. (n.d.). 2018 Fire Season Incident Archive. Retrieved November 28, 2023, from https://www.fire.ca.gov/incidents/2018 
+
+Centers for Disease Control and Prevention. (n.d.). National Environmental Public Health Tracking Network. Retrieved November 28, 2023, from https://ephtracking.cdc.gov 
+
+Malaka, T., & Kodama, A. M. (1990). Respiratory Health of Plywood Workers Occupationally Exposed to Formaldehyde. Archives of Environmental Health: An International Journal, 45(5), 288--294. https://doi.org/10.1080/00039896.1990.10118748 
+
+McGwin, G., Lienert, J., & Kennedy, J. I. (2010). Formaldehyde Exposure and Asthma in Children: A Systematic Review. Environmental Health Perspectives, 118(3), 313--317. https://doi.org/10.1289/ehp.0901143 
+
+National Institute of Environmental Health Sciences. (n.d.). Acetaldehyde (Report on Carcinogens, Fifteenth Edition). Retrieved November 28, 2023, from https://ntp.niehs.nih.gov/sites/default/files/ntp/roc/content/profiles/acetaldehyde.pdf 
+
+OECD. (2020). Gender and environmental statistics: Exploring available data and developing new evidence. https://www.oecd.org/environment/brochure-gender-and-environmental-statistics.pdf 
+
+US EPA, O. (n.d.). Carbon tetrachloride. Retrieved November 28, 2023, from https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf 
+
+US EPA, O. (2015, May 29). Ground-level Ozone Basics \[Overviews and Factsheets\]. https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics 
+
+US EPA, O. (2016a, April 19). Particulate Matter (PM) Basics \[Overviews and Factsheets\]. https://www.epa.gov/pm-pollution/particulate-matter-pm-basics 
+
+US EPA, O. (2016b, April 26). Health and Environmental Effects of Particulate Matter (PM) \[Overviews and Factsheets\]. https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm 
+
+World Health Organization. (n.d.). Air quality and health. Retrieved November 28, 2023, from https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts
 
 # Appendix
 
