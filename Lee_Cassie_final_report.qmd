@@ -84,6 +84,8 @@ With the exception of Rio Arriba, Mexico, all counties have complete sociodemogr
 
 To address the first central question, I used univariate variate analysis to understand the distribution of the indicators of air and environmental quality. I also used bivariate analysis to understand if and how certain indicators were related to each other.
 
+### Air quality: ozone and PM 2.5
+
 As seen in @fig-days-over-distribution, the distribution of days over the ozone and particulate matter size 2.5 microns (PM 2.5) standards are both skewed right by observations with significantly more days over the standard. For both ozone and PM 2.5, most of the counties experienced no more than 20 days over the standard. However, the degree of right skewing for the distribution of days over ozone standard is significantly higher than for the distribution of days over the PM 2.5 standard.
 
 ```{r}
@@ -111,12 +113,15 @@ p2 <- full_data %>%
     y = NULL
   )
 
-p1 + p2
+p1 + p2 + plot_annotation(
+  title = "Distribution of days over air quality standards",
+  theme = theme(plot.title = element_text(face = "bold"))
+)
 ```
 
 Given that the distribution is so heavily skewed right, I was interested to see the distribution of the days over the ozone and PM 2.5 standards across the US. Although most of the data is missing, @fig-map-days-over shows that Southern California has high levels of ozone pollution and Central California has high levels of PM 2.5 pollution. For PM 2.5, the days over the PM 2.5 standard aligns with the California wildfire incident map in 2018.[^6]
 
-[^6]: [Benzene](https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html), [Public Health Statement for Formaldehyde](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39), [Acetaldehyde](https://ntp.niehs.nih.gov/ntp/roc/content/profiles/acetaldehyde.pdf), [Where Is Carbon Tetrachloride Found?](https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html), [Public Health Statement for 1,3-Butadiene](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02)
+[^6]: [2018 Incident Archive](https://www.fire.ca.gov/incidents/2018)
 
 ```{r}
 #| label: fig-map-days-over
@@ -131,7 +136,7 @@ p3 <- full_data %>%
   ) + 
   theme_void() + 
   scale_fill_viridis("Log of days over\nozone standard", option = "mako") +
-  labs(title = "Distribution of ozone pollution") +
+  labs(title = "Ozone") +
   theme(legend.position = "bottom")
 
 p4 <- full_data %>% 
@@ -144,10 +149,13 @@ p4 <- full_data %>%
   ) + 
   theme_void() + 
   scale_fill_viridis("Log of days over\nPM 2.5 standard", option = "inferno") +
-  labs(title = "Distribution of PM 2.5 pollution") +
+  labs(title = "PM 2.5") +
   theme(legend.position = "bottom")
 
-p3 + p4
+p3 + p4 + plot_annotation(
+  title = "Distribution of days over air quality standards across the US",
+  theme = theme(plot.title = element_text(face = "bold"))
+)
 ```
 
 @fig-days-over-relationship shows the relationship between the days over the ozone and PM 2.5 standard. There is a positive relationship between the two air quality indicators, indicating that counties with worse ozone pollution generally also have worse PM 2.5 pollution. This is consistent with research about the sources of ozone and PM 2.5 pollution, as they can both originate from nitrogen oxides from power plants, industrial pollution, and automobiles.[^7]
@@ -176,8 +184,11 @@ full_data %>%
     title = "Days over PM 2.5 standard vs days over ozone standard",
     x = "Days ozone standard",
     y = "Days over PM 2.5 standard"
-  )
+  ) +
+  theme(plot.title = element_text(face = "bold"))
 ```
+
+### Air quality: benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene
 
 The other group of air quality indicators I was interested in were benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene concentrations. @fig-pollutants shows the distribution of these air pollutants. Benzene, formaldehyde, acetaldehyde, and 1,3-butadiene are skewed right, indicating that there are several counties that have unusually high levels of these pollutants. This is expected, as counties with usually high industrial pollution would cause this distribution. However, carbon tetrachloride is skewed left, indicating that there are several counties that have unusually low levels of these pollutants. One reason that this distribution may differ from the others is that carbon tetrachloride is not naturally occuring, while the other pollutants are. Thus counties with usually low levels of carbon tetrachloride may be counties that have never had high levels of carbon tetrachloride exposure, and thus are capable of having extremely low values.[^9]
 
@@ -237,7 +248,10 @@ p9 <- full_data %>%
     y = NULL
   )
 
-(p5 + p6 + p7) / (p8 + p9)
+(p5 + p6 + p7) / (p8 + p9) + plot_annotation(
+  title = "Distribution of air pollutants",
+  theme = theme(plot.title = element_text(face = "bold"))
+)
 ```
 
 Then, I explored how these five air pollutants were correlated with each other. @fig-pollutants-corr shows a correlation matrix of these air pollutants. Formaldehyde and acetaldehyde are highly correlated with each other, while the rest of the pollutants were somewhat or barely correlated with each other. Carbon tetrachloride and benzene are somewhat correlated, and 1,3-butadiene is somewhat correlated with both formaldehyde and acetaldehyde. Benzene is barely correlated with formaldehyde and acetaldehyde. Correlation between these pollutants indicate similar sources of pollution that emit multiple pollutants at the same time.
@@ -258,6 +272,8 @@ full_data %>%
   )  
 ```
 
+### Air quality: combined
+
 After exploring how these five pollutants were correlated with each other, I wanted to see if they were correlated with ozone and PM 2.5 pollution. @fig-indicators-corr shows that ozone and PM 2.5 pollution are not particularly correlated with the other 5 pollutants. This is likely because the five chemicals are nearly striclty from industrial pollution, while ozone and PM 2.5 pollution can have significant non-industrial sources, such as from automobiles.
 
 ```{r}
@@ -277,6 +293,8 @@ full_data %>%
   )
 ```
 
+### Environmental quality
+
 Upon bivariate analysis between air quality indicators and environmental quality indicators, I decided not to move forward with analysis including environmental indicators because they were not particularly predictive of air quality. For example, I had originally suspected that the percent of population living near a highway would be predictive of ozone levels, however, @fig-environmental shows that it is not. This lack of relationship between environmental quality and air quality suggested that continuing to explore indicators of environmental quality would not help me answer my three main questions.
 
 ```{r}
@@ -285,8 +303,8 @@ Upon bivariate analysis between air quality indicators and environmental quality
 
 full_data %>% 
   ggplot(aes(highway_living, days_over_o3_standard)) +
-  geom_point() + 
-  geom_smooth(method = lm, se = FALSE) +
+  geom_point(color = "#0094bf", alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE, color = "black")  +
   coord_cartesian(ylim = c(0, 50)) +
   theme_minimal() +
   labs(
@@ -300,6 +318,8 @@ full_data %>%
 
 Once I had an understanding of how the air quality indicators were related to each other, I was interested in seeing how air pollution and various lung diseases were related.
 
+### Asthma
+
 @fig-ed-asthma shows that although ozone and PM 2.5 pollution are known to aggravate lung diseases such as asthma, there is not particularly clear relationship between emergency department visits for asthma and ozone or PM 2.5 pollution.[^10] It is possible that given better predictions and access to air quality information online, individuals with asthma are better able to avoid long exposures to high ozone and PM 2.5 levels, allowing them to avoid aggravating their asthma.
 
 [^10]: [Ground-level Ozone Basics](https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics#effects), [Health and Environmental Effects of Particulate Matter (PM)](https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm)
@@ -310,8 +330,8 @@ Once I had an understanding of how the air quality indicators were related to ea
 
 p10 <- full_data %>% 
   ggplot(aes(days_over_o3_standard, asthma_ed_crude)) +
-  geom_point() + 
-  geom_smooth(method = lm, se = FALSE)  +
+  geom_point(color = "#0094bf", alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE, color = "black")  +
   coord_cartesian(
     x = c(0, 20),
     y = c(0, 150)
@@ -325,8 +345,8 @@ p10 <- full_data %>%
 
 p11 <- full_data %>% 
   ggplot(aes(days_over_pm_standard, asthma_ed_crude)) +
-  geom_point() + 
-  geom_smooth(method = lm, se = FALSE) +
+  geom_point(color = "#ed6925", alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE, color = "black") +
   coord_cartesian(
     x = c(0, 20),
     y = c(0, 150)
@@ -338,7 +358,10 @@ p11 <- full_data %>%
   ) +
   theme_minimal()
   
-p10 + p11
+p10 + p11 + plot_annotation(
+  title = "Emergency department visits for asthma vs days over air quality standards",
+  theme = theme(plot.title = element_text(face = "bold"))
+)
 ```
 
 However, @fig-pollutants-asthma shows a clear positive relationship between the prevalence of asthma and exposure to the pollutants formaldehyde and acetaldehyde for both adults and children. Since the relationship between asthma and these two pollutants holds in both childhood and adulthood, I suspect that exposure to these pollutants in childhood is can be associated with the development of asthma, which is then carried into adulthood. The relationship between childhood asthma and formaldehyde exposure has been supported by various studies.[^11] There is limited and conflicting evidence about the long term effects of acetaldehyde exposure, so the positive relationship between childhood asthma and acetaldehyde exposure in these graphs may just be a result of the extremely strong correlation between formaldehyde and acetaldehyde.
@@ -352,8 +375,8 @@ However, @fig-pollutants-asthma shows a clear positive relationship between the 
 
 p12 <- full_data %>% 
   ggplot(aes(pollutant_formaldehyde, asthma_adult_crude)) +
-  geom_point() + 
-  geom_smooth(method = lm, se = FALSE) +
+  geom_point(color = "#f89540", alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE, color = "black") +
   labs(
     title = "Adult asthma vs formaldehyde",
     x = "Concentration (µg/m3)",
@@ -363,8 +386,8 @@ p12 <- full_data %>%
 
 p13 <- full_data %>% 
   ggplot(aes(pollutant_acetaldehyde, asthma_adult_crude)) +
-  geom_point() + 
-  geom_smooth(method = lm, se = FALSE) +
+  geom_point(color = "#cc4778", alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE, color = "black") +
   labs(
     title = "Adult asthma vs acetaldehyde",
     x = "Concentration (µg/m3)",
@@ -373,9 +396,9 @@ p13 <- full_data %>%
   theme_minimal()
 
 p14 <- full_data %>% 
-  ggplot(aes(pollutant_acetaldehyde, asthma_child_crude)) +
-  geom_point() + 
-  geom_smooth(method = lm, se = FALSE) +
+  ggplot(aes(pollutant_formaldehyde, asthma_child_crude)) +
+  geom_point(color = "#f89540", alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE, color = "black") +
   labs(
     title = "Child asthma vs formaldehyde",
     x = "Concentration (µg/m3)",
@@ -385,8 +408,8 @@ p14 <- full_data %>%
 
 p15 <- full_data %>% 
   ggplot(aes(pollutant_acetaldehyde, asthma_child_crude)) +
-  geom_point() + 
-  geom_smooth(method = lm, se = FALSE) +
+  geom_point(color = "#cc4778", alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE, color = "black") +
   labs(
     title = "Child asthma vs acetaldehyde",
     x = "Concentration (µg/m3)",
@@ -394,8 +417,13 @@ p15 <- full_data %>%
   ) +
   theme_minimal()
 
-(p12 + p13) / (p14 + p15)
+(p12 + p13) / (p14 + p15) + plot_annotation(
+  title = "Prevalence of asthma vs air pollutants",
+  theme = theme(plot.title = element_text(face = "bold"))
+)
 ```
+
+### Lung and bronchus cancer
 
 To explore how lung and bronchus cancer was associated with the air quality indicators, I used a correlation matrix to identify potentially interesting relationships to explore. @fig-cancer-correlation shows that the measure of days over the ozone and PM 2.25 standard were not positively correlated with cancer, but it is important to note that there was a lot of missing data for these two indicators. On the other hand, there are relatively strong positive correlations between lung and bronchus cancer and the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride.
 
@@ -422,12 +450,12 @@ full_data %>%
 
 ```{r}
 #| label: fig-cancer-scatters
-#| fig-cap: Scatterplots between the prevalence of lung and bronchus cancer per 100 K population and the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride.
+#| fig-cap: The prevalence of lung and bronchus cancer per 100 K population as a function of the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride.
 
 p16 <- full_data %>% 
   ggplot(aes(pollutant_formaldehyde, cancer_adjusted)) +
-  geom_point() + 
-  geom_smooth(method = lm, se = FALSE) +
+  geom_point(color = "#f89540", alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE, color = "black") +
   labs(
     title = "Formaldehyde",
     x = "Concentration (µg/m3)",
@@ -437,8 +465,8 @@ p16 <- full_data %>%
 
 p17 <- full_data %>% 
   ggplot(aes(pollutant_acetaldehyde, cancer_adjusted)) +
-  geom_point() + 
-  geom_smooth(method = lm, se = FALSE) +
+  geom_point(color = "#cc4778", alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE, color = "black") +
   labs(
     title = "Acetaldehyde",
     x = "Concentration (µg/m3)",
@@ -448,8 +476,8 @@ p17 <- full_data %>%
 
 p18 <- full_data %>% 
   ggplot(aes(pollutant_carbon_tetrachloride, cancer_adjusted)) +
-  geom_point() + 
-  geom_smooth(method = lm, se = FALSE) +
+  geom_point(color = "#7e03a8", alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE, color = "black") +
   labs(
     title = "Carbon tetrachloride",
     x = "Concentration (µg/m3)",
@@ -457,8 +485,13 @@ p18 <- full_data %>%
   ) +
   theme_minimal()
 
-p16 + p17 + p18
+p16 + p17 + p18 + plot_annotation(
+  title = "Prevalence of lung and bronchus cancer vs air pollutants",
+  theme = theme(plot.title = element_text(face = "bold"))
+)
 ```
+
+### Chronic obstructive pulmonary disease
 
 Finally, to explore the relationship between chronic obstructive pulmonary disease (COPD) and air quality, I created another correlation matrix to identify potentially interesting relationships. @fig-copd-correlation and @fig-copd-scatters show that like lung and bronchus cancer, formaldehyde, acetaldehyde, and carbon tetrachloride pollution were strongly correlated with COPD. However, unlike the relationships for lung and bronchus cancer, formaldehyde and acetaldehyde have higher slopes. This is consistent with studies showing that formaldehyde exposure through inhalation increases the risk of COPD.[^14] The relationship between COPD and acetaldehyde is likely just a result of the strong correlation between formaldehyde and acetaldehyde because acetaldehyde is not known to have chronic health effects.
 
@@ -484,12 +517,12 @@ full_data %>%
 
 ```{r}
 #| label: fig-copd-scatters
-#| fig-cap: Scatterplots between the age adjusted percentage of COPD and the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride.
+#| fig-cap: Age adjusted percentage of COPD as a function of the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride.
 
 p19 <- full_data %>% 
   ggplot(aes(pollutant_formaldehyde, copd_adjusted)) +
-  geom_point() + 
-  geom_smooth(method = lm, se = FALSE) +
+  geom_point(color = "#f89540", alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE, color = "black") +
   labs(
     title = "Formaldehyde",
     x = "Concentration (µg/m3)",
@@ -499,8 +532,8 @@ p19 <- full_data %>%
 
 p20 <- full_data %>% 
   ggplot(aes(pollutant_acetaldehyde, copd_adjusted)) +
-  geom_point() + 
-  geom_smooth(method = lm, se = FALSE) +
+  geom_point(color = "#cc4778", alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE, color = "black") +
   labs(
     title = "Acetaldehyde",
     x = "Concentration (µg/m3)",
@@ -510,8 +543,8 @@ p20 <- full_data %>%
 
 p21 <- full_data %>% 
   ggplot(aes(pollutant_carbon_tetrachloride, copd_adjusted)) +
-  geom_point() + 
-  geom_smooth(method = lm, se = FALSE) +
+  geom_point(color = "#7e03a8", alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE, color = "black") +
   labs(
     title = "Carbon tetrachloride",
     x = "Concentration (µg/m3)",
@@ -519,11 +552,16 @@ p21 <- full_data %>%
   ) +
   theme_minimal()
 
-p19 + p20 + p21
+p19 + p20 + p21 + plot_annotation(
+  title = "Prevalence of COPD vs air pollutants",
+  theme = theme(plot.title = element_text(face = "bold"))
+)
 
 ```
 
 ## Sociodemographic effects on lung disease and air quality
+
+### Demographic age vulnerability
 
 Given that poor air quality generally affects the young and the old, I explored how the distribution of age affected the relationship between lung disease and air quality. I identified counties with a relatively high proportion of young people or a relatively high proportion of older people as vulnerable.
 
@@ -531,7 +569,7 @@ Although @fig-ed-asthma did not show a clear relationship between emergency depa
 
 ```{r}
 #| label: fig-asthma-ed-age
-#| fig-cap: The crude rate of emergency deartment visits for asthma per 10 K population as a function of days over the ozone and PM 2.5 standard, disaggregated by age vulnerability.
+#| fig-cap: The crude rate of emergency deartment visits for asthma per 10 K population as a function of days over the ozone and PM 2.5 standard, disaggregated by demographic age vulnerability.
 
 p22 <- full_data %>% 
   ggplot(aes(
@@ -551,11 +589,9 @@ p22 <- full_data %>%
     x = "Days over ozone standard",
     y = "Crude emergency department visits"
   ) +
-  scale_color_viridis(
+  scale_color_manual(
     "Age vulnerability",
-    option = "mako", 
-    discrete = TRUE,
-    end = 0.7
+    values = c("black", "#0094bf")
   ) +
   theme(legend.position = "bottom")
 
@@ -578,16 +614,262 @@ p23 <- full_data %>%
     x = "Days over PM 2.5 standard",
     y = "Crude emergency department visits"
   ) +
-  scale_color_viridis(
+  scale_color_manual(
     "Age vulnerability",
-    option = "magma", 
-    discrete = TRUE,
-    end = 0.7
+    values = c("black", "#ed6925")
   ) +
   theme(legend.position = "bottom")
 
 p22 + p23 + plot_annotation(
   title = "Age vulnerability and emergency department visits for asthma",
+  theme = theme(plot.title = element_text(face = "bold"))
+)
+```
+
+I was also interested in exploring how vulnerability by age demographics would affect the relationship between the prevalence of cancer and air pollutants. @fig-cancer-age shows how the relationship between lung and bronchus cancer and air pollutants is the same across age vulnerabilities. However, counties that are vulnerable by age demographics generally have a lower prevalence of cancer. This is likely because children typically do not have enough time to develop lung and bronchus cancer at a young age, and people who have had lung and bronchus cancer may not live until older ages, so they would not be included in the population statistics.
+
+```{r}
+#| label: fig-cancer-age
+#| fig-cap: The prevalence of lung and bronchus cancer per 100 K population as a function of the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride, disaggregated by demographic age vulnerability.
+
+p24 <- full_data %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    cancer_adjusted, 
+    color = age_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of lung and bronchus cancer"
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Age vulnerability",
+    values = c("black", "#f89540")
+  ) +
+  theme(legend.position = "bottom")
+
+p25 <- full_data %>% 
+  ggplot(aes(
+    pollutant_acetaldehyde, 
+    cancer_adjusted,
+    color = age_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Age vulnerability",
+    values = c("black", "#cc4778")
+  ) +
+  theme(legend.position = "bottom")
+
+p26 <- full_data %>% 
+  ggplot(aes(
+    pollutant_carbon_tetrachloride, 
+    cancer_adjusted,
+    color = age_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Carbon tetrachloride",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Age vulnerability",
+    values = c("black", "#7e03a8")
+  ) +
+  theme(legend.position = "bottom")
+
+p24 + p25 + p26 + plot_annotation(
+  title = "Age vulnerability and prevalence of lung and bronchus cancer",
+  theme = theme(plot.title = element_text(face = "bold"))
+)
+```
+
+@fig-copd-age shows that demographic age vulnerability had a similar effect on the relationship between COPD and air pollutants. However, it seems that for counties that did not have a high population of young and old individuals, the effect of formaldehyde and acetaldehyde pollution on COPD prevalence is greater. This is also likely another effect of how chronic diseases develop and affect age distributions. 
+
+```{r}
+#| label: fig-copd-age
+#| fig-cap: Age adjusted percentage of COPD as a function of the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride, disaggregated by demographic age vulnerability.
+
+p27 <- full_data %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    copd_adjusted, 
+    color = age_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Prevalence of COPD"
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Age vulnerability",
+    values = c("black", "#f89540")
+  ) +
+  theme(legend.position = "bottom")
+
+p28 <- full_data %>% 
+  ggplot(aes(
+    pollutant_acetaldehyde, 
+    copd_adjusted,
+    color = age_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Age vulnerability",
+    values = c("black", "#cc4778")
+  ) +
+  theme(legend.position = "bottom")
+
+p29 <- full_data %>% 
+  ggplot(aes(
+    pollutant_carbon_tetrachloride, 
+    copd_adjusted,
+    color = age_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Carbon tetrachloride",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  scale_color_manual(
+    "Age vulnerability",
+    values = c("black", "#7e03a8")
+  ) +
+  theme(legend.position = "bottom")
+
+p27 + p28 + p29 + plot_annotation(
+  title = "Age vulnerability and prevalence of COPD",
+  theme = theme(plot.title = element_text(face = "bold"))
+)
+```
+
+## Gender vulnerability
+
+Given that there are often differences in exposure to environmental hazards between men and women, I was interested to see if counties with a relatively higher proportion of women had a different relationship with asthma and air quality than counties with a relatively lower proportion of women. @fig-ed-asthma-gender shows that in general, the effect of poor air quality on emergency department visits for asthma was larger for counties with a relatively higher proportion of women. The exception to this is PM 2.5, and this could be due to gendered differences in risk perception for poor air quality.[^15]
+
+[^15]: [The impact of gender on risk perception: Implications for EU member states’ national risk assessment processes](https://doi.org/10.1016/j.ijdrr.2021.102452)
+
+```{r}
+#| label: fig-ed-asthma-gender
+#| fig-cap: The crude rate of emergency deartment visits for asthma per 10 K population as a function of days over the ozone and PM 2.5 standard, disaggregated by gender vulnerability. 
+
+
+p30 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  ggplot(aes(
+    days_over_o3_standard, 
+    asthma_ed_crude, 
+    color = gender_demographics_vulnerable,
+  )) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  coord_cartesian(x = c(0, 30)) +
+  theme_minimal() +
+  labs(
+    title = "Ozone",
+    x = "Days over ozone standard",
+    y = "Crude ED visits"
+  ) +
+  scale_color_manual(
+    "Gender vulnerability",
+    values = c("black", "#0094bf")
+  ) +
+  theme(legend.position = "bottom")
+
+p31<- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
+  ggplot(aes(
+    pm_standard, 
+    asthma_ed_crude, 
+    color = age_demographics_vulnerable,
+  )) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  coord_cartesian(x = c(0, 40)) +
+  theme_minimal() +
+  labs(
+    title = "PM 2.5",
+    x = "Days over PM 2.5 standard",
+    y = NULL
+  ) +
+  scale_color_manual(
+    "Gender vulnerability",
+    values = c("black", "#ed6925")
+  ) +
+  theme(legend.position = "bottom")
+
+p32 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    asthma_ed_crude,
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.5) + 
+  geom_smooth(method = lm, se = FALSE) +
+  scale_color_manual(
+    "Gender vulnerability",
+    values = c("black", "#f89540")
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  labs(
+    title = "Formaldehyde",
+    x = "Concentration (µg/m3)",
+    y = "Crude ED visits"
+  )
+
+p33 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  ggplot(aes(
+    pollutant_acetaldehyde, 
+    asthma_ed_crude,
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.5) + 
+  geom_smooth(method = lm, se = FALSE) +
+  scale_color_manual(
+    "Gender vulnerability",
+    values = c("black", "#cc4778")
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  labs(
+    title = "Acetaldehyde",
+    x = "Concentration (µg/m3)",
+    y = NULL
+  ) 
+
+p30 + p31 + p32 + p33 + plot_annotation(
+  title = "Gender vulnerability and emergency department visits for asthma",
   theme = theme(plot.title = element_text(face = "bold"))
 )
 ```
