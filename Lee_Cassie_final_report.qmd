@@ -40,19 +40,11 @@ load("data/full_air_quality_data.rda")
 
 # Introduction
 
-Air pollution is the presence of sufficient quantities of contaminants in the atmosphere for a duration that is long enough to cause harm to human health.[^1] Air pollution mainly enters the body through the lungs, and while it mostly impacts the heart, lungs, and brain, it has the potential to affect other organs as well by traveling through the bloodstream.[^2]
-
-[^1]: [Air quality and health](https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts)
-
-[^2]: [Air quality and health](https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts)
+Air pollution is the presence of sufficient quantities of contaminants in the atmosphere for a duration that is long enough to cause harm to human health (World Health Organization, n.d.). Air pollution mainly enters the body through the lungs, and while it mostly impacts the heart, lungs, and brain, it has the potential to affect other organs as well by traveling through the bloodstream (World Health Organization, n.d.).
 
 In this exploratory data analysis, I explore the relationships between air quality indicators, certain lung diseases, and how sociodemographic vulnerabilities affect the relationships between air quality and health in the United States (excluding territories). The goal of this analysis is to build a deeper understanding of how various air pollutants impact health across the United States.
 
-I queried the data at the county level and downloaded from the CDC National Environmental Public Health Tracking Network interactive data explorer.[^3] This network was built to centralize environmental health data on the national, state, and county level across the United States.[^4]
-
-[^3]: [CDC National Environmental Public Health Tracking Network](http://www.cdc.gov/ephtracking)
-
-[^4]: [CDC National Environmental Public Health Tracking Network](http://www.cdc.gov/ephtracking)
+I queried the data at the county level and downloaded from the CDC National Environmental Public Health Tracking Network interactive data explorer (Centers for Disease Control and Prevention, n.d.).This network was built to centralize environmental health data on the national, state, and county level across the United States (Centers for Disease Control and Prevention, n.d.).
 
 The three central questions I explored in this analysis were:
 
@@ -68,9 +60,7 @@ The air pollutants I selected includes the days over the ozone standard, the per
 
 The indicators I selected for prevalence of lung diseases includes the crude prevalence of adult and child asthma, the crude and age adjusted rates of emergency department visits for asthma, age adjusted rates of lung and bronchus cancer, and the crude and age adjusted rates of chronic obstructive pulmonary disease.
 
-The indicators of sociodemographic data I selected includes age, gender, race, and and the social vulnerability index[^5]. I compared sociodemographic characteristics of each county to other counties in the United States and used this to identify counties with comparatively higher percentages of vulnerable groups (Appendix A). I also identified the majority race demographic in each county.
-
-[^5]: [CDC/ATSDR Social Vulnerability Index](https://www.atsdr.cdc.gov/placeandhealth/svi/index.html)
+The indicators of sociodemographic data I selected includes age, gender, race, and and the social vulnerability index (Agency for Toxic Substances and Disease Registry, 2023). I compared sociodemographic characteristics of each county to other counties in the United States and used this to identify counties with comparatively higher percentages of vulnerable groups (Appendix A). I also identified the majority race demographic in each county.
 
 If available, I downloaded all data at the county level for 2018. Crude rates of child asthma and age adjusted rates of lung and bronchus cancer were only available at the state level. I downloaded data for the usual method of transportation to work for the time period of 2017 to 2021.
 
@@ -119,9 +109,7 @@ p1 + p2 + plot_annotation(
 )
 ```
 
-Given that the distribution is so heavily skewed right, I was interested to see the distribution of the days over the ozone and PM 2.5 standards across the US. Although most of the data is missing, @fig-map-days-over shows that Southern California has high levels of ozone pollution and Central California has high levels of PM 2.5 pollution. For PM 2.5, the days over the PM 2.5 standard aligns with the California wildfire incident map in 2018.[^6]
-
-[^6]: [2018 Incident Archive](https://www.fire.ca.gov/incidents/2018)
+Given that the distribution is so heavily skewed right, I was interested to see the distribution of the days over the ozone and PM 2.5 standards across the US. Although most of the data is missing, @fig-map-days-over shows that Southern California has high levels of ozone pollution and Central California has high levels of PM 2.5 pollution. For PM 2.5, the days over the PM 2.5 standard aligns with the California wildfire incident map in 2018 (Cal Fire, n.d.).
 
 ```{r}
 #| label: fig-map-days-over
@@ -166,13 +154,9 @@ p3 + p4 + plot_annotation(
 )
 ```
 
-@fig-days-over-relationship shows the relationship between the days over the ozone and PM 2.5 standard. There is a positive relationship between the two air quality indicators, indicating that counties with worse ozone pollution generally also have worse PM 2.5 pollution. This is consistent with research about the sources of ozone and PM 2.5 pollution, as they can both originate from nitrogen oxides from power plants, industrial pollution, and automobiles.[^7]
+@fig-days-over-relationship shows the relationship between the days over the ozone and PM 2.5 standard. There is a positive relationship between the two air quality indicators, indicating that counties with worse ozone pollution generally also have worse PM 2.5 pollution. This is consistent with research about the sources of ozone and PM 2.5 pollution, as they can both originate from nitrogen oxides from power plants, industrial pollution, and automobiles (US EPA, 2015; US EPA, 2016a).
 
-[^7]: [Ground-level Ozone Basics](https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics#formation) and [Particulate Matter (PM) Basics](https://www.epa.gov/pm-pollution/particulate-matter-pm-basics)
-
-However, there are a large number of counties that report having 0 days over the PM 2.5 standard while having several days over the ozone standard and several counties that report having 0 days over the ozone standard while having several days over the PM 2.5 standard. This is also consistent with research showing that these pollutants also have sources that produce one pollutant, but not the other. For example, construction sites, unpaved roads, fields, smokestacks and fires produce PM 2.5 pollution, but not ozone pollution.[^8]
-
-[^8]: [Particulate Matter (PM) Basics](https://www.epa.gov/pm-pollution/particulate-matter-pm-basics)
+However, there are a large number of counties that report having 0 days over the PM 2.5 standard while having several days over the ozone standard and several counties that report having 0 days over the ozone standard while having several days over the PM 2.5 standard. This is also consistent with research showing that these pollutants also have sources that produce one pollutant, but not the other. For example, construction sites, unpaved roads, fields, smokestacks and fires produce PM 2.5 pollution, but not ozone pollution (US EPA, 2016a).
 
 ```{r}
 #| label: fig-days-over-relationship
@@ -198,9 +182,7 @@ full_data %>%
 
 ### Air quality: benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene
 
-The other group of air quality indicators I was interested in were benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene concentrations. @fig-pollutants shows the distribution of these air pollutants. Benzene, formaldehyde, acetaldehyde, and 1,3-butadiene are skewed right, indicating that there are several counties that have unusually high levels of these pollutants. This is expected, as counties with usually high industrial pollution would cause this distribution. However, carbon tetrachloride is skewed left, indicating that there are several counties that have unusually low levels of these pollutants. One reason that this distribution may differ from the others is that carbon tetrachloride is not naturally occuring, while the other pollutants are. Thus counties with usually low levels of carbon tetrachloride may be counties that have never had high levels of carbon tetrachloride exposure, and thus are capable of having extremely low values(Agency for Toxic Substances and Disease Registry, n.d.-a.;).
-
-[^9]: [Benzene](https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html), [Public Health Statement for Formaldehyde](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39), [Acetaldehyde](https://ntp.niehs.nih.gov/ntp/roc/content/profiles/acetaldehyde.pdf), [Where Is Carbon Tetrachloride Found?](https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html), [Public Health Statement for 1,3-Butadiene](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02)
+The other group of air quality indicators I was interested in were benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene concentrations. @fig-pollutants shows the distribution of these air pollutants. Benzene, formaldehyde, acetaldehyde, and 1,3-butadiene are skewed right, indicating that there are several counties that have unusually high levels of these pollutants. This is expected, as counties with usually high industrial pollution would cause this distribution. However, carbon tetrachloride is skewed left, indicating that there are several counties that have unusually low levels of these pollutants. One reason that this distribution may differ from the others is that carbon tetrachloride is not naturally occuring, while the other pollutants are. Thus counties with usually low levels of carbon tetrachloride may be counties that have never had high levels of carbon tetrachloride exposure, and thus are capable of having extremely low values(Agency for Toxic Substances and Disease Registry, 2019; Agency for Toxic Substances and Disease Registry, 2023a; Agency for Toxic Substances and Disease Registry, n.d.-a.; Agency for Toxic Substances and Disease Registry, n.d.-b; National Institute of Environmental Health Sciences, n.d.).
 
 ```{r}
 #| label: fig-pollutants
@@ -328,9 +310,7 @@ Once I had an understanding of how the air quality indicators were related to ea
 
 ### Asthma
 
-@fig-ed-asthma shows that although ozone and PM 2.5 pollution are known to aggravate lung diseases such as asthma, there is not particularly clear relationship between emergency department visits for asthma and ozone or PM 2.5 pollution.[^10] It is possible that given better predictions and access to air quality information online, individuals with asthma are better able to avoid long exposures to high ozone and PM 2.5 levels, allowing them to avoid aggravating their asthma.
-
-[^10]: [Ground-level Ozone Basics](https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics#effects), [Health and Environmental Effects of Particulate Matter (PM)](https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm)
+@fig-ed-asthma shows that although ozone and PM 2.5 pollution are known to aggravate lung diseases such as asthma, there is not particularly clear relationship between emergency department visits for asthma and ozone or PM 2.5 pollution (US EPA, 2015; US EPA, 2016b). It is possible that given better predictions and access to air quality information online, individuals with asthma are better able to avoid long exposures to high ozone and PM 2.5 levels, allowing them to avoid aggravating their asthma.
 
 ```{r}
 #| label: fig-ed-asthma
@@ -372,9 +352,7 @@ p10 + p11 + plot_annotation(
 )
 ```
 
-However, @fig-pollutants-asthma shows a clear positive relationship between the prevalence of asthma and exposure to the pollutants formaldehyde and acetaldehyde for both adults and children. Since the relationship between asthma and these two pollutants holds in both childhood and adulthood, I suspect that exposure to these pollutants in childhood is can be associated with the development of asthma, which is then carried into adulthood. The relationship between childhood asthma and formaldehyde exposure has been supported by various studies.[^11] There is limited and conflicting evidence about the long term effects of acetaldehyde exposure, so the positive relationship between childhood asthma and acetaldehyde exposure in these graphs may just be a result of the extremely strong correlation between formaldehyde and acetaldehyde.
-
-[^11]: [Formaldehyde Exposure and Asthma in Children: A Systematic Review](https://doi.org/10.1289%2Fehp.0901143)
+However, @fig-pollutants-asthma shows a clear positive relationship between the prevalence of asthma and exposure to the pollutants formaldehyde and acetaldehyde for both adults and children. Since the relationship between asthma and these two pollutants holds in both childhood and adulthood, I suspect that exposure to these pollutants in childhood is can be associated with the development of asthma, which is then carried into adulthood. The relationship between childhood asthma and formaldehyde exposure has been supported by various studies (McGwin et al., 2010).There is limited and conflicting evidence about the long term effects of acetaldehyde exposure, so the positive relationship between childhood asthma and acetaldehyde exposure in these graphs may just be a result of the extremely strong correlation between formaldehyde and acetaldehyde.
 
 ```{r}
 #| label: fig-pollutants-asthma
@@ -451,11 +429,7 @@ full_data %>%
          size = 3)
 ```
 
-@fig-cancer-scatters visualizes the relationship between the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride and the prevalence of lung and bronchus cancer. As expected, formaldehyde and acetaldehyde have very similar relationships with the prevalence of lung and bronchus cancer. However, it is surprising that the relationship between lung and bronchus cancer and carbon tetrachloride has such a high correlation and a relatively high slope because this pollutant primarily affects the liver, kidneys, and central nervous system.[^12] The main carcinogenic properties affect the liver, not the lungs.[^13] @fig-cancer-correlation shows that carbon tetrachloride is most strongly correlated with benzene, however, benzene is not strongly correlated with cancer risk. Thus, carbon tetrachloride is likely correlated with a different carcinogenic air pollutant which affects the respiratory system that was not explored here.
-
-[^12]: [Carbon tetrachloride](https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf)
-
-[^13]: [Carbon tetrachloride](https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf)
+@fig-cancer-scatters visualizes the relationship between the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride and the prevalence of lung and bronchus cancer. As expected, formaldehyde and acetaldehyde have very similar relationships with the prevalence of lung and bronchus cancer. However, it is surprising that the relationship between lung and bronchus cancer and carbon tetrachloride has such a high correlation and a relatively high slope because this pollutant primarily affects the liver, kidneys, and central nervous system (US EPA, n.d.). The main carcinogenic properties affect the liver, not the lungs (US EPA, n.d.). @fig-cancer-correlation shows that carbon tetrachloride is most strongly correlated with benzene, however, benzene is not strongly correlated with cancer risk. Thus, carbon tetrachloride is likely correlated with a different carcinogenic air pollutant which affects the respiratory system that was not explored here.
 
 ```{r}
 #| label: fig-cancer-scatters
@@ -502,9 +476,7 @@ p16 + p17 + p18 + plot_annotation(
 
 ### Chronic obstructive pulmonary disease
 
-Finally, to explore the relationship between chronic obstructive pulmonary disease (COPD) and air quality, I created another correlation matrix to identify potentially interesting relationships. @fig-copd-correlation and @fig-copd-scatters show that like lung and bronchus cancer, formaldehyde, acetaldehyde, and carbon tetrachloride pollution were strongly correlated with COPD. However, unlike the relationships for lung and bronchus cancer, formaldehyde and acetaldehyde have higher slopes. This is consistent with studies showing that formaldehyde exposure through inhalation increases the risk of COPD.[^14] The relationship between COPD and acetaldehyde is likely just a result of the strong correlation between formaldehyde and acetaldehyde because acetaldehyde is not known to have chronic health effects.
-
-[^14]: [Indoor air quality, ventilation and respiratory health in elderly residents living in nursing homes in Europe](http://dx.doi.org/10.1183/09031936.00082414); [Respiratory health of plywood workers occupationally exposed to formaldehyde](https://doi.org/10.1080/00039896.1990.10118748)
+Finally, to explore the relationship between chronic obstructive pulmonary disease (COPD) and air quality, I created another correlation matrix to identify potentially interesting relationships. @fig-copd-correlation and @fig-copd-scatters show that like lung and bronchus cancer, formaldehyde, acetaldehyde, and carbon tetrachloride pollution were strongly correlated with COPD. However, unlike the relationships for lung and bronchus cancer, formaldehyde and acetaldehyde have higher slopes. This is consistent with studies showing that formaldehyde exposure through inhalation increases the risk of COPD (Bentayeb et al., 2015; Malaka & Kodama, 1990). The relationship between COPD and acetaldehyde is likely just a result of the strong correlation between formaldehyde and acetaldehyde because acetaldehyde is not known to have chronic health effects.
 
 ```{r}
 #| label: fig-copd-correlation
@@ -792,11 +764,7 @@ p27 + p28 + p29 + plot_annotation(
 
 ### Gender vulnerability
 
-Given that there are often differences in exposure to environmental hazards between men and women,[^15] I was interested to see if counties with a relatively higher proportion of women had a different relationship with asthma and air quality than counties with a relatively lower proportion of women. @fig-ed-asthma-gender shows that in general, the effect of poor air quality on emergency department visits for asthma was larger for counties with a relatively higher proportion of women. The exception to this is PM 2.5, and this could be due to gendered differences in risk perception for poor air quality.[^16]
-
-[^15]: [Gender and environmental statistics](https://www.oecd.org/environment/brochure-gender-and-environmental-statistics.pdf)
-
-[^16]: [The impact of gender on risk perception: Implications for EU member states' national risk assessment processes](https://doi.org/10.1016/j.ijdrr.2021.102452)
+Given that there are often differences in exposure to environmental hazards between men and women (OECD, 2020), I was interested to see if counties with a relatively higher proportion of women had a different relationship with asthma and air quality than counties with a relatively lower proportion of women. @fig-ed-asthma-gender shows that in general, the effect of poor air quality on emergency department visits for asthma was larger for counties with a relatively higher proportion of women. The exception to this is PM 2.5, and this could be due to gendered differences in risk perception for poor air quality (Brown et al., 2021).
 
 ```{r}
 #| label: fig-ed-asthma-gender
@@ -895,9 +863,7 @@ p30 + p31 + p32 + p33 + plot_annotation(
 )
 ```
 
-For both lung and bronchus cancer and COPD, the effect of gender demographics on the relationship between air quality and disease is generally the opposite than for asthma. @fig-cancer-copd-gender shows that increased formaldehyde and acetaldehyde concentrations have a larger effect on lung and bronchus cancer and COPD for counties with a relatively high proportion of men (lower proportion of women). With the exception of carbon tetrachloride, the gendered differences in the development of chronic lung diseases in response to air pollution may reflect gendered differences in exposure duration, possible through occupation.[^17]
-
-[^17]: [Gender and environmental statistics](https://www.oecd.org/environment/brochure-gender-and-environmental-statistics.pdf)
+For both lung and bronchus cancer and COPD, the effect of gender demographics on the relationship between air quality and disease is generally the opposite than for asthma. @fig-cancer-copd-gender shows that increased formaldehyde and acetaldehyde concentrations have a larger effect on lung and bronchus cancer and COPD for counties with a relatively high proportion of men (lower proportion of women). With the exception of carbon tetrachloride, the gendered differences in the development of chronic lung diseases in response to air pollution may reflect gendered differences in exposure duration, possible through occupation (OECD, 2020).
 
 ```{r}
 #| label: fig-cancer-copd-gender
@@ -1316,9 +1282,7 @@ p45 + p46 + p47 + plot_layout(guides = "collect") +
 
 Initially, I was interested in exploring how the social vulnerability index (SVI) of each county affected the relationship between lung disease and air quality. However, upon exploration, there was little difference in the relationship between lung disease and air quality for counties with a high SVI score compared to a low SVI score. @fig-svi shows that although counties with high social vulnerability have a slight negative slope for the prevalence of asthma and an overall higher prevalence, the relationship between increased air pollution and the prevalence of asthma is not much different than for counties with low social vulnerability. Similarly, although the prevalence of COPD is higher for counties with high social vulnerability, the slope is not much different from counties with low social vulnerability. For lung and bronchus cancer, social vulnerability has an extremely negligible effect on the relationship between the prevalence of cancer and formaldehyde pollution.
 
-I suspect that part of the reason SVI does not greatly affect the relationship between lung disease and air pollution is that SVI was designed to capture the social vulnerability in responding to emergency events such as hurricanes, disease outbreaks, or exposure to dangerous chemicals, whereas my explorations focus more on the chronic effects of long term air pollution.[^18]
-
-[^18]: [CDC/ATSDR Social Vulnerability Index](https://www.atsdr.cdc.gov/placeandhealth/svi/index.html)
+I suspect that part of the reason SVI does not greatly affect the relationship between lung disease and air pollution is that SVI was designed to capture the social vulnerability in responding to emergency events such as hurricanes, disease outbreaks, or exposure to dangerous chemicals, whereas my explorations focus more on the chronic effects of long term air pollution (Agency for Toxic Substances and Disease Registry, 2023b).[^18]
 
 ```{r}
 #| label: fig-svi
@@ -1407,47 +1371,47 @@ Finally, although I disaggregated the relationship between air pollution and lun
 
 One further question this exploratory data analysis raises is what other air pollutant is highly correlated with carbon tetrachloride? Although the relationship between lung and bronchus cancer and carbon tetracholoride is strong and holds even when I disaggregated by various sociodemographic vulnerabilities, carbon tetrachloride is not known to cause cancer in the respiratory system, but rather cause liver cancer. Since carbon tetrachloride was not particularly associated with another air pollutant explored here, there must be another air pollutant that actually directly causes an increased prevalence of lung and bronchus cancer.
 
-Additionally, future work could have a greater emphasis on mapping the exposures and health outcomes across the United States. Mapping would allow for a greater understanding of the spatial distributions of air pollution and health outcomes. For example, mapping allows us to identify places with extreme industrial pollution, like Louisiana's Cancer Alley.[^19] Additionally, mapping enables the ability to put results into greater historical and political context to understand how and why air pollution and health outcomes concentrate in certain counties, allowing for a better application of the data exploration to efforts in environmental justice.
-
-[^19]: [Down Cancer Alley: The Lived Experience of Health and Environmental Suffering in Louisiana's Chemical Corridor](https://doi.org/10.1111/j.1548-1387.2011.01154.x)
+Additionally, future work could have a greater emphasis on mapping the exposures and health outcomes across the United States. Mapping would allow for a greater understanding of the spatial distributions of air pollution and health outcomes. For example, mapping allows us to identify places with extreme industrial pollution, like Louisiana's Cancer Alley (Singer, 2011). Additionally, mapping enables the ability to put results into greater historical and political context to understand how and why air pollution and health outcomes concentrate in certain counties, allowing for a better application of the data exploration to efforts in environmental justice.
 
 # Sources
 
 Agency for Toxic Substances and Disease Registry. (n.d.-a). Public Health Statement for 1,3-Butadiene. Retrieved November 28, 2023, from [https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02)
 
-Agency for Toxic Substances and Disease Registry. (n.d.-b). Public Health Statement for Formaldehyde. Retrieved November 28, 2023, from https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39 
+Agency for Toxic Substances and Disease Registry. (n.d.-b). Public Health Statement for Formaldehyde. Retrieved November 28, 2023, from [https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39)
 
-Agency for Toxic Substances and Disease Registry. (2019, January 3). Benzene. https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html 
+Agency for Toxic Substances and Disease Registry. (2019, January 3). Benzene. [https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html](https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html) 
 
-Agency for Toxic Substances and Disease Registry. (2023a, May 25). Carbon Tetrachloride Toxicity: Where Is Carbon Tetrachloride Found? https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html 
+Agency for Toxic Substances and Disease Registry. (2023a, May 25). Carbon Tetrachloride Toxicity: Where Is Carbon Tetrachloride Found? [https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html](https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html) 
 
-Agency for Toxic Substances and Disease Registry. (2023b, July 12). CDC/ATSDR Social Vulnerability Index (SVI). https://www.atsdr.cdc.gov/placeandhealth/svi/index.html 
+Agency for Toxic Substances and Disease Registry. (2023b, July 12). CDC/ATSDR Social Vulnerability Index (SVI). [https://www.atsdr.cdc.gov/placeandhealth/svi/index.html](https://www.atsdr.cdc.gov/placeandhealth/svi/index.html)
 
-Bentayeb, M., Norback, D., Bednarek, M., Bernard, A., Cai, G., Cerrai, S., Eleftheriou, K. K., Gratziou, C., Holst, G. J., Lavaud, F., Nasilowski, J., Sestini, P., Sarno, G., Sigsgaard, T., Wieslander, G., Zielinski, J., Viegi, G., & Annesi-Maesano, I. (2015). Indoor air quality, ventilation and respiratory health in elderly residents living in nursing homes in Europe. European Respiratory Journal, 45(5), 1228--1238. https://doi.org/10.1183/09031936.00082414 
+Bentayeb, M., Norback, D., Bednarek, M., Bernard, A., Cai, G., Cerrai, S., Eleftheriou, K. K., Gratziou, C., Holst, G. J., Lavaud, F., Nasilowski, J., Sestini, P., Sarno, G., Sigsgaard, T., Wieslander, G., Zielinski, J., Viegi, G., & Annesi-Maesano, I. (2015). Indoor air quality, ventilation and respiratory health in elderly residents living in nursing homes in Europe. European Respiratory Journal, 45(5), 1228--1238. [https://doi.org/10.1183/09031936.00082414](https://doi.org/10.1183/09031936.00082414) 
 
-Brown, G. D., Largey, A., & McMullan, C. (2021). The impact of gender on risk perception: Implications for EU member states' national risk assessment processes. International Journal of Disaster Risk Reduction, 63, 102452. https://doi.org/10.1016/j.ijdrr.2021.102452 
+Brown, G. D., Largey, A., & McMullan, C. (2021). The impact of gender on risk perception: Implications for EU member states' national risk assessment processes. International Journal of Disaster Risk Reduction, 63, 102452. [https://doi.org/10.1016/j.ijdrr.2021.102452](https://doi.org/10.1016/j.ijdrr.2021.102452) 
 
-Cal Fire. (n.d.). 2018 Fire Season Incident Archive. Retrieved November 28, 2023, from https://www.fire.ca.gov/incidents/2018 
+Cal Fire. (n.d.). 2018 Fire Season Incident Archive. Retrieved November 28, 2023, from [https://www.fire.ca.gov/incidents/2018](https://www.fire.ca.gov/incidents/2018) 
 
-Centers for Disease Control and Prevention. (n.d.). National Environmental Public Health Tracking Network. Retrieved November 28, 2023, from https://ephtracking.cdc.gov 
+Centers for Disease Control and Prevention. (n.d.). National Environmental Public Health Tracking Network. Retrieved November 28, 2023, from [https://ephtracking.cdc.gov](https://ephtracking.cdc.gov) 
 
-Malaka, T., & Kodama, A. M. (1990). Respiratory Health of Plywood Workers Occupationally Exposed to Formaldehyde. Archives of Environmental Health: An International Journal, 45(5), 288--294. https://doi.org/10.1080/00039896.1990.10118748 
+Malaka, T., & Kodama, A. M. (1990). Respiratory Health of Plywood Workers Occupationally Exposed to Formaldehyde. Archives of Environmental Health: An International Journal, 45(5), 288--294. [https://doi.org/10.1080/00039896.1990.10118748](https://doi.org/10.1080/00039896.1990.10118748) 
 
-McGwin, G., Lienert, J., & Kennedy, J. I. (2010). Formaldehyde Exposure and Asthma in Children: A Systematic Review. Environmental Health Perspectives, 118(3), 313--317. https://doi.org/10.1289/ehp.0901143 
+McGwin, G., Lienert, J., & Kennedy, J. I. (2010). Formaldehyde Exposure and Asthma in Children: A Systematic Review. Environmental Health Perspectives, 118(3), 313--317. [https://doi.org/10.1289/ehp.0901143](https://doi.org/10.1289/ehp.0901143) 
 
-National Institute of Environmental Health Sciences. (n.d.). Acetaldehyde (Report on Carcinogens, Fifteenth Edition). Retrieved November 28, 2023, from https://ntp.niehs.nih.gov/sites/default/files/ntp/roc/content/profiles/acetaldehyde.pdf 
+National Institute of Environmental Health Sciences. (n.d.). Acetaldehyde (Report on Carcinogens, Fifteenth Edition). Retrieved November 28, 2023, from [https://ntp.niehs.nih.gov/sites/default/files/ntp/roc/content/profiles/acetaldehyde.pdf](https://ntp.niehs.nih.gov/sites/default/files/ntp/roc/content/profiles/acetaldehyde.pdf) 
 
-OECD. (2020). Gender and environmental statistics: Exploring available data and developing new evidence. https://www.oecd.org/environment/brochure-gender-and-environmental-statistics.pdf 
+OECD. (2020). Gender and environmental statistics: Exploring available data and developing new evidence. [https://www.oecd.org/environment/brochure-gender-and-environmental-statistics.pdf](https://www.oecd.org/environment/brochure-gender-and-environmental-statistics.pdf) 
 
-US EPA, O. (n.d.). Carbon tetrachloride. Retrieved November 28, 2023, from https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf 
+Singer, M. (2011). Down Cancer Alley: The Lived Experience of Health and Environmental Suffering in Louisiana’s Chemical Corridor. Medical Anthropology Quarterly, 25(2), 141–163. [https://doi.org/10.1111/j.1548-1387.2011.01154.x](https://doi.org/10.1111/j.1548-1387.2011.01154.x)
 
-US EPA, O. (2015, May 29). Ground-level Ozone Basics \[Overviews and Factsheets\]. https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics 
+US EPA, O. (n.d.). Carbon tetrachloride. Retrieved November 28, 2023, from [https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf](https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf) 
 
-US EPA, O. (2016a, April 19). Particulate Matter (PM) Basics \[Overviews and Factsheets\]. https://www.epa.gov/pm-pollution/particulate-matter-pm-basics 
+US EPA, O. (2015, May 29). Ground-level Ozone Basics \[Overviews and Factsheets\]. [https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics](https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics) 
 
-US EPA, O. (2016b, April 26). Health and Environmental Effects of Particulate Matter (PM) \[Overviews and Factsheets\]. https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm 
+US EPA, O. (2016a, April 19). Particulate Matter (PM) Basics \[Overviews and Factsheets\]. [https://www.epa.gov/pm-pollution/particulate-matter-pm-basics](https://www.epa.gov/pm-pollution/particulate-matter-pm-basics) 
 
-World Health Organization. (n.d.). Air quality and health. Retrieved November 28, 2023, from https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts
+US EPA, O. (2016b, April 26). Health and Environmental Effects of Particulate Matter (PM) \[Overviews and Factsheets\]. [https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm](https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm) 
+
+World Health Organization. (n.d.). Air quality and health. Retrieved November 28, 2023, from [https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts](https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts)
 
 # Appendix
 
