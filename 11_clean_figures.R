@@ -5,6 +5,7 @@ library(sf)
 library(patchwork)
 library(viridis)
 library(GGally)
+library(janitor)
 load("data/full_air_quality_data.rda")
 
 # air and environmental quality ----
@@ -528,7 +529,11 @@ p27 <- full_data %>%
     "Age vulnerability",
     values = c("black", "#f89540")
   ) +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
 
 p28 <- full_data %>% 
   ggplot(aes(
@@ -548,7 +553,11 @@ p28 <- full_data %>%
     "Age vulnerability",
     values = c("black", "#cc4778")
   ) +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
 
 p29 <- full_data %>% 
   ggplot(aes(
@@ -568,7 +577,11 @@ p29 <- full_data %>%
     "Age vulnerability",
     values = c("black", "#7e03a8")
   ) +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  ) +
+  guides(color = guide_legend(nrow = 2))
 
 p27 + p28 + p29 + plot_annotation(
   title = "Age vulnerability and prevalence of COPD",
@@ -679,8 +692,8 @@ p34 <- full_data %>%
   geom_smooth(method = lm, se = FALSE) +
   labs(
     title = "Formaldehyde",
-    x = "Concentration (µg/m3)",
-    y = "Prevalence of lung and bronchus cancer"
+    x = NULL,
+    y = "Prevalence of cancer"
   ) +
   theme_minimal() +
   scale_color_manual(
@@ -700,7 +713,7 @@ p35 <- full_data %>%
   geom_smooth(method = lm, se = FALSE) +
   labs(
     title = "Acetaldehyde",
-    x = "Concentration (µg/m3)",
+    x = NULL,
     y = NULL
   ) +
   theme_minimal() +
@@ -721,7 +734,7 @@ p36 <- full_data %>%
   geom_smooth(method = lm, se = FALSE) +
   labs(
     title = "Carbon tetrachloride",
-    x = "Concentration (µg/m3)",
+    x = NULL,
     y = NULL
   ) +
   theme_minimal() +
@@ -829,8 +842,8 @@ p40 <- full_data %>%
     discrete = TRUE,
     end = 0.8,
     labels = c(
-      "American Indian\nAlaskan Native",
-      "Asian Pacific Islander",
+      "American Indian/\nAlaskan Native",
+      "Asian/Pacific Islander",
       "Black", 
       "White"
     )
@@ -857,8 +870,8 @@ p41 <- full_data %>%
     discrete = TRUE,
     end = 0.8,
     labels = c(
-      "American Indian\nAlaskan Native",
-      "Asian Pacific Islander",
+      "American Indian/\nAlaskan Native",
+      "Asian/Pacific Islander",
       "Black", 
       "White"
     )
@@ -873,12 +886,12 @@ p40 + p41 + plot_layout(guides = "collect") +
 
 p42 <- full_data %>% 
   ggplot(aes(
-    pollutant_formaldehyde, 
-    cancer_adjusted, 
+    pollutant_carbon_tetrachloride, 
+    cancer_adjusted,
     color = majority
   )) +
-  geom_point(alpha = 0.3) + 
-  geom_smooth(method = lm) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = lm, se = FALSE) +
   labs(
     title = "Formaldehyde",
     x = "Concentration (µg/m3)",
@@ -891,12 +904,12 @@ p42 <- full_data %>%
     discrete = TRUE,
     end = 0.8,
     labels = c(
-      "American Indian\nAlaskan Native",
-      "Asian Pacific Islander",
+      "American Indian/\nAlaskan Native",
+      "Asian/Pacific Islander",
       "Black", 
       "White"
     )
-  ) +
+  ) + 
   theme(legend.position = "none")
 
 p43 <- full_data %>% 
@@ -906,7 +919,7 @@ p43 <- full_data %>%
     color = majority
   )) +
   geom_point(alpha = 0.2) + 
-  geom_smooth(method = lm) +
+  geom_smooth(method = lm, se = FALSE) +
   labs(
     title = "Acetaldehyde",
     x = "Concentration (µg/m3)",
@@ -919,8 +932,8 @@ p43 <- full_data %>%
     discrete = TRUE,
     end = 0.8,
     labels = c(
-      "American Indian\nAlaskan Native",
-      "Asian Pacific Islander",
+      "American Indian/\nAlaskan Native",
+      "Asian/Pacific Islander",
       "Black", 
       "White"
     )
@@ -934,7 +947,7 @@ p44 <- full_data %>%
     color = majority
   )) +
   geom_point(alpha = 0.2) + 
-  geom_smooth(method = lm) +
+  geom_smooth(method = lm, se = FALSE) +
   labs(
     title = "Carbon tetrachloride",
     x = "Concentration (µg/m3)",
@@ -947,8 +960,8 @@ p44 <- full_data %>%
     discrete = TRUE,
     end = 0.8,
     labels = c(
-      "American Indian\nAlaskan Native",
-      "Asian Pacific Islander",
+      "American Indian/\nAlaskan Native",
+      "Asian/Pacific Islander",
       "Black", 
       "White"
     )
@@ -959,7 +972,8 @@ p42 + p43 + p44 + plot_layout(guides = "collect") +
   plot_annotation(
     title = "Race and prevalence of lung and bronchus cancer",
     theme = theme(plot.title = element_text(face = "bold"))
-  )
+  ) &
+  theme(legend.position = "bottom")
 
 p45 <- full_data %>% 
   ggplot(aes(
@@ -972,7 +986,7 @@ p45 <- full_data %>%
   labs(
     title = "Formaldehyde",
     x = "Concentration (µg/m3)",
-    y = NULL
+    y = "Prevalence of COPD"
   ) +
   theme_minimal() +
   scale_color_viridis(
@@ -981,8 +995,8 @@ p45 <- full_data %>%
     discrete = TRUE,
     end = 0.8,
     labels = c(
-      "American Indian\nAlaskan Native",
-      "Asian Pacific Islander",
+      "American Indian/\nAlaskan Native",
+      "Asian/Pacific Islander",
       "Black", 
       "White"
     )
@@ -1009,8 +1023,8 @@ p46 <- full_data %>%
     discrete = TRUE,
     end = 0.8,
     labels = c(
-      "American Indian\nAlaskan Native",
-      "Asian Pacific Islander",
+      "American Indian/\nAlaskan Native",
+      "Asian/Pacific Islander",
       "Black", 
       "White"
     )
@@ -1037,8 +1051,8 @@ p47 <- full_data %>%
     discrete = TRUE,
     end = 0.8,
     labels = c(
-      "American Indian\nAlaskan Native",
-      "Asian Pacific Islander",
+      "American Indian/\nAlaskan Native",
+      "Asian/Pacific Islander",
       "Black", 
       "White"
     )
@@ -1122,3 +1136,112 @@ p48 + p49 + p50 + plot_layout(guides = "collect") +
     theme = theme(plot.title = element_text(face = "bold"))
   ) &
   theme(legend.position = "bottom")
+
+# appendix ----
+age_demographics <- read_csv("data/raw/demographics-age/data_160814.csv") %>% 
+  clean_names()
+
+age_demographics2 <- age_demographics %>% 
+  mutate(
+    age_group = factor(age_group),
+    age_group = fct_collapse(
+      age_group,
+      "0 TO 19" = c("0 TO 4", "5 TO 19")
+    )
+  ) %>% 
+  summarise(
+    value = sum(value),
+    .by = c(state, county, county_fips, age_group)
+  ) %>% 
+  filter(age_group %in% c("0 TO 19", "65 AND OLDER"))
+
+age_demographics2 %>% 
+  mutate(
+    vulnerable = value >= mean(value) + sd(value),
+    .by = age_group,
+    .keep = "all"
+  ) %>% 
+  ggplot(aes(value, fill = vulnerable)) +
+  geom_histogram(binwidth = 2, boundary = 0) +
+  facet_wrap(~age_group)  +
+  labs(
+    title = "Distribution of percentage of population in each age category",
+    x = "Percentage",
+    y = NULL
+  ) +
+  scale_fill_discrete("Vulnerable")
+
+gender_demographics <- read_csv("data/raw/demographics-gender/data_160859.csv") %>% 
+  clean_names()
+
+gender_demographics %>% 
+  filter(gender == "Female") %>% 
+  mutate(
+    vulnerable = if_else(
+      value <= mean(value) - sd(value),
+      "low",
+      if_else(
+        value >= mean(value) + sd(value),
+        "high",
+        NA
+      )
+    ),
+    .keep = "all"
+  ) %>% 
+  ggplot(aes(value, fill = vulnerable)) +
+  geom_histogram(binwidth = 2, boundary = 0) +
+  labs(
+    title = "Distribution of percentage of population that are women",
+    x = "Percentage",
+    y = NULL
+  ) +
+  scale_fill_discrete("Vulnerable")
+
+race_and_ethnicity <- read_csv("data/raw/demographics-race-ethnicity/data_161208.csv") %>% 
+  clean_names()
+race <- race_and_ethnicity %>% 
+  separate_wider_regex(
+    race_ethnicity,
+    patterns = c(
+      race = ".*",
+      " including Hispanic"
+    ),
+    too_few = "align_start"
+  ) %>% 
+  filter(race != "Hispanic All Races")
+
+race <- race %>% 
+  filter(race != "All Non-White Races") %>% 
+  group_by(county_fips) %>% 
+  slice(which.max(value)) %>% 
+  arrange(race)
+
+race %>% 
+  ggplot(aes(race)) +
+  geom_bar() +
+  labs(
+    title = "Majority race in each county",
+    x = "Race",
+    y = NULL
+  )
+
+socioeconomic_vulnerability <- read_csv("data/raw/socioeconomic-vulnerability-index/data_161326.csv") %>% 
+  clean_names()
+
+socioeconomic_vulnerability %>% 
+  arrange(value) %>% 
+  mutate(
+    vulnerable = if_else(
+      value >= 0.75, 
+      "high vulnerability", 
+      "low vulnerability"
+    )
+  ) %>% 
+  ggplot(aes(value, fill = vulnerable)) +
+  geom_histogram(boundary = 0) +
+  labs(
+    title = "Distribution of socioeconomic vulnerability index",
+    x = "SVI",
+    y = NULL
+  ) +
+  scale_fill_discrete("Vulnerable")
