@@ -1,7 +1,7 @@
 ---
 title: "Air Quality Indicators and Lung Disease Across the United States"
 subtitle: |
-  | Final Project: Report
+  | Final Project: Executive Summary
   | Data Science 1 with R (STAT 301-1)
 author: "Cassie Lee"
 date: today
@@ -41,76 +41,27 @@ load("data/full_air_quality_data.rda")
 
 # Introduction
 
-Air pollution is the presence of sufficient quantities of contaminants in the atmosphere for a duration that is long enough to cause harm to human health (World Health Organization, n.d.). Air pollution mainly enters the body through the lungs, and while it mostly impacts the heart, lungs, and brain, it has the potential to affect other organs as well by traveling through the bloodstream (World Health Organization, n.d.).
+Air pollution is the presence of sufficient quantities of contaminants in the atmosphere for a duration that is long enough to cause harm to human health (World Health Organization, n.d.). In this report, I explored the relationships between air quality indicators, certain lung diseases, and how sociodemographic vulnerabilities affect the relationships between air quality and health in the United States (excluding territories) to build a deeper understanding of how various air pollutants impact health across the United States.
 
-In this exploratory data analysis, I explore the relationships between air quality indicators, certain lung diseases, and how sociodemographic vulnerabilities affect the relationships between air quality and health in the United States (excluding territories). The goal of this analysis is to build a deeper understanding of how various air pollutants impact health across the United States.
+2018 county level data was downloaded from the CDC National Environmental Public Health Tracking Network interactive data explorer (Centers for Disease Control and Prevention, n.d.).
 
-I queried and downloaded the data at the county level from the CDC National Environmental Public Health Tracking Network interactive data explorer (Centers for Disease Control and Prevention, n.d.). This network was built to centralize environmental health data on the national, state, and county level across the United States (Centers for Disease Control and Prevention, n.d.).
+The three central questions explored in this analysis were:
 
-The three central questions I explored in this analysis were:
-
-1.  How are various air and environmental quality indicators related to each other?
+1.  How are various air quality indicators related to each other?
 
 2.  What are the most important indicators for determining the prevalence of asthma, cancer, and chronic obstructive pulmonary disease?
 
 3.  How do sociodemographics like age, gender, race, and the social vulnerability index affect the relationships between lung disease and air quality?
 
-# Data overview & quality
+# Indicators of air and environmental quality
 
-The air pollutants I selected includes the days over the ozone standard, the days over the PM 2.5 standard, benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene pollution. The environmental quality indicators I selected includes the percent of people living near highways, the percent of public schools near highways, access to parks, and methods of transportation to work (walking, biking, driving alone, carpooling, public transportation, and none).
+The two main categories of air quality indicators selected were days over the ozone and PM 2.5 pollution and the concentrations of the pollutants benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene. Major conclusions from analysis between air quality indicators are:
 
-The indicators I selected for prevalence of lung diseases includes the crude prevalence of adult and child asthma, the crude and age adjusted rates of emergency department visits for asthma, age adjusted rates of lung and bronchus cancer, and the crude and age adjusted rates of chronic obstructive pulmonary disease.
+1.  There is significant missing data about the days over the ozone and PM 2.5 standards, however, @fig-map-days-over shows that counties along the west coast, especially California tended to have this data reported. The days over the PM 2.5 standard aligns with the 2018 wildfire incident map (Cal Fire, n.d.).
 
-The indicators of sociodemographic data I selected includes age, gender, race, and and the social vulnerability index (Agency for Toxic Substances and Disease Registry, 2023). I compared sociodemographic characteristics of each county to other counties in the United States and used this to identify counties with comparatively higher percentages of vulnerable groups (Appendix A). I also identified the majority race demographic in each county.
+2.  @fig-pollutants shows that the distributions of benzene, formaldehyde, acetaldehyde, and 1,3-butadiene pollution across counties were right skewed, but the distribution of carbon tetrachloride was left skewed. This may be due to carbon tetrachloride not having any natural sources, so there are several counties that can have extremely low levels of this pollutant (Agency for Toxic Substances and Disease Registry, 2019; Agency for Toxic Substances and Disease Registry, 2023a; Agency for Toxic Substances and Disease Registry, n.d.-a.; Agency for Toxic Substances and Disease Registry, n.d.-b; National Institute of Environmental Health Sciences, n.d.).
 
-If available, I downloaded all data at the county level for 2018. Crude rates of child asthma and age adjusted rates of lung and bronchus cancer were only available at the state level. I downloaded data for the usual method of transportation to work for the time period of 2017 to 2021.
-
-The final merged dataset includes 42 variables and 3144 observations matching each county and Washington DC. There are 4 identifying variables, 5 factor variables, 32 numeric variables, and one simple features geometry variable for mapping.
-
-With the exception of Rio Arriba, Mexico, all counties had complete sociodemographic information. Rio Arriba, Mexico was missing data for the social vulnerability index. The prevalence of adult asthma was complete across all observations, but 1402 observations were missing for the prevalence of child asthma and 1789 observations were missing for crude and age adjusted emergency department visits for asthma. The majority of counties did not have information about the days over the ozone and PM 2.5 air quality standards. 1567 observations were missing data for the percent of public school near highways. All other variables were either complete or missing at most 1 observation.
-
-# Explorations
-
-## Indicators of air and environmental quality
-
-To address the first central question, I used univariate variate analysis to understand the distribution of the indicators of air and environmental quality. I also used bivariate analysis to understand if and how certain indicators were related to each other.
-
-### Air quality: ozone and PM 2.5
-
-As seen in @fig-days-over-distribution, the distribution of days over the ozone and particulate matter size 2.5 microns (PM 2.5) standards were both skewed right by observations with significantly more days over the standard. For both ozone and PM 2.5, most of the counties experienced no more than 20 days over the standard. However, the degree of right skewing for the distribution of days over ozone standard was significantly higher than for the distribution of days over the PM 2.5 standard.
-
-```{r}
-#| label: fig-days-over-distribution
-#| fig-cap: Distribution of days over air quality standards.
-
-p1 <- full_data %>% 
-  ggplot(aes(days_over_o3_standard)) +
-  geom_histogram(binwidth = 10, boundary = 0, fill = "#0094bf") +
-  theme_minimal() +
-  labs(
-    title = "Days over ozone standard",
-    x = "Days",
-    y = NULL
-  )
-
-p2 <- full_data %>% 
-  mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
-  ggplot(aes(pm_standard)) +
-  geom_histogram(binwidth = 10, boundary = 0, fill = "#ed6925") +
-  theme_minimal() +
-  labs(
-    title = "Days over PM 2.5 standard",
-    x = "Days",
-    y = NULL
-  )
-
-p1 + p2 + plot_annotation(
-  title = "Distribution of days over air quality standards",
-  theme = theme(plot.title = element_text(face = "bold"))
-)
-```
-
-Given that the distribution was so heavily skewed right, I was interested to see the distribution of the days over the ozone and PM 2.5 standards across the US. Although most of the data is missing, @fig-map-days-over shows that Southern California had high levels of ozone pollution and Central California had high levels of PM 2.5 pollution. For PM 2.5, the days over the PM 2.5 standard aligns with the California wildfire incident map in 2018 (Cal Fire, n.d.).
+3.  @fig-indicators-corr shows that the days over the ozone and PM 2.5 standards were positively correlated, likely because these pollutants share some sources of pollution (ex: nitrogen oxides from power plants, industrial pollution, and automobiles). However, ozone and PM 2.5 pollution were not particularly correlated with the other 5 pollutants. This is likely because the five chemicals are nearly strictly from industrial pollution, while ozone and PM 2.5 pollution can have significant non-industrial sources, such as from automobiles.
 
 ```{r}
 #| label: fig-map-days-over
@@ -154,36 +105,6 @@ p3 + p4 + plot_annotation(
   theme = theme(plot.title = element_text(face = "bold"))
 )
 ```
-
-@fig-days-over-relationship shows the relationship between the days over the ozone and PM 2.5 standard. There is a positive relationship between the two air quality indicators, indicating that counties with worse ozone pollution generally also had worse PM 2.5 pollution. This is consistent with research about the sources of ozone and PM 2.5 pollution, as they can both originate from nitrogen oxides from power plants, industrial pollution, and automobiles (US EPA, 2015; US EPA, 2016a).
-
-However, there were a large number of counties that reported having 0 days over the PM 2.5 standard while having several days over the ozone standard and several counties that reported having 0 days over the ozone standard while having several days over the PM 2.5 standard. This is also consistent with research showing that these pollutants also have sources that produce one pollutant, but not the other. For example, construction sites, unpaved roads, fields, smokestacks and fires produce PM 2.5 pollution, but not ozone pollution (US EPA, 2016a).
-
-```{r}
-#| label: fig-days-over-relationship
-#| fig-cap: Relationship between days over the PM 2.5 standard and days over the ozone standard excluding outliers (over 50 days over one or both standards).
-
-full_data %>% 
-  mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
-  ggplot(aes(days_over_o3_standard, pm_standard)) +
-  geom_jitter() +
-  geom_smooth(method = lm, se = FALSE) +
-  lims(
-    x = c(0, 50),
-    y = c(0, 50)
-  ) +
-  theme_minimal() +
-  labs(
-    title = "Days over PM 2.5 standard vs days over ozone standard",
-    x = "Days ozone standard",
-    y = "Days over PM 2.5 standard"
-  ) +
-  theme(plot.title = element_text(face = "bold"))
-```
-
-### Air quality: benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene
-
-The other group of air quality indicators I was interested in were benzene, formaldehyde, acetaldehyde, carbon tetrachloride, and 1,3-butadiene concentrations. @fig-pollutants shows the distribution of these air pollutants. Benzene, formaldehyde, acetaldehyde, and 1,3-butadiene were skewed right, indicating that there are several counties that have unusually high levels of these pollutants. This is expected, as counties with usually high industrial pollution would cause this distribution. However, carbon tetrachloride was skewed left, indicating that there were several counties that had unusually low levels of these pollutants. One reason that this distribution may differ from the others is that carbon tetrachloride is not naturally occuring, while the other pollutants are. Thus counties with usually low levels of carbon tetrachloride may be counties that have never had high levels of carbon tetrachloride exposure, and thus were capable of having extremely low values (Agency for Toxic Substances and Disease Registry, 2019; Agency for Toxic Substances and Disease Registry, 2023a; Agency for Toxic Substances and Disease Registry, n.d.-a.; Agency for Toxic Substances and Disease Registry, n.d.-b; National Institute of Environmental Health Sciences, n.d.).
 
 ```{r}
 #| label: fig-pollutants
@@ -245,172 +166,179 @@ p9 <- full_data %>%
 )
 ```
 
-Then, I explored how these five air pollutants were correlated with each other. @fig-pollutants-corr shows a correlation matrix of these air pollutants. Formaldehyde and acetaldehyde were highly correlated with each other, while the rest of the pollutants were somewhat or barely correlated with each other. Carbon tetrachloride and benzene were somewhat correlated, and 1,3-butadiene was somewhat correlated with both formaldehyde and acetaldehyde. Benzene was barely correlated with formaldehyde and acetaldehyde. Correlation between these pollutants indicate similar sources of pollution that emit multiple pollutants at the same time.
+# Asthma
+
+The first lung disease explored in this analysis was asthma. Major conclusions from analysis between asthma and air quality are:
+
+1.  The prevalence of both child and adult asthma was most strongly correlated with formaldehyde and acetaldehyde pollution.
+
+2.  @fig-asthma-ed-age shows that for counties with a high proportion of young or old individuals, it is clear that emergency department visits for asthma increased when the days over the ozone and PM 2.5 pollution increased.
+
+3.  @fig-ed-asthma-gender shows that in general, the effect of poor air quality on emergency department visits for asthma was larger for counties with a relatively higher proportion of women. The exception to this is PM 2.5, and this could be due to gendered differences in risk perception for poor air quality (Brown et al., 2021).
+
+4. Predominantly Black counties had higher a higher prevalence of adult asthma and higher levels of formaldehyde and acetaldehyde pollution than predominantly white counties. However, the effect of increased pollution concentrations on the prevalence of adult asthma was not significantly different between predominantly Black and predominantly white counties.
 
 ```{r}
-#| label: fig-pollutants-corr
-#| fig-cap: Correlation matrix of five air pollutants.
+#| label: fig-asthma-ed-age
+#| fig-cap: The crude rate of emergency deartment visits for asthma per 10 K population as a function of days over the ozone and PM 2.5 standard, disaggregated by demographic age vulnerability.
 
-full_data %>% 
-  st_drop_geometry() %>% 
-  select(contains("pollutant")) %>% 
-  rename_with(~str_remove(., "(pollutant_)"), everything()) %>%
-  rename_with(~str_to_title(.), everything()) %>% 
-  ggcorr(
-    hjust = 0.6,
-    geom = "circle",
-    max_size = 20
-  )  
-```
-
-### Air quality: combined
-
-After exploring how these five pollutants were correlated with each other, I wanted to see if they were correlated with ozone and PM 2.5 pollution. @fig-indicators-corr shows that ozone and PM 2.5 pollution were not particularly correlated with the other 5 pollutants. This is likely because the five chemicals are nearly strictly from industrial pollution, while ozone and PM 2.5 pollution can have significant non-industrial sources, such as from automobiles.
-
-```{r}
-#| label: fig-indicators-corr
-#| fig-cap: Correlation matrix of all air quality indicators.
-
-full_data %>% 
-  select(contains("pollutant") | contains("days")) %>% 
-  st_drop_geometry() %>% 
-  rename_with(~str_remove(., "(pollutant_)?(days_over_)?"), everything()) %>%
-  rename_with(~str_to_title(.), everything()) %>% 
-  ggcorr(
-    hjust = 0.7,
-    geom = "circle",
-    max_size = 15,
-    size = 3
-  )
-```
-
-### Environmental quality
-
-Upon bivariate analysis between air quality indicators and environmental quality indicators, I decided not to move forward with analysis including environmental indicators because they were not particularly predictive of air quality. For example, I had originally suspected that the percent of population living near a highway would be predictive of ozone levels, however, @fig-environmental shows that it was not. This lack of relationship between environmental quality and air quality suggested that continuing to explore indicators of environmental quality would not help me answer my three main questions.
-
-```{r}
-#| label: fig-environmental
-#| fig-cap: The relationship between the days over ozone standard and the percent of people living within 150 M of a highway is an example of how environmental quality indicators were not particularly predictive of air quality indicators.
-
-full_data %>% 
-  ggplot(aes(highway_living, days_over_o3_standard)) +
-  geom_point(color = "#0094bf", alpha = 0.2) + 
-  geom_smooth(method = lm, se = FALSE, color = "black")  +
-  coord_cartesian(ylim = c(0, 50)) +
-  theme_minimal() +
-  labs(
-    title = "Days over ozone standard vs population living near a highway",
-    x = "Percent of people living within 150 M of a highway",
-    y = "Days over ozone standard"
-  )
-```
-
-## Lung disease and air quality indicators
-
-Once I had an understanding of how the air quality indicators were related to each other, I was interested in seeing how air pollution and various lung diseases were related.
-
-### Asthma
-
-@fig-ed-asthma shows that although ozone and PM 2.5 pollution are known to aggravate lung diseases such as asthma, there was no particularly clear relationship between emergency department visits for asthma and ozone or PM 2.5 pollution (US EPA, 2015; US EPA, 2016b). It is possible that given better predictions and access to air quality information online, individuals with asthma were better able to avoid long exposures to high ozone and PM 2.5 levels, allowing them to avoid aggravating their asthma.
-
-```{r}
-#| label: fig-ed-asthma
-#| fig-cap: The crude rate of emergency deartment visits for asthma per 10 K population as a function of days over the ozone and PM 2.5 standard. 
-
-p10 <- full_data %>% 
-  ggplot(aes(days_over_o3_standard, asthma_ed_crude)) +
-  geom_point(color = "#0094bf", alpha = 0.2) + 
-  geom_smooth(method = lm, se = FALSE, color = "black")  +
+p22 <- full_data %>% 
+  ggplot(aes(
+    days_over_o3_standard, 
+    asthma_ed_crude, 
+    color = age_demographics_vulnerable,
+  )) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = lm, se = FALSE) +
   coord_cartesian(
-    x = c(0, 20),
-    y = c(0, 150)
+    x = c(0, 50),
+    y = c(0, 100)
   ) +
+  theme_minimal() +
   labs(
     title = "Days over ozone standard",
     x = "Days over ozone standard",
     y = "Crude emergency department visits"
   ) +
-  theme_minimal()
-
-p11 <- full_data %>% 
-  ggplot(aes(days_over_pm_standard, asthma_ed_crude)) +
-  geom_point(color = "#ed6925", alpha = 0.2) + 
-  geom_smooth(method = lm, se = FALSE, color = "black") +
-  coord_cartesian(
-    x = c(0, 20),
-    y = c(0, 150)
+  scale_color_manual(
+    "Age vulnerability",
+    values = c("black", "#0094bf")
   ) +
+  theme(legend.position = "bottom")
+
+p23 <- full_data %>% 
+  mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
+  ggplot(aes(
+    pm_standard, 
+    asthma_ed_crude, 
+    color = age_demographics_vulnerable,
+  )) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = lm, se = FALSE) +
+  coord_cartesian(
+    x = c(0, 70),
+    y = c(0, 100)
+  ) +
+  theme_minimal() +
   labs(
     title = "Days over PM 2.5 standard",
     x = "Days over PM 2.5 standard",
     y = "Crude emergency department visits"
   ) +
-  theme_minimal()
-  
-p10 + p11 + plot_annotation(
-  title = "Emergency department visits for asthma vs days over air quality standards",
+  scale_color_manual(
+    "Age vulnerability",
+    values = c("black", "#ed6925")
+  ) +
+  theme(legend.position = "bottom")
+
+p22 + p23 + plot_annotation(
+  title = "Age vulnerability and emergency department visits for asthma",
   theme = theme(plot.title = element_text(face = "bold"))
 )
 ```
-
-However, @fig-pollutants-asthma shows a clear positive relationship between the prevalence of asthma and exposure to the pollutants formaldehyde and acetaldehyde for both adults and children. Since the relationship between asthma and these two pollutants holds in both childhood and adulthood, I suspect that exposure to these pollutants in childhood can be associated with the development of asthma, which is then carried into adulthood. The relationship between childhood asthma and formaldehyde exposure has been supported by various studies (McGwin et al., 2010). However, there is limited and conflicting evidence about the long term effects of acetaldehyde exposure, so the positive relationship between childhood asthma and acetaldehyde exposure in these graphs may just be a result of the extremely strong correlation between formaldehyde and acetaldehyde.
 
 ```{r}
-#| label: fig-pollutants-asthma
-#| fig-cap: The prevalence of adult and child asthma prevalence (percent of population) as a function of formaldehyde and acetaldehyde concentrations.
+#| label: fig-ed-asthma-gender
+#| fig-cap: The crude rate of emergency deartment visits for asthma per 10 K population as a function of days over the ozone and PM 2.5 standard and the pollutnats formaldehyde and acetaldehyde, disaggregated by gender vulnerability. 
 
-
-p12 <- full_data %>% 
-  ggplot(aes(pollutant_formaldehyde, asthma_adult_crude)) +
-  geom_point(color = "#f89540", alpha = 0.2) + 
-  geom_smooth(method = lm, se = FALSE, color = "black") +
+p30 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  ggplot(aes(
+    days_over_o3_standard, 
+    asthma_ed_crude, 
+    color = gender_demographics_vulnerable,
+  )) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  coord_cartesian(x = c(0, 30)) +
+  theme_minimal() +
   labs(
-    title = "Adult asthma vs formaldehyde",
-    x = "Concentration (µg/m3)",
-    y = "Crude percentage"
+    title = "Ozone",
+    x = "Days over ozone standard",
+    y = "Crude ED visits"
   ) +
-  theme_minimal()
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#0094bf")
+  ) +
+  theme(legend.position = "bottom")
 
-p13 <- full_data %>% 
-  ggplot(aes(pollutant_acetaldehyde, asthma_adult_crude)) +
-  geom_point(color = "#cc4778", alpha = 0.2) + 
-  geom_smooth(method = lm, se = FALSE, color = "black") +
+p31<- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
+  ggplot(aes(
+    pm_standard, 
+    asthma_ed_crude, 
+    color = age_demographics_vulnerable,
+  )) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  coord_cartesian(x = c(0, 40)) +
+  theme_minimal() +
   labs(
-    title = "Adult asthma vs acetaldehyde",
-    x = "Concentration (µg/m3)",
-    y = "Crude percentage"
+    title = "PM 2.5",
+    x = "Days over PM 2.5 standard",
+    y = NULL
   ) +
-  theme_minimal()
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#ed6925")
+  ) +
+  theme(legend.position = "bottom")
 
-p14 <- full_data %>% 
-  ggplot(aes(pollutant_formaldehyde, asthma_child_crude)) +
-  geom_point(color = "#f89540", alpha = 0.2) + 
-  geom_smooth(method = lm, se = FALSE, color = "black") +
+p32 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  ggplot(aes(
+    pollutant_formaldehyde, 
+    asthma_ed_crude,
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.5) + 
+  geom_smooth(method = lm, se = FALSE) +
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#f89540")
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
   labs(
-    title = "Child asthma vs formaldehyde",
+    title = "Formaldehyde",
     x = "Concentration (µg/m3)",
-    y = "Crude percentage"
-  ) +
-  theme_minimal()
+    y = "Crude ED visits"
+  )
 
-p15 <- full_data %>% 
-  ggplot(aes(pollutant_acetaldehyde, asthma_child_crude)) +
-  geom_point(color = "#cc4778", alpha = 0.2) + 
-  geom_smooth(method = lm, se = FALSE, color = "black") +
+p33 <- full_data %>% 
+  filter(!is.na(gender_demographics_vulnerable)) %>% 
+  ggplot(aes(
+    pollutant_acetaldehyde, 
+    asthma_ed_crude,
+    color = gender_demographics_vulnerable
+  )) +
+  geom_point(alpha = 0.5) + 
+  geom_smooth(method = lm, se = FALSE) +
+  scale_color_manual(
+    "Proportion women",
+    values = c("black", "#cc4778")
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
   labs(
-    title = "Child asthma vs acetaldehyde",
+    title = "Acetaldehyde",
     x = "Concentration (µg/m3)",
-    y = "Crude percentage"
-  ) +
-  theme_minimal()
+    y = NULL
+  ) 
 
-(p12 + p13) / (p14 + p15) + plot_annotation(
-  title = "Prevalence of asthma vs air pollutants",
+p30 + p31 + p32 + p33 + plot_annotation(
+  title = "Gender vulnerability and emergency department visits for asthma",
   theme = theme(plot.title = element_text(face = "bold"))
 )
 ```
 
-### Lung and bronchus cancer
+# Lung and bronchus cancer
+
+The second lung disease explored in this analysis was lung and bronchus cancer. Major conclusions from analysis between lung and bronchus cancer and air quality are:
+
+1. 
 
 To explore how lung and bronchus cancer was associated with the air quality indicators, I used a correlation matrix to identify potentially interesting relationships to explore. @fig-cancer-correlation shows that the measure of days over the ozone and PM 2.25 standard were not positively correlated with cancer, but it is important to note that there was a lot of missing data for these two indicators. On the other hand, there are relatively strong positive correlations between lung and bronchus cancer and the pollutants formaldehyde, acetaldehyde, and carbon tetrachloride.
 
@@ -550,64 +478,6 @@ Given that poor air quality generally affects the young and the old, I explored 
 
 Although @fig-ed-asthma did not show a clear relationship between emergency department visits and days over the ozone and PM 2.5 standards, @fig-asthma-ed-age highlights how counties with a high population of young or old individuals did in fact expect to see an increase in emergency department visits for asthma given poor air quality. For counties that were not vulnerable by age demographics, emergency department visits still did not have a clear relationship with ozone. However, for PM 2.5 pollution, emergency department visits decreased with increasing number of days over the PM 2.5 standard. This may still reflect the tendency of individuals to use air quality forecasts to limit exposure.
 
-```{r}
-#| label: fig-asthma-ed-age
-#| fig-cap: The crude rate of emergency deartment visits for asthma per 10 K population as a function of days over the ozone and PM 2.5 standard, disaggregated by demographic age vulnerability.
-
-p22 <- full_data %>% 
-  ggplot(aes(
-    days_over_o3_standard, 
-    asthma_ed_crude, 
-    color = age_demographics_vulnerable,
-  )) +
-  geom_point(alpha = 0.2) +
-  geom_smooth(method = lm, se = FALSE) +
-  coord_cartesian(
-    x = c(0, 50),
-    y = c(0, 100)
-  ) +
-  theme_minimal() +
-  labs(
-    title = "Days over ozone standard",
-    x = "Days over ozone standard",
-    y = "Crude emergency department visits"
-  ) +
-  scale_color_manual(
-    "Age vulnerability",
-    values = c("black", "#0094bf")
-  ) +
-  theme(legend.position = "bottom")
-
-p23 <- full_data %>% 
-  mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
-  ggplot(aes(
-    pm_standard, 
-    asthma_ed_crude, 
-    color = age_demographics_vulnerable,
-  )) +
-  geom_point(alpha = 0.2) +
-  geom_smooth(method = lm, se = FALSE) +
-  coord_cartesian(
-    x = c(0, 70),
-    y = c(0, 100)
-  ) +
-  theme_minimal() +
-  labs(
-    title = "Days over PM 2.5 standard",
-    x = "Days over PM 2.5 standard",
-    y = "Crude emergency department visits"
-  ) +
-  scale_color_manual(
-    "Age vulnerability",
-    values = c("black", "#ed6925")
-  ) +
-  theme(legend.position = "bottom")
-
-p22 + p23 + plot_annotation(
-  title = "Age vulnerability and emergency department visits for asthma",
-  theme = theme(plot.title = element_text(face = "bold"))
-)
-```
 
 I was also interested in exploring how vulnerability by age demographics would affect the relationship between the prevalence of cancer and air pollutants. @fig-cancer-age shows how the relationship between lung and bronchus cancer and air pollutants was the same across age vulnerabilities. However, counties that were vulnerable by age demographics generally had a lower prevalence of cancer. This is likely because children typically do not have enough time to develop lung and bronchus cancer at a young age, and people who have had lung and bronchus cancer may not live until older ages, so they would not be included in the population statistics.
 
@@ -781,102 +651,7 @@ p27 + p28 + p29 + plot_annotation(
 
 Given that there are often differences in exposure to environmental hazards between men and women (OECD, 2020), I was interested to see if counties with a relatively higher proportion of women had a different relationship with asthma and air quality than counties with a relatively lower proportion of women. @fig-ed-asthma-gender shows that in general, the effect of poor air quality on emergency department visits for asthma was larger for counties with a relatively higher proportion of women. The exception to this was PM 2.5, and this could be due to gendered differences in risk perception for poor air quality (Brown et al., 2021).
 
-```{r}
-#| label: fig-ed-asthma-gender
-#| fig-cap: The crude rate of emergency deartment visits for asthma per 10 K population as a function of days over the ozone and PM 2.5 standard and the pollutnats formaldehyde and acetaldehyde, disaggregated by gender vulnerability. 
 
-p30 <- full_data %>% 
-  filter(!is.na(gender_demographics_vulnerable)) %>% 
-  ggplot(aes(
-    days_over_o3_standard, 
-    asthma_ed_crude, 
-    color = gender_demographics_vulnerable,
-  )) +
-  geom_point() +
-  geom_smooth(method = lm, se = FALSE) +
-  coord_cartesian(x = c(0, 30)) +
-  theme_minimal() +
-  labs(
-    title = "Ozone",
-    x = "Days over ozone standard",
-    y = "Crude ED visits"
-  ) +
-  scale_color_manual(
-    "Proportion women",
-    values = c("black", "#0094bf")
-  ) +
-  theme(legend.position = "bottom")
-
-p31<- full_data %>% 
-  filter(!is.na(gender_demographics_vulnerable)) %>% 
-  mutate(pm_standard = days_over_pm_standard/100 * 365) %>% 
-  ggplot(aes(
-    pm_standard, 
-    asthma_ed_crude, 
-    color = age_demographics_vulnerable,
-  )) +
-  geom_point() +
-  geom_smooth(method = lm, se = FALSE) +
-  coord_cartesian(x = c(0, 40)) +
-  theme_minimal() +
-  labs(
-    title = "PM 2.5",
-    x = "Days over PM 2.5 standard",
-    y = NULL
-  ) +
-  scale_color_manual(
-    "Proportion women",
-    values = c("black", "#ed6925")
-  ) +
-  theme(legend.position = "bottom")
-
-p32 <- full_data %>% 
-  filter(!is.na(gender_demographics_vulnerable)) %>% 
-  ggplot(aes(
-    pollutant_formaldehyde, 
-    asthma_ed_crude,
-    color = gender_demographics_vulnerable
-  )) +
-  geom_point(alpha = 0.5) + 
-  geom_smooth(method = lm, se = FALSE) +
-  scale_color_manual(
-    "Proportion women",
-    values = c("black", "#f89540")
-  ) +
-  theme_minimal() +
-  theme(legend.position = "bottom") +
-  labs(
-    title = "Formaldehyde",
-    x = "Concentration (µg/m3)",
-    y = "Crude ED visits"
-  )
-
-p33 <- full_data %>% 
-  filter(!is.na(gender_demographics_vulnerable)) %>% 
-  ggplot(aes(
-    pollutant_acetaldehyde, 
-    asthma_ed_crude,
-    color = gender_demographics_vulnerable
-  )) +
-  geom_point(alpha = 0.5) + 
-  geom_smooth(method = lm, se = FALSE) +
-  scale_color_manual(
-    "Proportion women",
-    values = c("black", "#cc4778")
-  ) +
-  theme_minimal() +
-  theme(legend.position = "bottom") +
-  labs(
-    title = "Acetaldehyde",
-    x = "Concentration (µg/m3)",
-    y = NULL
-  ) 
-
-p30 + p31 + p32 + p33 + plot_annotation(
-  title = "Gender vulnerability and emergency department visits for asthma",
-  theme = theme(plot.title = element_text(face = "bold"))
-)
-```
 
 For both lung and bronchus cancer and COPD, the effect of gender demographics on the relationship between air quality and disease was generally the opposite than for asthma. @fig-cancer-copd-gender shows that increased formaldehyde and acetaldehyde concentrations had a larger effect on lung and bronchus cancer and COPD for counties with a relatively high proportion of men (lower proportion of women). With the exception of carbon tetrachloride, the gendered differences in the development of chronic lung diseases in response to air pollution may reflect gendered differences in exposure duration, possible through occupation (OECD, 2020).
 
@@ -1391,49 +1166,49 @@ Additionally, future work could have a greater emphasis on mapping the exposures
 
 # Sources
 
-Agency for Toxic Substances and Disease Registry. (n.d.-a). Public Health Statement for 1,3-Butadiene. Retrieved November 28, 2023, from [https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02)
+Agency for Toxic Substances and Disease Registry. (n.d.-a). Public Health Statement for 1,3-Butadiene. Retrieved November 28, 2023, from <https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02>
 
-Agency for Toxic Substances and Disease Registry. (n.d.-b). Public Health Statement for Formaldehyde. Retrieved November 28, 2023, from [https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39)
+Agency for Toxic Substances and Disease Registry. (n.d.-b). Public Health Statement for Formaldehyde. Retrieved November 28, 2023, from <https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39>
 
-Agency for Toxic Substances and Disease Registry. (2019, January 3). Benzene. [https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html](https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html) 
+Agency for Toxic Substances and Disease Registry. (2019, January 3). Benzene. <https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html>
 
-Agency for Toxic Substances and Disease Registry. (2023a, May 25). Carbon Tetrachloride Toxicity: Where Is Carbon Tetrachloride Found? [https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html](https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html) 
+Agency for Toxic Substances and Disease Registry. (2023a, May 25). Carbon Tetrachloride Toxicity: Where Is Carbon Tetrachloride Found? <https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html>
 
-Agency for Toxic Substances and Disease Registry. (2023b, July 12). CDC/ATSDR Social Vulnerability Index (SVI). [https://www.atsdr.cdc.gov/placeandhealth/svi/index.html](https://www.atsdr.cdc.gov/placeandhealth/svi/index.html)
+Agency for Toxic Substances and Disease Registry. (2023b, July 12). CDC/ATSDR Social Vulnerability Index (SVI). <https://www.atsdr.cdc.gov/placeandhealth/svi/index.html>
 
-Bentayeb, M., Norback, D., Bednarek, M., Bernard, A., Cai, G., Cerrai, S., Eleftheriou, K. K., Gratziou, C., Holst, G. J., Lavaud, F., Nasilowski, J., Sestini, P., Sarno, G., Sigsgaard, T., Wieslander, G., Zielinski, J., Viegi, G., & Annesi-Maesano, I. (2015). Indoor air quality, ventilation and respiratory health in elderly residents living in nursing homes in Europe. European Respiratory Journal, 45(5), 1228--1238. [https://doi.org/10.1183/09031936.00082414](https://doi.org/10.1183/09031936.00082414) 
+Bentayeb, M., Norback, D., Bednarek, M., Bernard, A., Cai, G., Cerrai, S., Eleftheriou, K. K., Gratziou, C., Holst, G. J., Lavaud, F., Nasilowski, J., Sestini, P., Sarno, G., Sigsgaard, T., Wieslander, G., Zielinski, J., Viegi, G., & Annesi-Maesano, I. (2015). Indoor air quality, ventilation and respiratory health in elderly residents living in nursing homes in Europe. European Respiratory Journal, 45(5), 1228--1238. <https://doi.org/10.1183/09031936.00082414>
 
-Brown, G. D., Largey, A., & McMullan, C. (2021). The impact of gender on risk perception: Implications for EU member states' national risk assessment processes. International Journal of Disaster Risk Reduction, 63, 102452. [https://doi.org/10.1016/j.ijdrr.2021.102452](https://doi.org/10.1016/j.ijdrr.2021.102452) 
+Brown, G. D., Largey, A., & McMullan, C. (2021). The impact of gender on risk perception: Implications for EU member states' national risk assessment processes. International Journal of Disaster Risk Reduction, 63, 102452. <https://doi.org/10.1016/j.ijdrr.2021.102452>
 
-Cal Fire. (n.d.). 2018 Fire Season Incident Archive. Retrieved November 28, 2023, from [https://www.fire.ca.gov/incidents/2018](https://www.fire.ca.gov/incidents/2018) 
+Cal Fire. (n.d.). 2018 Fire Season Incident Archive. Retrieved November 28, 2023, from <https://www.fire.ca.gov/incidents/2018>
 
-Centers for Disease Control and Prevention. (n.d.). National Environmental Public Health Tracking Network. Retrieved November 28, 2023, from [https://ephtracking.cdc.gov](https://ephtracking.cdc.gov) 
+Centers for Disease Control and Prevention. (n.d.). National Environmental Public Health Tracking Network. Retrieved November 28, 2023, from <https://ephtracking.cdc.gov>
 
-Malaka, T., & Kodama, A. M. (1990). Respiratory Health of Plywood Workers Occupationally Exposed to Formaldehyde. Archives of Environmental Health: An International Journal, 45(5), 288--294. [https://doi.org/10.1080/00039896.1990.10118748](https://doi.org/10.1080/00039896.1990.10118748) 
+Malaka, T., & Kodama, A. M. (1990). Respiratory Health of Plywood Workers Occupationally Exposed to Formaldehyde. Archives of Environmental Health: An International Journal, 45(5), 288--294. <https://doi.org/10.1080/00039896.1990.10118748>
 
-McGwin, G., Lienert, J., & Kennedy, J. I. (2010). Formaldehyde Exposure and Asthma in Children: A Systematic Review. Environmental Health Perspectives, 118(3), 313--317. [https://doi.org/10.1289/ehp.0901143](https://doi.org/10.1289/ehp.0901143) 
+McGwin, G., Lienert, J., & Kennedy, J. I. (2010). Formaldehyde Exposure and Asthma in Children: A Systematic Review. Environmental Health Perspectives, 118(3), 313--317. <https://doi.org/10.1289/ehp.0901143>
 
-National Institute of Environmental Health Sciences. (n.d.). Acetaldehyde (Report on Carcinogens, Fifteenth Edition). Retrieved November 28, 2023, from [https://ntp.niehs.nih.gov/sites/default/files/ntp/roc/content/profiles/acetaldehyde.pdf](https://ntp.niehs.nih.gov/sites/default/files/ntp/roc/content/profiles/acetaldehyde.pdf) 
+National Institute of Environmental Health Sciences. (n.d.). Acetaldehyde (Report on Carcinogens, Fifteenth Edition). Retrieved November 28, 2023, from <https://ntp.niehs.nih.gov/sites/default/files/ntp/roc/content/profiles/acetaldehyde.pdf>
 
-OECD. (2020). Gender and environmental statistics: Exploring available data and developing new evidence. [https://www.oecd.org/environment/brochure-gender-and-environmental-statistics.pdf](https://www.oecd.org/environment/brochure-gender-and-environmental-statistics.pdf) 
+OECD. (2020). Gender and environmental statistics: Exploring available data and developing new evidence. <https://www.oecd.org/environment/brochure-gender-and-environmental-statistics.pdf>
 
-Singer, M. (2011). Down Cancer Alley: The Lived Experience of Health and Environmental Suffering in Louisiana’s Chemical Corridor. Medical Anthropology Quarterly, 25(2), 141–163. [https://doi.org/10.1111/j.1548-1387.2011.01154.x](https://doi.org/10.1111/j.1548-1387.2011.01154.x)
+Singer, M. (2011). Down Cancer Alley: The Lived Experience of Health and Environmental Suffering in Louisiana's Chemical Corridor. Medical Anthropology Quarterly, 25(2), 141--163. <https://doi.org/10.1111/j.1548-1387.2011.01154.x>
 
-US EPA, O. (n.d.). Carbon tetrachloride. Retrieved November 28, 2023, from [https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf](https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf) 
+US EPA, O. (n.d.). Carbon tetrachloride. Retrieved November 28, 2023, from <https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf>
 
-US EPA, O. (2015, May 29). Ground-level Ozone Basics \[Overviews and Factsheets\]. [https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics](https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics) 
+US EPA, O. (2015, May 29). Ground-level Ozone Basics \[Overviews and Factsheets\]. <https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics>
 
-US EPA, O. (2016a, April 19). Particulate Matter (PM) Basics \[Overviews and Factsheets\]. [https://www.epa.gov/pm-pollution/particulate-matter-pm-basics](https://www.epa.gov/pm-pollution/particulate-matter-pm-basics) 
+US EPA, O. (2016a, April 19). Particulate Matter (PM) Basics \[Overviews and Factsheets\]. <https://www.epa.gov/pm-pollution/particulate-matter-pm-basics>
 
-US EPA, O. (2016b, April 26). Health and Environmental Effects of Particulate Matter (PM) \[Overviews and Factsheets\]. [https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm](https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm) 
+US EPA, O. (2016b, April 26). Health and Environmental Effects of Particulate Matter (PM) \[Overviews and Factsheets\]. <https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm>
 
-World Health Organization. (n.d.). Air quality and health. Retrieved November 28, 2023, from [https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts](https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts)
+World Health Organization. (n.d.). Air quality and health. Retrieved November 28, 2023, from <https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts>
 
 # Appendix
 
 ## A. Identifying sociodemographic vulnerabilities
 
-The sociodemographic data downloaded from the National Environmental Public Health Tracking Network contained demographic data by percentages, rather than specific sociodemographic vulnerabilities such as a high proportion of young or old individuals. 
+The sociodemographic data downloaded from the National Environmental Public Health Tracking Network contained demographic data by percentages, rather than specific sociodemographic vulnerabilities such as a high proportion of young or old individuals.
 
 I identified counties with a particularly high percentage of young or old people by creating a histogram to graph the distribution of percentage of each county that is under 19 years old or over 65 years old. Since the distributions looked fairly normal, I identified counties that had a percentage of each given age group that was one standard deviation above the mean. I created a category to identify whether or not the counties had a high population of vulnerable people. @fig-age_demographics visualizes how counties were identified as vulnerable by age demographics. When joining this data with the rest of the data, I collapsed the vulnerability variable to consider a county vulnerable if they have a high percentage of young or old people.
 
@@ -1475,7 +1250,7 @@ age_demographics2 %>%
   scale_fill_discrete("Vulnerable")
 ```
 
-@fig-gender-demographics shows that the distribution of the percentage of women in each county is fairly narrow, however there are several counties that have a particularly low or high percentage of women. To identify counties with a low or high percentage of women, I identified counties that had a percentage of women that was one standard deviation above or below the mean. 
+@fig-gender-demographics shows that the distribution of the percentage of women in each county is fairly narrow, however there are several counties that have a particularly low or high percentage of women. To identify counties with a low or high percentage of women, I identified counties that had a percentage of women that was one standard deviation above or below the mean.
 
 ```{r}
 #| label: fig-gender-demographics
