@@ -886,7 +886,7 @@ p40 + p41 + plot_layout(guides = "collect") +
 
 p42 <- full_data %>% 
   ggplot(aes(
-    pollutant_carbon_tetrachloride, 
+    pollutant_formaldehyde, 
     cancer_adjusted,
     color = majority
   )) +
@@ -977,7 +977,7 @@ p42 + p43 + p44 + plot_layout(guides = "collect") +
 
 p45 <- full_data %>% 
   ggplot(aes(
-    pollutant_carbon_tetrachloride, 
+    pollutant_formaldehyde, 
     copd_adjusted,
     color = majority
   )) +

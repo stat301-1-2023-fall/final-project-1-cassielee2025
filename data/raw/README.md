@@ -1,9 +1,9 @@
 ## Dataset source
 
-All data was selected and downloaded from http://www.cdc.gov/ephtracking:
+All data was selected and downloaded from <http://www.cdc.gov/ephtracking>:
 
 Citation: 
-Centers for Disease Control and Prevention. National Environmental Public Health Tracking Network. (n.d.) Web. Accessed: 10/20/2023. www.cdc.gov/ephtracking.
+Centers for Disease Control and Prevention. National Environmental Public Health Tracking Network. (n.d.) Web. Accessed: 10/20/2023. [www.cdc.gov/ephtracking](www.cdc.gov/ephtracking).
 
 `transportation_active`, `transportation_none`, `transportation_private`, `transportation_public` were accessed on 11/01/2023.
 
@@ -17,4 +17,4 @@ Folders were re-named to with a shorthand for indicators selected.
 
 ## Indicator information and codebook
 
-Indicator information can be seen at https://ephtracking.cdc.gov/indicatorPages.
+Indicator information can be seen at <https://ephtracking.cdc.gov/indicatorPages>. This information was used to build the final codebook for the joined dataset.

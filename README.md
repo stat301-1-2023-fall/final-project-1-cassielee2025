@@ -4,8 +4,15 @@ This project is looking to explore air quality, pollution, and health outcomes b
 
 ## Structure
 
-Data can be found in the /data folder, with raw data in /data/raw. A cleaned and joined dataset, `full_air_quality_data.rda`, is located in teh /data folder. 
+### Main folder
 
-There are separate .R scripts for reading in and missingness, univariate analysis, creating functions, the functions themselves, and cleaning and joining data located in the main folder.
+Exploratory data analysis was completed in the order of the numbered .R scripts. There are separate .R scripts for functions used to clean and join the data, for bivariate analysis, and multivariate analysis.
 
-Progress memo .qmd and .html files are also located in the main folder. 
+Progress memos 1 and 2, along with the final report and executive summary are also in the main folder.
+
+### Data
+
+Raw data can be found in `/data/raw`. 
+
+A cleaned and joined dataset, `full_air_quality_data.rda`, and codebook, `codebook.csv` is located in the `/data` folder. 
+

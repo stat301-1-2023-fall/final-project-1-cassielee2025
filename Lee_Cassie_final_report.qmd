@@ -1,5 +1,5 @@
 ---
-title: "Air Quality Indicators and Lung Disease Across the United States"
+title: "Air quality indicators and lung disease across the United States"
 subtitle: |
   | Final Project: Report
   | Data Science 1 with R (STAT 301-1)
@@ -1106,12 +1106,12 @@ Unexpectedly, @fig-cancer-race shows that in predominantly Black counties, as th
 
 p42 <- full_data %>% 
   ggplot(aes(
-    pollutant_carbon_tetrachloride, 
+    pollutant_formaldehyde, 
     cancer_adjusted,
     color = majority
   )) +
   geom_point(alpha = 0.2) + 
-  geom_smooth(method = lm, se = FALSE) +
+  geom_smooth(method = lm, se = TRUE) +
   labs(
     title = "Formaldehyde",
     x = "Concentration (µg/m3)",
@@ -1139,7 +1139,7 @@ p43 <- full_data %>%
     color = majority
   )) +
   geom_point(alpha = 0.2) + 
-  geom_smooth(method = lm, se = FALSE) +
+  geom_smooth(method = lm, se = TRUE) +
   labs(
     title = "Acetaldehyde",
     x = "Concentration (µg/m3)",
@@ -1167,7 +1167,7 @@ p44 <- full_data %>%
     color = majority
   )) +
   geom_point(alpha = 0.2) + 
-  geom_smooth(method = lm, se = FALSE) +
+  geom_smooth(method = lm, se = TRUE) +
   labs(
     title = "Carbon tetrachloride",
     x = "Concentration (µg/m3)",
@@ -1204,7 +1204,7 @@ p42 + p43 + p44 + plot_layout(guides = "collect") +
 
 p45 <- full_data %>% 
   ggplot(aes(
-    pollutant_carbon_tetrachloride, 
+    pollutant_formaldehyde, 
     copd_adjusted,
     color = majority
   )) +
@@ -1391,49 +1391,49 @@ Additionally, future work could have a greater emphasis on mapping the exposures
 
 # Sources
 
-Agency for Toxic Substances and Disease Registry. (n.d.-a). Public Health Statement for 1,3-Butadiene. Retrieved November 28, 2023, from [https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02)
+Agency for Toxic Substances and Disease Registry. (n.d.-a). Public Health Statement for 1,3-Butadiene. Retrieved November 28, 2023, from <https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=457&toxid=81#bookmark02>
 
-Agency for Toxic Substances and Disease Registry. (n.d.-b). Public Health Statement for Formaldehyde. Retrieved November 28, 2023, from [https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39](https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39)
+Agency for Toxic Substances and Disease Registry. (n.d.-b). Public Health Statement for Formaldehyde. Retrieved November 28, 2023, from <https://wwwn.cdc.gov/TSP/PHS/PHS.aspx?phsid=218&toxid=39>
 
-Agency for Toxic Substances and Disease Registry. (2019, January 3). Benzene. [https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html](https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html) 
+Agency for Toxic Substances and Disease Registry. (2019, January 3). Benzene. <https://www.atsdr.cdc.gov/sites/toxzine/benzene_toxzine.html>
 
-Agency for Toxic Substances and Disease Registry. (2023a, May 25). Carbon Tetrachloride Toxicity: Where Is Carbon Tetrachloride Found? [https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html](https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html) 
+Agency for Toxic Substances and Disease Registry. (2023a, May 25). Carbon Tetrachloride Toxicity: Where Is Carbon Tetrachloride Found? <https://www.atsdr.cdc.gov/csem/carbon-tetrachloride/where_found.html>
 
-Agency for Toxic Substances and Disease Registry. (2023b, July 12). CDC/ATSDR Social Vulnerability Index (SVI). [https://www.atsdr.cdc.gov/placeandhealth/svi/index.html](https://www.atsdr.cdc.gov/placeandhealth/svi/index.html)
+Agency for Toxic Substances and Disease Registry. (2023b, July 12). CDC/ATSDR Social Vulnerability Index (SVI). <https://www.atsdr.cdc.gov/placeandhealth/svi/index.html>
 
-Bentayeb, M., Norback, D., Bednarek, M., Bernard, A., Cai, G., Cerrai, S., Eleftheriou, K. K., Gratziou, C., Holst, G. J., Lavaud, F., Nasilowski, J., Sestini, P., Sarno, G., Sigsgaard, T., Wieslander, G., Zielinski, J., Viegi, G., & Annesi-Maesano, I. (2015). Indoor air quality, ventilation and respiratory health in elderly residents living in nursing homes in Europe. European Respiratory Journal, 45(5), 1228--1238. [https://doi.org/10.1183/09031936.00082414](https://doi.org/10.1183/09031936.00082414) 
+Bentayeb, M., Norback, D., Bednarek, M., Bernard, A., Cai, G., Cerrai, S., Eleftheriou, K. K., Gratziou, C., Holst, G. J., Lavaud, F., Nasilowski, J., Sestini, P., Sarno, G., Sigsgaard, T., Wieslander, G., Zielinski, J., Viegi, G., & Annesi-Maesano, I. (2015). Indoor air quality, ventilation and respiratory health in elderly residents living in nursing homes in Europe. European Respiratory Journal, 45(5), 1228--1238. <https://doi.org/10.1183/09031936.00082414>
 
-Brown, G. D., Largey, A., & McMullan, C. (2021). The impact of gender on risk perception: Implications for EU member states' national risk assessment processes. International Journal of Disaster Risk Reduction, 63, 102452. [https://doi.org/10.1016/j.ijdrr.2021.102452](https://doi.org/10.1016/j.ijdrr.2021.102452) 
+Brown, G. D., Largey, A., & McMullan, C. (2021). The impact of gender on risk perception: Implications for EU member states' national risk assessment processes. International Journal of Disaster Risk Reduction, 63, 102452. <https://doi.org/10.1016/j.ijdrr.2021.102452>
 
-Cal Fire. (n.d.). 2018 Fire Season Incident Archive. Retrieved November 28, 2023, from [https://www.fire.ca.gov/incidents/2018](https://www.fire.ca.gov/incidents/2018) 
+Cal Fire. (n.d.). 2018 Fire Season Incident Archive. Retrieved November 28, 2023, from <https://www.fire.ca.gov/incidents/2018>
 
-Centers for Disease Control and Prevention. (n.d.). National Environmental Public Health Tracking Network. Retrieved November 28, 2023, from [https://ephtracking.cdc.gov](https://ephtracking.cdc.gov) 
+Centers for Disease Control and Prevention. (n.d.). National Environmental Public Health Tracking Network. Retrieved November 28, 2023, from <https://ephtracking.cdc.gov>
 
-Malaka, T., & Kodama, A. M. (1990). Respiratory Health of Plywood Workers Occupationally Exposed to Formaldehyde. Archives of Environmental Health: An International Journal, 45(5), 288--294. [https://doi.org/10.1080/00039896.1990.10118748](https://doi.org/10.1080/00039896.1990.10118748) 
+Malaka, T., & Kodama, A. M. (1990). Respiratory Health of Plywood Workers Occupationally Exposed to Formaldehyde. Archives of Environmental Health: An International Journal, 45(5), 288--294. <https://doi.org/10.1080/00039896.1990.10118748>
 
-McGwin, G., Lienert, J., & Kennedy, J. I. (2010). Formaldehyde Exposure and Asthma in Children: A Systematic Review. Environmental Health Perspectives, 118(3), 313--317. [https://doi.org/10.1289/ehp.0901143](https://doi.org/10.1289/ehp.0901143) 
+McGwin, G., Lienert, J., & Kennedy, J. I. (2010). Formaldehyde Exposure and Asthma in Children: A Systematic Review. Environmental Health Perspectives, 118(3), 313--317. <https://doi.org/10.1289/ehp.0901143>
 
-National Institute of Environmental Health Sciences. (n.d.). Acetaldehyde (Report on Carcinogens, Fifteenth Edition). Retrieved November 28, 2023, from [https://ntp.niehs.nih.gov/sites/default/files/ntp/roc/content/profiles/acetaldehyde.pdf](https://ntp.niehs.nih.gov/sites/default/files/ntp/roc/content/profiles/acetaldehyde.pdf) 
+National Institute of Environmental Health Sciences. (n.d.). Acetaldehyde (Report on Carcinogens, Fifteenth Edition). Retrieved November 28, 2023, from <https://ntp.niehs.nih.gov/sites/default/files/ntp/roc/content/profiles/acetaldehyde.pdf>
 
-OECD. (2020). Gender and environmental statistics: Exploring available data and developing new evidence. [https://www.oecd.org/environment/brochure-gender-and-environmental-statistics.pdf](https://www.oecd.org/environment/brochure-gender-and-environmental-statistics.pdf) 
+OECD. (2020). Gender and environmental statistics: Exploring available data and developing new evidence. <https://www.oecd.org/environment/brochure-gender-and-environmental-statistics.pdf>
 
-Singer, M. (2011). Down Cancer Alley: The Lived Experience of Health and Environmental Suffering in Louisiana’s Chemical Corridor. Medical Anthropology Quarterly, 25(2), 141–163. [https://doi.org/10.1111/j.1548-1387.2011.01154.x](https://doi.org/10.1111/j.1548-1387.2011.01154.x)
+Singer, M. (2011). Down Cancer Alley: The Lived Experience of Health and Environmental Suffering in Louisiana's Chemical Corridor. Medical Anthropology Quarterly, 25(2), 141--163. <https://doi.org/10.1111/j.1548-1387.2011.01154.x>
 
-US EPA, O. (n.d.). Carbon tetrachloride. Retrieved November 28, 2023, from [https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf](https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf) 
+US EPA, O. (n.d.). Carbon tetrachloride. Retrieved November 28, 2023, from <https://www.epa.gov/sites/default/files/2016-09/documents/carbon-tetrachloride.pdf>
 
-US EPA, O. (2015, May 29). Ground-level Ozone Basics \[Overviews and Factsheets\]. [https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics](https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics) 
+US EPA, O. (2015, May 29). Ground-level Ozone Basics \[Overviews and Factsheets\]. <https://www.epa.gov/ground-level-ozone-pollution/ground-level-ozone-basics>
 
-US EPA, O. (2016a, April 19). Particulate Matter (PM) Basics \[Overviews and Factsheets\]. [https://www.epa.gov/pm-pollution/particulate-matter-pm-basics](https://www.epa.gov/pm-pollution/particulate-matter-pm-basics) 
+US EPA, O. (2016a, April 19). Particulate Matter (PM) Basics \[Overviews and Factsheets\]. <https://www.epa.gov/pm-pollution/particulate-matter-pm-basics>
 
-US EPA, O. (2016b, April 26). Health and Environmental Effects of Particulate Matter (PM) \[Overviews and Factsheets\]. [https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm](https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm) 
+US EPA, O. (2016b, April 26). Health and Environmental Effects of Particulate Matter (PM) \[Overviews and Factsheets\]. <https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm>
 
-World Health Organization. (n.d.). Air quality and health. Retrieved November 28, 2023, from [https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts](https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts)
+World Health Organization. (n.d.). Air quality and health. Retrieved November 28, 2023, from <https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts>
 
 # Appendix
 
 ## A. Identifying sociodemographic vulnerabilities
 
-The sociodemographic data downloaded from the National Environmental Public Health Tracking Network contained demographic data by percentages, rather than specific sociodemographic vulnerabilities such as a high proportion of young or old individuals. 
+The sociodemographic data downloaded from the National Environmental Public Health Tracking Network contained demographic data by percentages, rather than specific sociodemographic vulnerabilities such as a high proportion of young or old individuals.
 
 I identified counties with a particularly high percentage of young or old people by creating a histogram to graph the distribution of percentage of each county that is under 19 years old or over 65 years old. Since the distributions looked fairly normal, I identified counties that had a percentage of each given age group that was one standard deviation above the mean. I created a category to identify whether or not the counties had a high population of vulnerable people. @fig-age_demographics visualizes how counties were identified as vulnerable by age demographics. When joining this data with the rest of the data, I collapsed the vulnerability variable to consider a county vulnerable if they have a high percentage of young or old people.
 
@@ -1475,7 +1475,7 @@ age_demographics2 %>%
   scale_fill_discrete("Vulnerable")
 ```
 
-@fig-gender-demographics shows that the distribution of the percentage of women in each county is fairly narrow, however there are several counties that have a particularly low or high percentage of women. To identify counties with a low or high percentage of women, I identified counties that had a percentage of women that was one standard deviation above or below the mean. 
+@fig-gender-demographics shows that the distribution of the percentage of women in each county is fairly narrow, however there are several counties that have a particularly low or high percentage of women. To identify counties with a low or high percentage of women, I identified counties that had a percentage of women that was one standard deviation above or below the mean.
 
 ```{r}
 #| label: fig-gender-demographics
